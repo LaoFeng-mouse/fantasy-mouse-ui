@@ -1,0 +1,7 @@
+.playwright-cli/
+.superpowers/
+node_modules/
+dist/
+coverage/
+work/
+outputs/
