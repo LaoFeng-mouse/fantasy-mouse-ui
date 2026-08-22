@@ -1,5 +1,6 @@
 .playwright-cli/
 .superpowers/
+.worktrees/
 node_modules/
 dist/
 coverage/
