@@ -70,15 +70,32 @@ The AI prompt must forbid unverified success claims and require the exact bundle
 
 The README will lead with what the plugin does, show GitHub installation commands, link to `INSTALL_WITH_AI.md`, document supported Agents, and explain that the mouse identity remains fixed while product UI style is derived independently.
 
+## Optional support presentation
+
+Follow the existing FlyingMouse Format README pattern: place a simple bilingual `Support / 支持` section near the end of the README, use one voluntary sentence, and show the user-provided WeChat payment image directly below it. Do not add popups, feature gates, repeated prompts, or sponsorship language inside generated UI work.
+
+Use this wording:
+
+```markdown
+## Support / 支持
+
+Fantasy Mouse UI is free and open source. If it helped you, you can buy Mouse a dried fish — completely optional. / Fantasy Mouse UI 免费开源。如果它帮到了你，欢迎请鼠鼠吃根小鱼干，纯自愿。
+
+![WeChat payment QR / 微信收款码](docs/assets/sponsor-qr.jpg)
+```
+
+Store the newly supplied image at `docs/assets/sponsor-qr.jpg`. It is repository documentation media, not visual-grounding authority, and it must stay outside the plugin ZIP and asset manifest.
+
 ## Implementation sequence
 
 1. Add failing tests for public rights metadata, archive filename, embedded license, marketplace manifest, and AI installation prompt.
 2. Update rights metadata, verifier trust root, Skill/references, documentation, packager, and allowlist until the focused tests pass.
-3. Run full tests, typecheck, bundle verification, official Skill/plugin validators, deterministic double packaging, archive inspection, and diff checks.
-4. Update the already installed personal plugin through the supported cachebuster/reinstall flow and validate the cached installation.
-5. Re-authenticate GitHub CLI if required.
-6. Create the public GitHub repository, add the remote, push only `main`, create tag/Release `v0.1.0`, and attach the verified archive.
-7. Verify repository visibility, default branch, tag, release metadata, downloadable asset name, size, and SHA-256 from GitHub rather than relying only on local state.
+3. Add the approved support image and README section without including it in the plugin package.
+4. Run full tests, typecheck, bundle verification, official Skill/plugin validators, deterministic double packaging, archive inspection, and diff checks.
+5. Update the already installed personal plugin through the supported cachebuster/reinstall flow and validate the cached installation.
+6. Re-authenticate GitHub CLI if required.
+7. Create the public GitHub repository, add the remote, push only `main`, create tag/Release `v0.1.0`, and attach the verified archive.
+8. Verify repository visibility, default branch, tag, release metadata, downloadable asset name, size, and SHA-256 from GitHub rather than relying only on local state.
 
 ## Error handling and safety
 
@@ -100,4 +117,5 @@ The work is complete only when:
 - the public GitHub repository exists under the authenticated owner with `main` as its default branch;
 - the `v0.1.0` Release exists and its downloadable ZIP hash matches the verified local archive;
 - the repository contains a tested AI deployment prompt and verified installation commands;
+- the README contains the approved voluntary support wording and newly supplied WeChat image, while the plugin ZIP does not contain that image;
 - a fresh local Codex installation can load the released plugin, with any new-session boundary stated honestly.
