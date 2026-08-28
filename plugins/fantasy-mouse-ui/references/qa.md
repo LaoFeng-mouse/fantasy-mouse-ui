@@ -69,6 +69,6 @@ An unavailable cross-output comparison does not block delivery. Report that subg
 
 ## Report rights and completion honestly
 
-Treat all bundled visual-grounding images as private-reference-only. Inspection creates no redistribution license or public rights claim. Exclude them from public deliverables unless a separate asset has explicit publication permission.
+Bundled visual-grounding assets are distributed under the repository MIT License. Preserve the license notice when redistributing the plugin or its assets, and do not claim that publication expands an asset's declared identity, anatomy, or composition authority.
 
 Report passed, failed, partial, and unavailable gates separately. Export the editable source, brief, recipe, rationale, screenshots, comparison findings, repairs, and exact handoff. Reserve complete/accepted status for a result the user can run or render, edit, use, and visually verify.
