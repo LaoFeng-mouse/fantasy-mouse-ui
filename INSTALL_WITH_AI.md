@@ -205,6 +205,7 @@ Release ZIP 可从 https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/tag
 [5. 遇到冲突即失败的最终移动] 再次确认最终目标不存在或为空，仅使用遇到冲突即失败的移动。绝不合并、删除或覆盖现有安装。
 
 `verify-bundle.mjs` 只证明四个固定视觉素材，不证明安装完整，也不证明宿主已加载插件。{"ok":true,"assets":4} 只代表“视觉素材包验证通过”，不代表“安装成功”。在新任务/会话中实际加载是单独的最终边界。Claude 使用 adapters/claude/SKILL.md；Gemini 使用 adapters/gemini/SKILL.md；DeepSeek 使用 adapters/deepseek/SKILL.md；其他 Agent 使用 adapters/generic/AGENT.md。请分别报告预检、清单、视觉验证、宿主注册和新会话加载证据。
+请返回实际绝对安装目录、执行过的每一条命令、各层完整验证输出，以及是否需要并已完成新任务/会话加载；任何一项缺失或失败都不得声称安装成功。
 ```
 
 ## English copy-paste deployment prompt
@@ -233,4 +234,5 @@ Allowlist: .codex-plugin/plugin.json; adapters/claude/SKILL.md; adapters/deepsee
 [5. Collision-failing final move] Recheck final is absent or empty and use only a collision-failing move. Never merge, delete, or overwrite an existing installation.
 
 `verify-bundle.mjs` proves only the four pinned visual assets; it does not prove complete installation or host loading. Never call the installation successful based only on {"ok":true,"assets":4}. Actual loading in a new task/session is a separate final boundary. Claude uses adapters/claude/SKILL.md; Gemini uses adapters/gemini/SKILL.md; DeepSeek uses adapters/deepseek/SKILL.md; other Agents use adapters/generic/AGENT.md. Report preflight, inventory, visual verification, host registration, and new-session loading evidence separately.
+Return the actual absolute installation directory, every command used, the complete output from every verification tier, and whether a new task/session is required and has loaded the plugin; do not claim installation success when any item is missing or failed.
 ```

@@ -204,6 +204,12 @@ describe("Fantasy Mouse UI plugin manifest", () => {
       "## English copy-paste deployment prompt"
     );
     const englishPrompt = fencedPrompt("## English copy-paste deployment prompt");
+    expect(chinesePrompt).toContain(
+      "请返回实际绝对安装目录、执行过的每一条命令、各层完整验证输出，以及是否需要并已完成新任务/会话加载；任何一项缺失或失败都不得声称安装成功。"
+    );
+    expect(englishPrompt).toContain(
+      "Return the actual absolute installation directory, every command used, the complete output from every verification tier, and whether a new task/session is required and has loaded the plugin; do not claim installation success when any item is missing or failed."
+    );
 
     const englishZipRoutes = [manualEnglishZip, englishPrompt];
     const chineseZipRoutes = [manualChineseZip, chinesePrompt];
