@@ -33,9 +33,9 @@ Download `fantasy-mouse-ui.zip` from the GitHub [`v0.1.0` release](https://githu
 https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/latest/download/fantasy-mouse-ui.zip
 ```
 
-Extract the archive into the host's supported plugin or Skill location. Preserve the archive's directory structure and install the complete `fantasy-mouse-ui` directory; do not flatten, rename, or separately copy its required relative dependencies.
+The ZIP stores the plugin entries at the archive root; it does not contain a wrapping directory. Create a destination directory named `fantasy-mouse-ui` first, then extract every ZIP entry into that directory. After extraction, that destination must contain `.codex-plugin/`, `skills/`, `adapters/`, `assets/`, `protocol/`, `references/`, `scripts/`, and `LICENSE` at its root. Do not flatten, rename, or separately copy its required relative dependencies.
 
-将压缩包解压到当前 Agent 支持的插件或 Skill 目录。必须保留压缩包目录结构并安装完整的 `fantasy-mouse-ui` 目录；不要打平目录、随意改名或单独复制其相对依赖。
+ZIP 中的插件条目直接位于压缩包根层级，压缩包本身不包含外层目录。必须先创建名为 `fantasy-mouse-ui` 的目标目录，再把 ZIP 内的全部内容解压到该目录中。解压后，该目标目录的根层级必须包含 `.codex-plugin/`、`skills/`、`adapters/`、`assets/`、`protocol/`、`references/`、`scripts/` 和 `LICENSE`。不要打平目录、随意改名或单独复制其相对依赖。
 
 ## Agent entry points / Agent 入口
 
@@ -83,7 +83,7 @@ codex plugin marketplace add https://github.com/LI-2004-feng/fantasy-mouse-ui
 codex plugin add fantasy-mouse-ui@fantasy-mouse-ui
 安装后必须新建 Codex 任务/会话。
 
-如果使用 Release ZIP，请从 https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/tag/v0.1.0 或 https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/latest 下载 fantasy-mouse-ui.zip，完整解压并保留目录结构。在安装后的插件根目录运行：
+如果使用 Release ZIP，请从 https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/tag/v0.1.0 或 https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/latest 下载 fantasy-mouse-ui.zip。ZIP 内的插件条目直接位于压缩包根层级；必须先创建名为 `fantasy-mouse-ui` 的目标目录，再把 ZIP 内的全部内容解压到该目录中。解压后，该目标目录的根层级必须包含 .codex-plugin/、skills/、adapters/、assets/、protocol/、references/、scripts/ 和 LICENSE。在安装后的插件根目录运行：
 node scripts/verify-bundle.mjs
 
 Claude 使用 adapters/claude/SKILL.md；Gemini 使用 adapters/gemini/SKILL.md；DeepSeek 使用 adapters/deepseek/SKILL.md；其他 Agent 使用 adapters/generic/AGENT.md。不得在验证前声称安装成功。
@@ -101,5 +101,5 @@ codex plugin marketplace add https://github.com/LI-2004-feng/fantasy-mouse-ui
 codex plugin add fantasy-mouse-ui@fantasy-mouse-ui
 Then start a new Codex task/session.
 
-For the Release ZIP route, download fantasy-mouse-ui.zip from https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/tag/v0.1.0 or https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/latest. Extract the complete fantasy-mouse-ui directory without flattening or changing its directory structure. Claude uses adapters/claude/SKILL.md; Gemini uses adapters/gemini/SKILL.md; DeepSeek uses adapters/deepseek/SKILL.md; other Agents use adapters/generic/AGENT.md.
+For the Release ZIP route, download fantasy-mouse-ui.zip from https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/tag/v0.1.0 or https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/latest. The plugin entries are stored at the ZIP root; the ZIP does not contain a wrapping directory. Create a destination directory named `fantasy-mouse-ui` first, then extract every ZIP entry into that directory. After extraction, the destination root must contain .codex-plugin/, skills/, adapters/, assets/, protocol/, references/, scripts/, and LICENSE. Claude uses adapters/claude/SKILL.md; Gemini uses adapters/gemini/SKILL.md; DeepSeek uses adapters/deepseek/SKILL.md; other Agents use adapters/generic/AGENT.md.
 ```

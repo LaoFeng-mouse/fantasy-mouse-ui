@@ -94,6 +94,12 @@ describe("Fantasy Mouse UI plugin manifest", () => {
     expect(installGuide).toContain('{"ok":true,"assets":4}');
     expect(installGuide).toContain("不要只复制单个 SKILL.md");
     expect(installGuide).toContain("Do not copy only SKILL.md");
+    expect(installGuide).toContain(
+      "Create a destination directory named `fantasy-mouse-ui` first, then extract every ZIP entry into that directory."
+    );
+    expect(installGuide).toContain(
+      "必须先创建名为 `fantasy-mouse-ui` 的目标目录，再把 ZIP 内的全部内容解压到该目录中。"
+    );
   });
 
   it("documents optional support without packaging its QR image", () => {
