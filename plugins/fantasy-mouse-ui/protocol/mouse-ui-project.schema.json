@@ -9,11 +9,12 @@
     "stateDesign": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["fantasyRole", "expression", "pose", "props", "bubble", "copy"],
+      "required": ["fantasyRole", "expression", "pose", "handMode", "props", "bubble", "copy"],
       "properties": {
         "fantasyRole": { "type": "string", "minLength": 1 },
         "expression": { "type": "string", "minLength": 1 },
         "pose": { "type": "string", "minLength": 1 },
+        "handMode": { "type": "string", "enum": ["default-clasped", "action"] },
         "props": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
         "bubble": { "type": "string", "enum": ["auto", "show", "hide"] },
         "copy": { "type": "string", "minLength": 1 }

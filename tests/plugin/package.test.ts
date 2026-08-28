@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { link, mkdtemp, readFile, rm, truncate, writeFile } from "node:fs/promises";
+import { link, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -128,7 +128,7 @@ function fileSystemErrorCode(error: unknown): string | undefined {
 
 async function nlinkInjectionPreload(
   targetPath: string,
-  phase: "collection" | "handle-before" | "handle-after",
+  phase: "collection" | "handle-before" | "handle-after" | "zero-identity" | "oversized",
 ): Promise<string> {
   const temporaryRoot = await mkdtemp(join(tmpdir(), "fantasy-mouse-package-nlink-"));
   const preloadPath = join(temporaryRoot, "inject-nlink.cjs");
@@ -145,10 +145,28 @@ function withInjectedNlink(stats) {
     return typeof value === "function" ? value.bind(target) : value;
   }});
 }
+function withZeroIdentity(stats) {
+  return new Proxy(stats, { get(target, property, receiver) {
+    if (property === "dev" || property === "ino") return typeof target[property] === "bigint" ? 0n : 0;
+    const value = Reflect.get(target, property, receiver);
+    return typeof value === "function" ? value.bind(target) : value;
+  }});
+}
+function withOversizedSize(stats) {
+  return new Proxy(stats, { get(target, property, receiver) {
+    if (property === "size") return typeof target.size === "bigint" ? 268435457n : 268435457;
+    const value = Reflect.get(target, property, receiver);
+    return typeof value === "function" ? value.bind(target) : value;
+  }});
+}
 const realLstat = fileSystem.lstat;
 fileSystem.lstat = async function injectedLstat(path, options) {
   const stats = await realLstat(path, options);
-  return phase === "collection" && resolve(path) === targetPath ? withInjectedNlink(stats) : stats;
+  if (resolve(path) !== targetPath) return stats;
+  if (phase === "collection") return withInjectedNlink(stats);
+  if (phase === "zero-identity") return withZeroIdentity(stats);
+  if (phase === "oversized") return withOversizedSize(stats);
+  return stats;
 };
 const realOpen = fileSystem.open;
 fileSystem.open = async function injectedOpen(path, ...args) {
@@ -283,12 +301,11 @@ describe("private-local plugin package", () => {
   });
 
   it("rejects a multi-link plugin source during collection without replacing the archive", async () => {
-    const sourceUrl = new URL("../../plugins/fantasy-mouse-ui/.package-hard-link-test.txt", import.meta.url);
+    const sourceUrl = new URL("../../plugins/fantasy-mouse-ui/.codex-plugin/plugin.json", import.meta.url);
     const sourcePath = fileURLToPath(sourceUrl);
     const temporaryRoot = await mkdtemp(join(tmpdir(), "fantasy-mouse-package-link-"));
     const aliasPath = join(temporaryRoot, "alias.txt");
     let preloadPath: string | undefined;
-    await writeFile(sourceUrl, "do not package linked bytes");
     try {
       try {
         await link(sourcePath, aliasPath);
@@ -302,9 +319,37 @@ describe("private-local plugin package", () => {
       expect(stderr).not.toContain(repoRootPath);
       expect(Buffer.compare(await readFile(outputUrl), secondPackage)).toBe(0);
     } finally {
-      await rm(sourceUrl, { force: true });
       await rm(temporaryRoot, { recursive: true, force: true });
       if (preloadPath !== undefined) await rm(dirname(preloadPath), { recursive: true, force: true });
+      await writeFile(outputUrl, secondPackage);
+    }
+  });
+
+  it("rejects an unexpected secret-like file instead of silently packaging it", async () => {
+    const secretUrl = new URL("../../plugins/fantasy-mouse-ui/.env", import.meta.url);
+    await writeFile(secretUrl, "TOKEN=do-not-package");
+    try {
+      const stderr = await packageFailure();
+      expect(JSON.parse(stderr)).toEqual({ ok: false, error: "unexpected-plugin-entry" });
+      expect(stderr).not.toContain("TOKEN");
+      expect(Buffer.compare(await readFile(outputUrl), secondPackage)).toBe(0);
+    } finally {
+      await rm(secretUrl, { force: true });
+      await writeFile(outputUrl, secondPackage);
+    }
+  });
+
+  it("rejects a source with unavailable filesystem identity", async () => {
+    const sourcePath = fileURLToPath(
+      new URL("../../plugins/fantasy-mouse-ui/.codex-plugin/plugin.json", import.meta.url),
+    );
+    const preloadPath = await nlinkInjectionPreload(sourcePath, "zero-identity");
+    try {
+      const stderr = await packageFailure(preloadPath);
+      expect(JSON.parse(stderr)).toEqual({ ok: false, error: "plugin-source-unreliable-identity" });
+      expect(Buffer.compare(await readFile(outputUrl), secondPackage)).toBe(0);
+    } finally {
+      await rm(dirname(preloadPath), { recursive: true, force: true });
       await writeFile(outputUrl, secondPackage);
     }
   });
@@ -312,9 +357,8 @@ describe("private-local plugin package", () => {
   it.each([["before reading", "handle-before"], ["after reading", "handle-after"]] as const)(
     "rejects a plugin source that gains another link %s through handle revalidation",
     async (_timing, phase) => {
-      const sourceUrl = new URL("../../plugins/fantasy-mouse-ui/.package-handle-link-test.txt", import.meta.url);
+      const sourceUrl = new URL("../../plugins/fantasy-mouse-ui/.codex-plugin/plugin.json", import.meta.url);
       const sourcePath = fileURLToPath(sourceUrl);
-      await writeFile(sourceUrl, "link count changes after collection");
       const preloadPath = await nlinkInjectionPreload(sourcePath, phase);
       try {
         const stderr = await packageFailure(preloadPath);
@@ -322,7 +366,6 @@ describe("private-local plugin package", () => {
         expect(stderr).not.toContain(repoRootPath);
         expect(Buffer.compare(await readFile(outputUrl), secondPackage)).toBe(0);
       } finally {
-        await rm(sourceUrl, { force: true });
         await rm(dirname(preloadPath), { recursive: true, force: true });
         await writeFile(outputUrl, secondPackage);
       }
@@ -330,33 +373,20 @@ describe("private-local plugin package", () => {
   );
 
   it("rejects oversized plugin input without destroying the last valid archive", async () => {
-    const oversizedUrl = new URL(
-      "../../plugins/fantasy-mouse-ui/.package-boundary-test.txt",
-      import.meta.url,
+    const sourcePath = fileURLToPath(
+      new URL("../../plugins/fantasy-mouse-ui/.codex-plugin/plugin.json", import.meta.url),
     );
-    await writeFile(oversizedUrl, "");
-    await truncate(oversizedUrl, 256 * 1024 * 1024 + 1);
+    const preloadPath = await nlinkInjectionPreload(sourcePath, "oversized");
     try {
-      let stderr = "";
-      try {
-        await execFileAsync(process.execPath, [
-          "--import",
-          "tsx",
-          "scripts/package-fantasy-mouse-plugin.ts",
-        ], {
-          cwd: repoRootPath,
-          windowsHide: true,
-        });
-      } catch (error) {
-        stderr = (error as Error & { stderr?: string }).stderr ?? "";
-      }
+      const stderr = await packageFailure(preloadPath);
 
       expect(JSON.parse(stderr)).toEqual({ ok: false, error: "plugin-source-too-large" });
       expect(stderr).not.toContain(repoRootPath);
       const survivingArchive = await readFile(outputUrl);
       expect(Buffer.compare(survivingArchive, secondPackage)).toBe(0);
     } finally {
-      await rm(oversizedUrl, { force: true });
+      await rm(dirname(preloadPath), { recursive: true, force: true });
+      await writeFile(outputUrl, secondPackage);
     }
   }, 30_000);
 });

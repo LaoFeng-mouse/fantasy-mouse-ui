@@ -30,6 +30,27 @@ const FILE_MODE = 0o100644;
 const MAX_UINT16 = 0xffff;
 const MAX_UINT32 = 0xffffffff;
 const MAX_ARCHIVE_SOURCE_BYTES = 256 * 1024 * 1024;
+const ALLOWED_PLUGIN_FILES = new Set([
+  ".codex-plugin/plugin.json",
+  "adapters/claude/SKILL.md",
+  "adapters/deepseek/SKILL.md",
+  "adapters/gemini/SKILL.md",
+  "adapters/generic/AGENT.md",
+  "assets/visual-grounding/canonical-protagonist.png",
+  "assets/visual-grounding/manifest.json",
+  "assets/visual-grounding/processing-action-hands.png",
+  "assets/visual-grounding/processing-with-bubble.png",
+  "assets/visual-grounding/processing-without-bubble.png",
+  "protocol/mouse-ui-project.schema.json",
+  "protocol/workflow-brief.schema.json",
+  "references/qa.md",
+  "references/style-independence.md",
+  "references/visual-grounding.md",
+  "references/workflow-to-ui.md",
+  "scripts/validate-workflow.mjs",
+  "scripts/verify-bundle.mjs",
+  "skills/fantasy-mouse-ui/SKILL.md",
+]);
 
 class PackagingError extends Error {
   constructor(readonly code: string) {
@@ -59,18 +80,6 @@ type SourceFile = {
     ctimeNs: bigint;
   };
 };
-
-function isJunkPath(archivePath: string): boolean {
-  const parts = archivePath.split("/");
-  const base = parts.at(-1) ?? "";
-  return (
-    parts.some((part) => part === ".git" || part === "dist" || part === "tests") ||
-    base === ".gitkeep" ||
-    base === ".DS_Store" ||
-    base === "Thumbs.db" ||
-    /\.(?:log|tmp)$/i.test(base)
-  );
-}
 
 function isInside(root: string, candidate: string): boolean {
   const normalizedRoot = process.platform === "win32" ? root.toLowerCase() : root;
@@ -105,34 +114,39 @@ async function collectFiles(): Promise<SourceFile[]> {
       if (!metadata.isFile()) {
         fail("non-regular-plugin-entry");
       }
+      if (!ALLOWED_PLUGIN_FILES.has(archivePath)) {
+        fail("unexpected-plugin-entry");
+      }
       if (metadata.nlink !== 1n) {
         fail("plugin-source-multi-link");
+      }
+      if (metadata.dev === 0n || metadata.ino === 0n) {
+        fail("plugin-source-unreliable-identity");
       }
 
       const sourceRealPath = await realpath(source);
       if (!isInside(rootRealPath, sourceRealPath)) {
         fail("plugin-path-escape");
       }
-      if (!isJunkPath(archivePath)) {
-        const nameLength = Buffer.byteLength(archivePath, "utf8");
-        if (nameLength === 0 || nameLength > MAX_UINT16) fail("archive-name-too-long");
-        files.push({
-          name: archivePath,
-          source,
-          identity: {
-            dev: metadata.dev,
-            ino: metadata.ino,
-            size: metadata.size,
-            mtimeNs: metadata.mtimeNs,
-            ctimeNs: metadata.ctimeNs,
-          },
-        });
-      }
+      const nameLength = Buffer.byteLength(archivePath, "utf8");
+      if (nameLength === 0 || nameLength > MAX_UINT16) fail("archive-name-too-long");
+      files.push({
+        name: archivePath,
+        source,
+        identity: {
+          dev: metadata.dev,
+          ino: metadata.ino,
+          size: metadata.size,
+          mtimeNs: metadata.mtimeNs,
+          ctimeNs: metadata.ctimeNs,
+        },
+      });
     }
   }
 
   await walk(pluginRoot);
   files.sort((left, right) => left.name < right.name ? -1 : left.name > right.name ? 1 : 0);
+  if (files.length !== ALLOWED_PLUGIN_FILES.size) fail("missing-plugin-entry");
   return files;
 }
 
@@ -156,6 +170,8 @@ async function readVerifiedSource(file: SourceFile): Promise<Buffer> {
     if (
       !before.isFile() ||
       before.nlink !== 1n ||
+      before.dev === 0n ||
+      before.ino === 0n ||
       !sameIdentity(before, file.identity) ||
       before.size !== file.identity.size ||
       before.mtimeNs !== file.identity.mtimeNs ||
@@ -168,6 +184,8 @@ async function readVerifiedSource(file: SourceFile): Promise<Buffer> {
     if (
       !after.isFile() ||
       after.nlink !== 1n ||
+      after.dev === 0n ||
+      after.ino === 0n ||
       !sameIdentity(after, before) ||
       before.size !== after.size ||
       before.mtimeNs !== after.mtimeNs ||

@@ -3,7 +3,75 @@ import { lstat, readFile, realpath } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const EXPECTED_ASSET_COUNT = 4;
+const EXPECTED_STYLE_POLICY = {
+  fixedSystem: "character-identity-only",
+  uiDerivation: "target-product-and-platform",
+  templateLeakageThreshold: 3,
+};
+const EXPECTED_ASSETS = [
+  {
+    path: "assets/visual-grounding/canonical-protagonist.png",
+    role: "canonical-identity",
+    publication: "private-reference-only",
+    sha256: "4C85BCE3AD50F33FC04BBF05147EFD96ED0BAE98866C12E1DB5E7096C8557316",
+    width: 1387,
+    height: 1134,
+    identityAuthority: true,
+    anatomyAuthority: false,
+    uiStyleAuthority: false,
+    authorityScope: "canonical-character-identity",
+  },
+  {
+    path: "assets/visual-grounding/processing-action-hands.png",
+    role: "approved-action-hand-pose",
+    publication: "private-reference-only",
+    sha256: "A22C3E5EBA3E4F417075F54F38DA3D7B6E177D294D42ED627F350AB38C7652A1",
+    width: 1254,
+    height: 1254,
+    identityAuthority: false,
+    anatomyAuthority: true,
+    uiStyleAuthority: false,
+    authorityScope: "action-hand-anatomy",
+    handRule: "action-hands-replace-default-chest-v-u",
+  },
+  {
+    path: "assets/visual-grounding/processing-with-bubble.png",
+    role: "composition-only-with-bubble",
+    publication: "private-reference-only",
+    sha256: "68376DD901AE3D10A311CBCA6BD06ED8D86A7BD58F8B24069203358711577EA5",
+    width: 1487,
+    height: 1058,
+    identityAuthority: false,
+    anatomyAuthority: false,
+    uiStyleAuthority: false,
+    authorityScope: "single-example-composition-only",
+    knownExclusions: [
+      "do-not-copy-chest-v-u-when-action-hands-exist",
+      "do-not-treat-layout-as-default",
+      "do-not-treat-palette-as-default",
+      "do-not-treat-materials-as-default",
+    ],
+  },
+  {
+    path: "assets/visual-grounding/processing-without-bubble.png",
+    role: "composition-only-without-bubble",
+    publication: "private-reference-only",
+    sha256: "7C8461D4DC13319C60AFDA34525B70F3C6467B07D40CA9A987217AB489FFD401",
+    width: 1487,
+    height: 1058,
+    identityAuthority: false,
+    anatomyAuthority: false,
+    uiStyleAuthority: false,
+    authorityScope: "single-example-composition-only",
+    knownExclusions: [
+      "do-not-copy-chest-v-u-when-action-hands-exist",
+      "do-not-treat-layout-as-default",
+      "do-not-treat-palette-as-default",
+      "do-not-treat-materials-as-default",
+    ],
+  },
+];
+const EXPECTED_ASSET_COUNT = EXPECTED_ASSETS.length;
 const PNG_SIGNATURE = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
 
 class VerificationError extends Error {
@@ -45,17 +113,16 @@ function readPngDimensions(bytes) {
   return { width, height };
 }
 
-function assertAssetShape(asset) {
-  if (
-    !asset ||
-    typeof asset.path !== "string" ||
-    typeof asset.sha256 !== "string" ||
-    !/^[A-F0-9]{64}$/.test(asset.sha256) ||
-    !Number.isSafeInteger(asset.width) ||
-    !Number.isSafeInteger(asset.height)
-  ) {
-    fail("invalid-manifest-entry");
+function stableJson(value) {
+  if (Array.isArray(value)) return `[${value.map(stableJson).join(",")}]`;
+  if (value && typeof value === "object") {
+    return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${stableJson(value[key])}`).join(",")}}`;
   }
+  return JSON.stringify(value);
+}
+
+function assertAssetAuthority(asset, expected) {
+  if (stableJson(asset) !== stableJson(expected)) fail("invalid-asset-authority");
 }
 
 async function verify() {
@@ -71,14 +138,20 @@ async function verify() {
   } catch {
     fail("invalid-manifest");
   }
-  if (!manifest || !Array.isArray(manifest.assets) || manifest.assets.length !== EXPECTED_ASSET_COUNT) {
+  if (
+    !manifest ||
+    manifest.schemaVersion !== 1 ||
+    stableJson(manifest.stylePolicy) !== stableJson(EXPECTED_STYLE_POLICY) ||
+    !Array.isArray(manifest.assets) ||
+    manifest.assets.length !== EXPECTED_ASSET_COUNT
+  ) {
     fail("invalid-asset-count");
   }
 
   const seenPaths = new Set();
   const seenRealPaths = new Set();
-  for (const asset of manifest.assets) {
-    assertAssetShape(asset);
+  for (const [index, asset] of manifest.assets.entries()) {
+    assertAssetAuthority(asset, EXPECTED_ASSETS[index]);
     const candidate = path.resolve(pluginRoot, asset.path);
     if (!isInside(pluginRoot, candidate)) fail("asset-path-escape");
 

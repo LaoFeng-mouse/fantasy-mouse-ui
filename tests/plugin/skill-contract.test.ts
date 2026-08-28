@@ -184,6 +184,16 @@ describe("Fantasy Mouse image-first Skill contract", () => {
     expect(schema.properties.surfaces.items.pattern).toBe("^[a-z0-9]+(?:-[a-z0-9]+)*$");
     expect(schema.properties.states.additionalProperties).toBeTypeOf("object");
     expect(schema.properties.states.propertyNames?.pattern).toBe("^[a-z0-9]+(?:-[a-z0-9]+)*$");
+    const stateDesign = (
+      schema as typeof schema & {
+        $defs: { stateDesign: { required: string[]; properties: Record<string, unknown> } };
+      }
+    ).$defs.stateDesign;
+    expect(stateDesign.required).toContain("handMode");
+    expect(stateDesign.properties.handMode).toEqual({
+      type: "string",
+      enum: ["default-clasped", "action"],
+    });
   });
 
   it("does not deadlock first-run delivery when no unrelated baseline exists", async () => {

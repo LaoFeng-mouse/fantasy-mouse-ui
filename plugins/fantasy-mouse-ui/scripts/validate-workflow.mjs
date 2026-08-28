@@ -27,7 +27,6 @@ const REQUIRED_KEYS = [...ROOT_KEYS];
 const SCREEN_KEYS = new Set(["id", "purpose"]);
 const ACTION_KEYS = new Set(["id", "label", "kind", "from", "to"]);
 const ACTION_KINDS = new Set(["primary", "secondary", "destructive", "recovery", "utility", "navigation"]);
-const SURFACES = new Set(["web", "desktop", "mobile", "slide", "presentation", "pptx"]);
 
 function emitFailure(code, errors = []) {
   const payload = {
@@ -180,7 +179,7 @@ function validateBrief(brief) {
   } else {
     const seenSurfaces = new Set();
     brief.surfaces.forEach((surface, index) => {
-      if (!SURFACES.has(surface)) recordError(errors, `surfaces[${index}] is invalid`);
+      requireId(surface, `surfaces[${index}]`, errors);
       if (seenSurfaces.has(surface)) recordError(errors, "surfaces contains a duplicate value");
       seenSurfaces.add(surface);
     });

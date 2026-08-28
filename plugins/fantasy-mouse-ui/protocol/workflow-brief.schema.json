@@ -115,7 +115,10 @@
       "maxItems": 256,
       "uniqueItems": true,
       "items": {
-        "enum": ["web", "desktop", "mobile", "slide", "presentation", "pptx"]
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64,
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
       }
     },
     "constraints": {

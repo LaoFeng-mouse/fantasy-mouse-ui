@@ -1,4 +1,7 @@
 import { execFile } from "node:child_process";
+import { cp, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { describe, expect, it } from "vitest";
@@ -117,5 +120,29 @@ describe("Fantasy Mouse visual grounding bundle", () => {
 
     expect(stderr).toBe("");
     expect(JSON.parse(stdout)).toEqual({ ok: true, assets: 4 });
+  });
+
+  it("rejects a manifest that changes authority-defining fields", async () => {
+    const root = await mkdtemp(join(tmpdir(), "fantasy-mouse-authority-"));
+    const copiedPlugin = join(root, "fantasy-mouse-ui");
+    await cp(fileURLToPath(new URL("../../plugins/fantasy-mouse-ui", import.meta.url)), copiedPlugin, {
+      recursive: true,
+    });
+    try {
+      const manifestPath = join(copiedPlugin, "assets", "visual-grounding", "manifest.json");
+      const altered = JSON.parse(await readFile(manifestPath, "utf8"));
+      altered.assets[2].uiStyleAuthority = true;
+      await writeFile(manifestPath, JSON.stringify(altered), "utf8");
+
+      let stderr = "";
+      try {
+        await execFileAsync(process.execPath, [join(copiedPlugin, "scripts", "verify-bundle.mjs")]);
+      } catch (error) {
+        stderr = (error as Error & { stderr?: string }).stderr ?? "";
+      }
+      expect(JSON.parse(stderr)).toEqual({ ok: false, error: "invalid-asset-authority" });
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
   });
 });

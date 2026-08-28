@@ -96,6 +96,20 @@ describe("Fantasy Mouse workflow protocol", () => {
     }
   });
 
+  it("keeps workflow surfaces open to product-specific editable targets", async () => {
+    const schema = JSON.parse(
+      await readFile("plugins/fantasy-mouse-ui/protocol/workflow-brief.schema.json", "utf8"),
+    ) as { properties: { surfaces: { items: Record<string, unknown> } } };
+
+    expect(schema.properties.surfaces.items).toEqual({
+      type: "string",
+      minLength: 1,
+      maxLength: 64,
+      pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+    });
+    expect(schema.properties.surfaces.items).not.toHaveProperty("enum");
+  });
+
   it("rejects special paths before a nonblocking no-follow open and bounded read", async () => {
     const source = await readFile(validator, "utf8");
     expect(source).not.toMatch(/await\s+readFile\s*\(\s*inputPath\s*\)/);
@@ -222,7 +236,7 @@ describe("Fantasy Mouse workflow protocol", () => {
     },
   );
 
-  it.each(["web", "desktop", "mobile", "slide", "pptx"])(
+  it.each(["web", "desktop", "mobile", "slide", "pptx", "document", "spreadsheet", "kiosk"])(
     "accepts the documented %s surface",
     async (surface) => {
       const result = await invokeWorkflow({ ...validWorkflow, surfaces: [surface] });
@@ -245,7 +259,7 @@ describe("Fantasy Mouse workflow protocol", () => {
     ],
     ["invalid id", { ...validWorkflow, id: "Expense_Approval" }],
     ["invalid kind", { ...validWorkflow, actions: [{ ...validWorkflow.actions[0], kind: "magic" }] }],
-    ["invalid surface", { ...validWorkflow, surfaces: ["hologram"] }],
+    ["invalid surface", { ...validWorkflow, surfaces: ["Native iOS"] }],
     ["duplicate users", { ...validWorkflow, users: ["finance-reviewer", "finance-reviewer"] }],
     [
       "duplicate screen ids",
