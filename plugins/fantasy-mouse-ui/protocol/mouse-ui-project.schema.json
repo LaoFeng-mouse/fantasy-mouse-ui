@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mouse-ui-project.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["protocolVersion", "id", "title", "characterId", "identityAnchors", "persona", "theme", "surfaces", "participation", "states", "rights", "qa"],
+  "$defs": {
+    "slug": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "stateDesign": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fantasyRole", "expression", "pose", "props", "bubble", "copy"],
+      "properties": {
+        "fantasyRole": { "type": "string", "minLength": 1 },
+        "expression": { "type": "string", "minLength": 1 },
+        "pose": { "type": "string", "minLength": 1 },
+        "props": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "bubble": { "type": "string", "enum": ["auto", "show", "hide"] },
+        "copy": { "type": "string", "minLength": 1 }
+      }
+    }
+  },
+  "properties": {
+    "protocolVersion": { "type": "number", "const": 1 },
+    "id": { "$ref": "#/$defs/slug" },
+    "title": { "type": "string", "minLength": 1 },
+    "characterId": { "type": "string", "const": "fantasy-mouse-canonical" },
+    "identityAnchors": {
+      "type": "array",
+      "prefixItems": [
+        { "type": "string", "const": "compact-grey-round-head" },
+        { "type": "string", "const": "tiny-horizontal-ears" },
+        { "type": "string", "const": "narrowed-vacant-eyes" },
+        { "type": "string", "const": "human-like-toothy-grin" },
+        { "type": "string", "const": "compact-white-bean-body" },
+        { "type": "string", "const": "default-clasped-hands-v-or-u" },
+        { "type": "string", "const": "earnest-absurd-dreamer" }
+      ],
+      "items": false,
+      "minItems": 7,
+      "maxItems": 7
+    },
+    "persona": { "$ref": "#/$defs/slug", "description": "Project-specific character role or temperament derived from the workflow, not a bundled preset." },
+    "theme": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "description": "Project-specific theme slug derived from the product-style rationale; it is not a bundled preset."
+    },
+    "surfaces": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+      "description": "Open product-specific surface identifiers such as web, desktop, mobile, slide, document, kiosk, or future editable targets."
+    },
+    "participation": { "type": "string", "enum": ["light", "standard", "immersive"] },
+    "states": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+      "additionalProperties": { "$ref": "#/$defs/stateDesign" },
+      "description": "Open state map. Preserve the target product's real state names rather than forcing a bundled state list."
+    },
+    "rights": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["publicExport", "assetIds"],
+      "properties": {
+        "publicExport": { "type": "boolean" },
+        "assetIds": { "type": "array", "uniqueItems": true, "items": { "type": "string" } }
+      }
+    },
+    "qa": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["visual", "accessibility", "editable"],
+      "properties": { "visual": { "type": "boolean" }, "accessibility": { "type": "boolean" }, "editable": { "type": "boolean" } }
+    }
+  }
+}
