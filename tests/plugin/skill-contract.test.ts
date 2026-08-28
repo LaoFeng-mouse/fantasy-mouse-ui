@@ -311,6 +311,7 @@ describe("Fantasy Mouse image-first Skill contract", () => {
     expect(qa).toContain(
       "Bundled visual-grounding assets are distributed under the repository MIT License"
     );
+    expect(qa).not.toContain("public rights claim");
   });
 
   it("remains model-neutral and isolated from unrelated product semantics", async () => {
