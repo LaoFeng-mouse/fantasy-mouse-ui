@@ -232,6 +232,7 @@ describe("Fantasy Mouse image-first Skill contract", () => {
     expect(visual).toContain("open-source-distributable");
     expect(visual).toContain("MIT License");
     expect(visual).not.toContain("private-reference-only");
+    expect(visual).not.toContain("public reuse rights");
     expect(visual).toContain(
       "Do not import 乐不思鼠 business content, UI, copy, data, or workflow semantics"
     );

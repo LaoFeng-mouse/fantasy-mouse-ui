@@ -6,7 +6,7 @@ Use this reference after the bundle verifier passes and before choosing any visu
 
 | Asset | Authority | Use | Never infer |
 | --- | --- | --- | --- |
-| `canonical-protagonist.png` | `canonical-protagonist.png answers who the character is`; it is immutable identity authority | Lock identity, proportions, texture, expression, and temperament | Action anatomy, layout, or public reuse rights |
+| `canonical-protagonist.png` | `canonical-protagonist.png answers who the character is`; it is immutable identity authority | Lock identity, proportions, texture, expression, and temperament | Action anatomy, layout, UI-style authority, or rights beyond the MIT License |
 | `processing-action-hands.png` | `processing-action-hands.png is the sole positive action anatomy authority` | Learn body-connected forearms, real prop contact, one action hand pair, and occlusion | A new canonical face, layout, theme, or business workflow |
 | `processing-with-bubble.png` | layout-only observation; single example with zero anatomy authority and zero universal UI-style authority | Observe that a character can participate in work and fantasy content can support hierarchy | Its conflicting chest V/U or any UI-style treatment |
 | `processing-without-bubble.png` | layout-only observation; single example with zero anatomy authority and zero universal UI-style authority | Observe that a character can participate in work and fantasy content can support hierarchy | Its conflicting chest V/U or any UI-style treatment |
