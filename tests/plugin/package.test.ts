@@ -12,7 +12,7 @@ const execFileAsync = promisify(execFile);
 const repoRoot = new URL("../../", import.meta.url);
 const repoRootPath = fileURLToPath(repoRoot);
 const outputUrl = new URL(
-  "../../dist/plugin/fantasy-mouse-ui-private-local.zip",
+  "../../dist/plugin/fantasy-mouse-ui.zip",
   import.meta.url,
 );
 
@@ -209,7 +209,7 @@ beforeAll(async () => {
   secondPackage = await packagePlugin();
 }, 30_000);
 
-describe("private-local plugin package", () => {
+describe("public plugin package", () => {
   it("exposes the exact verification and packaging scripts", async () => {
     const packageJson = JSON.parse(
       await readFile(new URL("../../package.json", import.meta.url), "utf8"),
@@ -247,6 +247,7 @@ describe("private-local plugin package", () => {
     const entries = parseStoredZip(secondPackage);
     const names = entries.map(({ name }) => name);
     const required = [
+      "LICENSE",
       ".codex-plugin/plugin.json",
       "skills/fantasy-mouse-ui/SKILL.md",
       "references/style-independence.md",
@@ -268,7 +269,12 @@ describe("private-local plugin package", () => {
       "assets/visual-grounding/processing-without-bubble.png",
     ];
     expect(names).toEqual(expect.arrayContaining(required));
+    expect(
+      entries.find(({ name }) => name === "LICENSE")!.data.toString("utf8"),
+    ).toContain("MIT License");
     expect(names.some((name) => name.startsWith("assets/frontend-starter/"))).toBe(false);
+    expect(names.some((name) => name.includes("sponsor-qr"))).toBe(false);
+    expect(names).not.toContain("docs/assets/sponsor-qr.jpg");
     expect(names.some((name) => /(?:^|\/)(?:tests?|\.git|dist|work|docs|src)(?:\/|$)/i.test(name))).toBe(false);
     expect(names.some((name) => /(?:\.gitkeep|\.DS_Store|Thumbs\.db|\.log|\.tmp)$/i.test(name))).toBe(false);
 
@@ -279,7 +285,7 @@ describe("private-local plugin package", () => {
       const entry = entries.find(({ name }) => name === asset.path);
       expect(entry, asset.path).toBeDefined();
       expect(createHash("sha256").update(entry!.data).digest("hex").toUpperCase()).toBe(asset.sha256);
-      expect(asset.publication).toBe("private-reference-only");
+      expect(asset.publication).toBe("open-source-distributable");
     }
   });
 

@@ -209,7 +209,7 @@ describe("Fantasy Mouse image-first Skill contract", () => {
     expect(skill).not.toContain("and do not claim the gate passed");
   });
 
-  it("locks visual authority, hand anatomy, and private-reference scope", async () => {
+  it("locks visual authority, hand anatomy, and open-source scope", async () => {
     const visual = await readPluginFile("references/visual-grounding.md");
 
     expect(visual).toContain(
@@ -229,7 +229,9 @@ describe("Fantasy Mouse image-first Skill contract", () => {
     expect(visual).toContain("layout-only");
     expect(visual).toContain("zero anatomy authority");
     expect(visual).toContain("bubble is optional");
-    expect(visual).toContain("private-reference-only");
+    expect(visual).toContain("open-source-distributable");
+    expect(visual).toContain("MIT License");
+    expect(visual).not.toContain("private-reference-only");
     expect(visual).toContain(
       "Do not import 乐不思鼠 business content, UI, copy, data, or workflow semantics"
     );
@@ -306,7 +308,9 @@ describe("Fantasy Mouse image-first Skill contract", () => {
     expect(qa).toContain(
       "Do not claim the app or deck was run, rendered, or visually checked"
     );
-    expect(qa).toContain("public rights claim");
+    expect(qa).toContain(
+      "Bundled visual-grounding assets are distributed under the repository MIT License"
+    );
   });
 
   it("remains model-neutral and isolated from unrelated product semantics", async () => {

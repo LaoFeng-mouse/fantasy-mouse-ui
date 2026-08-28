@@ -67,7 +67,7 @@ describe("Fantasy Mouse visual grounding bundle", () => {
     ]);
     expect(
       manifest.assets.every(
-        (asset) => asset.publication === "private-reference-only"
+        (asset) => asset.publication === "open-source-distributable"
       )
     ).toBe(true);
     expect(

@@ -1,4 +1,4 @@
-import { statSync } from "node:fs";
+import { readFileSync, statSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 import manifest from "../../plugins/fantasy-mouse-ui/.codex-plugin/plugin.json" with {
@@ -54,4 +54,61 @@ describe("Fantasy Mouse UI plugin manifest", () => {
       expect(statSync(directoryUrl).isDirectory()).toBe(true);
     }
   );
+
+  it("publishes the exact Codex plugin marketplace entry", () => {
+    const marketplace = JSON.parse(
+      readFileSync(
+        new URL("../../.agents/plugins/marketplace.json", import.meta.url),
+        "utf8"
+      )
+    );
+
+    expect(marketplace).toEqual({
+      name: "fantasy-mouse-ui",
+      interface: { displayName: "Fantasy Mouse UI" },
+      plugins: [
+        {
+          name: "fantasy-mouse-ui",
+          source: {
+            source: "local",
+            path: "./plugins/fantasy-mouse-ui"
+          },
+          policy: {
+            installation: "AVAILABLE",
+            authentication: "ON_INSTALL"
+          },
+          category: "Design"
+        }
+      ]
+    });
+  });
+
+  it("documents complete AI-assisted installation", () => {
+    const installGuide = readFileSync(
+      new URL("../../INSTALL_WITH_AI.md", import.meta.url),
+      "utf8"
+    );
+
+    expect(installGuide).toContain("codex plugin marketplace add");
+    expect(installGuide).toContain("adapters/generic/AGENT.md");
+    expect(installGuide).toContain('{"ok":true,"assets":4}');
+    expect(installGuide).toContain("不要只复制单个 SKILL.md");
+    expect(installGuide).toContain("Do not copy only SKILL.md");
+  });
+
+  it("documents optional support without packaging its QR image", () => {
+    const readme = readFileSync(
+      new URL("../../README.md", import.meta.url),
+      "utf8"
+    );
+    const sponsorQr = new URL(
+      "../../docs/assets/sponsor-qr.jpg",
+      import.meta.url
+    );
+
+    expect(readme).toContain("## Support / 支持");
+    expect(readme).toContain("欢迎请鼠鼠吃根小鱼干，纯自愿");
+    expect(readme).toContain("docs/assets/sponsor-qr.jpg");
+    expect(statSync(sponsorQr).isFile()).toBe(true);
+  });
 });
