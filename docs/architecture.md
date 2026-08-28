@@ -43,11 +43,11 @@ Both protocols reject unknown structural fields while keeping domain state and s
 
 ## Model neutrality
 
-The canonical Skill and references are the semantic source. Adapters only map host capabilities to that contract. A host without image viewing cannot make visual claims; a host without a target renderer cannot mark that surface rendered or accepted.
+The canonical Skill and references are the semantic source. Codex loads the canonical Skill through the plugin manifest; the Claude, Gemini, DeepSeek, and generic adapters only map host capabilities to that same contract. A host without image viewing cannot make visual claims; a host without a target renderer cannot mark that surface rendered or accepted.
 
 ## Packaging and security
 
-The packager accepts exactly 19 known plugin files. Unknown files—including `.env`, credentials, backups, tests, or scratch outputs—fail packaging instead of being silently included.
+The packager accepts exactly 20 known plugin files, including the plugin MIT License. Unknown files—including `.env`, credentials, backups, tests, support images, or scratch outputs—fail packaging instead of being silently included.
 
 For every source file it:
 
@@ -60,11 +60,13 @@ For every source file it:
 
 The visual bundle verifier rejects path escape, symlink chains, duplicate paths, authority changes, hash changes, and dimension changes. Errors are bounded JSON and do not expose host paths.
 
-## Rights boundary
+## Distribution boundary
 
-All four visual-grounding assets are `private-reference-only`. They may be inspected locally but are not licensed for public redistribution, tracing, or rights claims. The generated private-local ZIP inherits this restriction.
+The plugin and all four approved visual-grounding assets are released under the MIT License. Their public distribution status does not weaken authority separation: each image remains limited to the identity, action-anatomy, or single-example composition scope pinned by the manifest and verifier. The public archive is `dist/plugin/fantasy-mouse-ui.zip`; repository documentation and the optional support QR are outside its exact 20-entry allowlist.
 
 ## Acceptance model
 
 Repository gates prove the plugin contract and package. Each future invocation has separate generated, tested, run, rendered, visually checked, and accepted states. Only the evidence appropriate to the actual target surface can advance those gates.
+
+Installation uses the repository marketplace or the public release ZIP documented in `INSTALL_WITH_AI.md`. Source verification, installed-cache verification, and actual loading in a newly started task/session are separate layers; none can be inferred from another.
 

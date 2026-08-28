@@ -2,6 +2,21 @@
 
 This guide is for an Agent or developer integrating the plugin into a new UI, website, presentation, document, or workflow task.
 
+Public repository: https://github.com/LI-2004-feng/fantasy-mouse-ui
+
+## Installation
+
+For Codex, use the repository marketplace:
+
+```powershell
+codex plugin marketplace add https://github.com/LI-2004-feng/fantasy-mouse-ui --json
+codex plugin list --marketplace fantasy-mouse-ui --available --json
+codex plugin add fantasy-mouse-ui@fantasy-mouse-ui --json
+codex plugin list --marketplace fantasy-mouse-ui --json
+```
+
+For assisted marketplace or public release-ZIP installation, follow the bilingual [Install with AI](../INSTALL_WITH_AI.md) guide. It requires the exact 20-file inventory, safe staging, bundle verification, target-host validation, and an honest new-task/session loading boundary.
+
 ## Canonical entrypoint
 
 Use `plugins/fantasy-mouse-ui/skills/fantasy-mouse-ui/SKILL.md`. The files under `adapters/` are thin host loaders and must not redefine character, workflow, or style semantics.
@@ -12,9 +27,11 @@ Use `plugins/fantasy-mouse-ui/skills/fantasy-mouse-ui/SKILL.md`. The files under
 | Claude | `adapters/claude/SKILL.md` |
 | Gemini | `adapters/gemini/SKILL.md` |
 | DeepSeek | `adapters/deepseek/SKILL.md` |
-| Codex | Load the canonical Skill from the plugin manifest |
+| Codex | Load the canonical Skill from `.codex-plugin/plugin.json` through the repository marketplace |
 
 Any other model can use the generic adapter if it can read files, run Node.js, and view real images. A text-only Agent may prepare a provisional workflow brief but must emit `visual-grounding-unavailable` and stop before visual design.
+
+Host adapters are compatibility layers, not alternate products. Validate the source bundle first, then the installed host copy/cache, and finally actual loading in a newly started task or session. A passing four-asset verifier alone proves neither complete installation nor host loading.
 
 ## Invocation sequence
 

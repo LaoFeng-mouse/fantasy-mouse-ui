@@ -1,24 +1,31 @@
 # Fantasy Mouse UI handoff
 
+## Current branch state
+
+- Release preparation is on branch `codex/open-source-release` in the dedicated open-source-release worktree.
+- Public repository target: https://github.com/LI-2004-feng/fantasy-mouse-ui.
+- The repository marketplace, bilingual `INSTALL_WITH_AI.md`, MIT licenses, public 20-entry packager, host adapters, and layered verification contract are present.
+- `package.json` remains `"private": true` only to block accidental npm publication; it does not alter MIT distribution rights.
+
 ## What exists
 
 - A self-contained reusable plugin under `plugins/fantasy-mouse-ui/`.
 - One canonical model-neutral Skill and four host loaders: generic, Claude, Gemini, and DeepSeek; Codex loads the canonical Skill through the plugin manifest.
-- Four private visual-grounding assets with pinned identity, anatomy, composition, rights, hash, and dimension authority.
+- Four MIT-licensed visual-grounding assets with pinned identity, anatomy, composition, publication, hash, and dimension authority.
 - Open workflow and project protocols for product-specific states and editable surfaces.
 - Product-style independence and anti-template gates.
-- Deterministic private-local packaging with an explicit 19-file allowlist and TOCTOU protections.
+- Deterministic public packaging at `dist/plugin/fantasy-mouse-ui.zip` with an exact 20-file allowlist and TOCTOU protections.
 - Contract, security, validator, adapter, visual-authority, and package tests.
 
 ## Verified baseline — 2026-08-28
 
-- `75` tests passed; `1` POSIX FIFO test skipped on Windows.
+- Full repository suite passed: `84` tests passed and `1` POSIX FIFO test skipped on Windows.
 - TypeScript typecheck passed.
-- Bundle verification returned `{"ok":true,"assets":4}`.
-- Official Skill and plugin validators passed.
-- Two consecutive package runs produced SHA-256 `6A80AB3723F85D10E353BFFBE249C26DB6738B94C376DFDD2C0EFD1DF0724994`.
-- Final package path: `dist/plugin/fantasy-mouse-ui-private-local.zip`.
-- Independent standards/security and specification reviews returned PASS with no Critical or Important findings.
+- Bundle verification returned `{"ok":true,"assets":4}`; the official Skill and plugin validators passed.
+- Final package SHA-256, run 1: `8F1BA436A89C1F21AE0BCC3CA334AF1649BAAD55858D07226D3F293FED0DAD97`.
+- Final package SHA-256, run 2: `8F1BA436A89C1F21AE0BCC3CA334AF1649BAAD55858D07226D3F293FED0DAD97`.
+- Final package path: `dist/plugin/fantasy-mouse-ui.zip`; expected inventory: exactly 20 entries.
+- Optional support QR is repository documentation only and must remain absent from the plugin ZIP.
 
 ## Deliberately excluded
 
@@ -33,15 +40,15 @@ The retained 乐不思鼠-derived rule is only the user-confirmed hand contract:
 
 ## Remaining boundaries
 
-- The ZIP is built and verified but host-specific installation/marketplace registration is a separate action.
-- Private visual references are not cleared for public redistribution.
+- Task 5 may build, verify, commit, and update the supported local deployment, but actual loading in a newly started task/session remains separate evidence.
+- Publishing or updating the GitHub repository, tag, release, or downloadable asset is separate Task 6 and is not claimed here.
 - Future generated UI, website, deck, document, or workflow outputs require their own real run/render and visual acceptance; repository tests do not pre-accept them.
-- The rejected legacy branch/worktree `codex/fantasy-mouse` remains outside `main` and is not product authority.
+- The rejected legacy branch/worktree `codex/fantasy-mouse` remains outside the release branch and is not product authority.
 
 ## Start here
 
 1. Read `CONTEXT.md` and `docs/architecture.md`.
-2. Follow `docs/integration-guide.md` for an invocation.
-3. Use `docs/operator-runbook.md` before changing assets, packaging, or installation.
-4. Run all repository gates before handing off a changed plugin.
-
+2. Follow `INSTALL_WITH_AI.md` for marketplace or release-ZIP installation.
+3. Follow `docs/integration-guide.md` for an invocation.
+4. Use `docs/operator-runbook.md` before changing assets, packaging, or installation.
+5. Run every repository gate and validate each deployment layer before handing off a changed plugin.

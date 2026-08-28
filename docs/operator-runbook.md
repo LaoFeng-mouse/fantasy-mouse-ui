@@ -43,9 +43,9 @@ Run packaging twice and compare hashes:
 
 ```powershell
 pnpm plugin:package
-Get-FileHash -Algorithm SHA256 dist\plugin\fantasy-mouse-ui-private-local.zip
+Get-FileHash -Algorithm SHA256 dist\plugin\fantasy-mouse-ui.zip
 pnpm plugin:package
-Get-FileHash -Algorithm SHA256 dist\plugin\fantasy-mouse-ui-private-local.zip
+Get-FileHash -Algorithm SHA256 dist\plugin\fantasy-mouse-ui.zip
 ```
 
 The hashes must match. A changed plugin source intentionally produces a new hash.
@@ -56,7 +56,7 @@ The hashes must match. A changed plugin source intentionally produces a new hash
 | --- | --- | --- |
 | `invalid-asset-authority` | Manifest authority differs from the verifier trust root | Restore the approved manifest or deliberately update verifier, tests, docs, and review together |
 | `asset-hash-mismatch` | Visual bytes changed | Restore approved bytes; do not recompress assets silently |
-| `unexpected-plugin-entry` | A file outside the 19-file allowlist exists | Inspect it; remove it or explicitly review and update the allowlist/tests |
+| `unexpected-plugin-entry` | A file outside the 20-file allowlist exists | Inspect it; remove it or explicitly review and update the allowlist/tests |
 | `plugin-source-multi-link` | A package source has another hard link | Replace it with an independent regular file |
 | `plugin-source-unreliable-identity` | Filesystem returned zero device/inode identity | Package from a filesystem with reliable identities |
 | `plugin-source-changed` | Source mutated while being read | Stop concurrent writers and retry |
@@ -65,17 +65,20 @@ The hashes must match. A changed plugin source intentionally produces a new hash
 
 ## Publication and installation
 
-- Never publish `fantasy-mouse-ui-private-local.zip`.
+- Public repository: https://github.com/LI-2004-feng/fantasy-mouse-ui.
+- The release archive is `dist/plugin/fantasy-mouse-ui.zip`; it contains the MIT-licensed plugin and four approved visual assets.
+- Use the repository marketplace or the public release-ZIP procedures in `INSTALL_WITH_AI.md`.
 - Do not hand-edit a host's plugin registry or marketplace file.
-- Host-specific installation must use that host's supported plugin/Skill mechanism and should be tested in a new task.
-- Installation status is not implied by a successful local build.
+- Host-specific installation must use that host's supported plugin/Skill mechanism. Validate the canonical source, staged/deployed source, and installed cache independently.
+- Actual plugin loading must be tested in a newly started task/session; it is not implied by local build, bundle verification, or cache installation.
 
 ## Release checklist
 
 - working tree clean;
 - all required gates pass;
 - two package hashes match;
-- ZIP contains exactly the expected plugin files;
-- private-reference warning is present in the handoff;
+- ZIP contains exactly the expected 20 plugin files;
+- all four approved assets retain their MIT distribution metadata and pinned authority;
+- optional support QR remains under repository `docs/assets/` and is absent from the ZIP;
 - no sample software, frontend starter, tests, docs, `.env`, or repository debris is inside the ZIP.
 
