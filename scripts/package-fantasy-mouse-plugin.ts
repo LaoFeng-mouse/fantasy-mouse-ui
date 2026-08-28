@@ -20,7 +20,7 @@ const outputPath = resolve(
   repositoryRoot,
   "dist",
   "plugin",
-  "fantasy-mouse-ui-private-local.zip",
+  "fantasy-mouse-ui.zip",
 );
 const textDecoder = new TextDecoder("utf-8", { fatal: true });
 const UTF8_FLAG = 0x0800;
@@ -32,6 +32,7 @@ const MAX_UINT32 = 0xffffffff;
 const MAX_ARCHIVE_SOURCE_BYTES = 256 * 1024 * 1024;
 const ALLOWED_PLUGIN_FILES = new Set([
   ".codex-plugin/plugin.json",
+  "LICENSE",
   "adapters/claude/SKILL.md",
   "adapters/deepseek/SKILL.md",
   "adapters/gemini/SKILL.md",
@@ -347,7 +348,7 @@ async function main(): Promise<void> {
   const sha256 = createHash("sha256").update(archive).digest("hex").toUpperCase();
   process.stdout.write(`${JSON.stringify({
     ok: true,
-    output: "dist/plugin/fantasy-mouse-ui-private-local.zip",
+    output: "dist/plugin/fantasy-mouse-ui.zip",
     sha256,
   })}\n`);
 }

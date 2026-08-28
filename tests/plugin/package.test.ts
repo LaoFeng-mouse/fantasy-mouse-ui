@@ -252,6 +252,26 @@ beforeAll(async () => {
 }, 30_000);
 
 describe("public plugin package", () => {
+  it("keeps the repository and plugin MIT licenses identical", async () => {
+    const [repositoryLicense, pluginLicense] = await Promise.all([
+      readFile(new URL("../../LICENSE", import.meta.url), "utf8").catch(() => null),
+      readFile(new URL("../../plugins/fantasy-mouse-ui/LICENSE", import.meta.url), "utf8").catch(
+        () => null,
+      ),
+    ]);
+
+    expect(repositoryLicense, "repository LICENSE").not.toBeNull();
+    expect(pluginLicense, "plugin LICENSE").not.toBeNull();
+    if (repositoryLicense === null || pluginLicense === null) return;
+
+    const normalizeLf = (text: string) => text.replace(/\r\n?/g, "\n");
+    const normalizedRepositoryLicense = normalizeLf(repositoryLicense);
+    const normalizedPluginLicense = normalizeLf(pluginLicense);
+    expect(normalizedPluginLicense).toBe(normalizedRepositoryLicense);
+    expect(normalizedRepositoryLicense).toContain("MIT License");
+    expect(normalizedRepositoryLicense).toContain("Copyright (c) 2026 LI-2004-feng");
+  });
+
   it("exposes the exact verification and packaging scripts", async () => {
     const packageJson = JSON.parse(
       await readFile(new URL("../../package.json", import.meta.url), "utf8"),
