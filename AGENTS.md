@@ -5,7 +5,7 @@
 - This repository delivers the reusable `plugins/fantasy-mouse-ui/` Skill/plugin, not a Studio application, renderer framework, sample product, or fixed UI template.
 - Read `CONTEXT.md` and `docs/architecture.md` before changing the plugin.
 - Character identity/anatomy authority and product UI authority are separate. Never derive layout, palette, typography, materials, components, or brand tokens from bundled character/composition images.
-- Treat all bundled visual-grounding assets and the generated ZIP as private-reference-only.
+- The four bundled visual-grounding assets and generated ZIP may be publicly redistributed with Fantasy Mouse UI under the MIT License.
 - Do not import 乐不思鼠 workflow, UI, copy, data, or business rules. Only the hand contract in `CONTEXT.md` is retained.
 
 ## Required gates
