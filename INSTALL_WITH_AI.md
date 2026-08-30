@@ -1,5 +1,13 @@
 # Install Fantasy Mouse UI with AI / 使用 AI 安装 Fantasy Mouse UI
 
+> **Publication status: pending. The GitHub repository and v0.1.0 Release routes below become usable only after Task 6 publication is verified.**
+>
+> **发布状态：待完成。下方 GitHub 仓库和 v0.1.0 Release 路径仅在 Task 6 发布验证通过后可用。**
+
+These GitHub repository and Release URLs become usable only after Task 6 publication is verified. Before publication, use the verified local source and build `dist/plugin/fantasy-mouse-ui.zip`.
+
+这些 GitHub 仓库和 Release URL 仅在 Task 6 发布验证通过后可用。发布前请使用已验证的本地源码和构建产物 `dist/plugin/fantasy-mouse-ui.zip`。
+
 ## What is installed and prerequisites / 安装内容与前置条件
 
 Fantasy Mouse UI must be installed as a complete plugin directory. The installing Agent must be able to read and write files and view images. Node.js 24 or newer is required to run the bundle verifier. Keep the plugin's `skills/`, `adapters/`, `assets/`, `protocol/`, `references/`, and `scripts/` paths together.
@@ -11,6 +19,8 @@ Fantasy Mouse UI 必须作为完整插件目录安装。执行安装的 Agent �
 ## Codex marketplace / Codex 市场安装
 
 ### Manual English Codex workflow
+
+These GitHub repository and Release URLs become usable only after Task 6 publication is verified. Before publication, use the verified local source and build `dist/plugin/fantasy-mouse-ui.zip`.
 
 The first mandatory operation is the targeted add for the exact expected repository:
 
@@ -39,6 +49,8 @@ codex plugin marketplace list --json
 The global marketplace list is optional diagnostics; its failure must not block this targeted flow. Actual loading in a new task/session is a separate final boundary.
 
 ### Codex 中文手动流程
+
+这些 GitHub 仓库和 Release URL 仅在 Task 6 发布验证通过后可用。发布前请使用已验证的本地源码和构建产物 `dist/plugin/fantasy-mouse-ui.zip`。
 
 第一个强制操作是针对精确预期仓库执行定向添加：
 
@@ -69,6 +81,8 @@ codex plugin marketplace list --json
 ## Release ZIP / Release ZIP 安装
 
 ### Manual English ZIP workflow
+
+These GitHub repository and Release URLs become usable only after Task 6 publication is verified. Before publication, use the verified local source and build `dist/plugin/fantasy-mouse-ui.zip`.
 
 Download `fantasy-mouse-ui.zip` from the GitHub [`v0.1.0` release](https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/tag/v0.1.0), the [latest release](https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/latest), or the direct latest asset:
 
@@ -114,6 +128,8 @@ skills/fantasy-mouse-ui/SKILL.md
 **[5. Collision-failing final move]** Recheck that final is still absent or empty, then use a collision-failing rename/move to place the staged plugin at final. Never merge, delete, or overwrite an existing installation. If the host cannot move safely into an empty placeholder, stop and choose a nonexistent final path.
 
 ### 中文手动 ZIP 流程
+
+这些 GitHub 仓库和 Release URL 仅在 Task 6 发布验证通过后可用。发布前请使用已验证的本地源码和构建产物 `dist/plugin/fantasy-mouse-ui.zip`。
 
 从 GitHub [`v0.1.0` Release](https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/tag/v0.1.0)、[latest Release](https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/latest) 或以下 latest 资源直链下载 `fantasy-mouse-ui.zip`：
 
@@ -184,6 +200,7 @@ The adapter is an entry point, not a standalone installation artifact. Every hos
 复制下面整段内容交给具备文件和图片能力的 AI Agent：
 
 ```text
+这些 GitHub 仓库和 Release URL 仅在 Task 6 发布验证通过后可用。发布前请使用已验证的本地源码和构建产物 `dist/plugin/fantasy-mouse-ui.zip`。
 请部署 Fantasy Mouse UI 插件，仓库为 https://github.com/LI-2004-feng/fantasy-mouse-ui。必须安装完整插件目录，不要只复制单个 SKILL.md。Codex 的第一个强制操作必须是：
 codex plugin marketplace add https://github.com/LI-2004-feng/fantasy-mouse-ui --json
 只有成功 JSON 针对该精确预期 URL 返回 `alreadyAdded` 为 `false` 或 `true` 时，才接受市场身份。如果 `alreadyAdded` 为 `true`，运行 `codex plugin marketplace upgrade fantasy-mouse-ui --json`。如果 CLI 报告同名不同来源冲突或错误，必须停止并报告。
@@ -213,6 +230,7 @@ Release ZIP 可从 https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/tag
 Copy the entire prompt below into a file-capable and image-capable AI Agent:
 
 ```text
+These GitHub repository and Release URLs become usable only after Task 6 publication is verified. Before publication, use the verified local source and build `dist/plugin/fantasy-mouse-ui.zip`.
 Install Fantasy Mouse UI from https://github.com/LI-2004-feng/fantasy-mouse-ui. Install the complete plugin directory. Do not copy only SKILL.md. For Codex, the first mandatory operation is:
 codex plugin marketplace add https://github.com/LI-2004-feng/fantasy-mouse-ui --json
 Accept identity only when successful JSON reports `alreadyAdded` as `false` or `true` for that exact expected URL. If `alreadyAdded` is `true`, run `codex plugin marketplace upgrade fantasy-mouse-ui --json`. If the CLI reports a same-name/different-source collision or error, stop and report it.

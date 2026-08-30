@@ -2,11 +2,13 @@
 
 This guide is for an Agent or developer integrating the plugin into a new UI, website, presentation, document, or workflow task.
 
-Public repository: https://github.com/LI-2004-feng/fantasy-mouse-ui
+GitHub repository target (publication pending): https://github.com/LI-2004-feng/fantasy-mouse-ui
 
 ## Installation
 
 For Codex, use the repository marketplace:
+
+The remote marketplace commands below become usable only after Task 6 publication is verified. Before publication, use the verified local source and build `dist/plugin/fantasy-mouse-ui.zip`.
 
 ```powershell
 codex plugin marketplace add https://github.com/LI-2004-feng/fantasy-mouse-ui --json

@@ -3,8 +3,8 @@
 ## Current branch state
 
 - Release preparation is on branch `codex/open-source-release` in the dedicated open-source-release worktree.
-- Public repository target: https://github.com/LI-2004-feng/fantasy-mouse-ui.
-- The repository marketplace, bilingual `INSTALL_WITH_AI.md`, MIT licenses, public 20-entry packager, host adapters, and layered verification contract are present.
+- GitHub repository target (publication pending): https://github.com/LI-2004-feng/fantasy-mouse-ui.
+- Local repository marketplace metadata, bilingual [Install with AI](../INSTALL_WITH_AI.md), MIT licenses, 20-entry packager, host adapters, and layered verification contract are present. No remote repository or Release availability is claimed.
 - `package.json` remains `"private": true` only to block accidental npm publication; it does not alter MIT distribution rights.
 
 ## What exists
@@ -48,7 +48,7 @@ The retained 乐不思鼠-derived rule is only the user-confirmed hand contract:
 ## Start here
 
 1. Read `CONTEXT.md` and `docs/architecture.md`.
-2. Follow `INSTALL_WITH_AI.md` for marketplace or release-ZIP installation.
+2. Follow [Install with AI](../INSTALL_WITH_AI.md) for the current local route and post-publication marketplace or release-ZIP installation.
 3. Follow `docs/integration-guide.md` for an invocation.
 4. Use `docs/operator-runbook.md` before changing assets, packaging, or installation.
 5. Run every repository gate and validate each deployment layer before handing off a changed plugin.

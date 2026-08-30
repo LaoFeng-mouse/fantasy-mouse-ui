@@ -62,11 +62,11 @@ The visual bundle verifier rejects path escape, symlink chains, duplicate paths,
 
 ## Distribution boundary
 
-The plugin and all four approved visual-grounding assets are released under the MIT License. Their public distribution status does not weaken authority separation: each image remains limited to the identity, action-anatomy, or single-example composition scope pinned by the manifest and verifier. The public archive is `dist/plugin/fantasy-mouse-ui.zip`; repository documentation and the optional support QR are outside its exact 20-entry allowlist.
+The plugin and all four approved visual-grounding assets are released under the MIT License. Their distribution status does not weaken authority separation: each image remains limited to the identity, action-anatomy, or single-example composition scope pinned by the manifest and verifier. The local release archive build is `dist/plugin/fantasy-mouse-ui.zip`; repository documentation and the optional support QR are outside its exact 20-entry allowlist.
 
 ## Acceptance model
 
 Repository gates prove the plugin contract and package. Each future invocation has separate generated, tested, run, rendered, visually checked, and accepted states. Only the evidence appropriate to the actual target surface can advance those gates.
 
-Installation uses the repository marketplace or the public release ZIP documented in `INSTALL_WITH_AI.md`. Source verification, installed-cache verification, and actual loading in a newly started task/session are separate layers; none can be inferred from another.
+After Task 6 publication is verified, remote installation uses the repository marketplace or Release ZIP documented in [Install with AI](../INSTALL_WITH_AI.md). Before publication, use the verified local source/build route. Source verification, installed-cache verification, and actual loading in a newly started task/session are separate layers; none can be inferred from another.
 

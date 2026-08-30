@@ -2,9 +2,11 @@
 
 Fantasy Mouse UI is a free, open-source, model-neutral Skill/plugin that helps an Agent create product-specific software UI, websites, presentations, documents, and workflows while preserving one visually grounded mouse protagonist. The character identity stays fixed; layout, palette, typography, components, behavior, and accessibility come from the target product rather than a bundled template.
 
-Public repository: https://github.com/LI-2004-feng/fantasy-mouse-ui
+GitHub repository target (publication pending): https://github.com/LI-2004-feng/fantasy-mouse-ui
 
 ## Install with Codex
+
+The remote marketplace commands below become usable only after Task 6 publication is verified. Before publication, use the current verified local source and build route: run the repository gates and use `dist/plugin/fantasy-mouse-ui.zip`.
 
 ```powershell
 codex plugin marketplace add https://github.com/LI-2004-feng/fantasy-mouse-ui --json
@@ -31,7 +33,7 @@ Bundled character and composition images are never source-brand or universal UI-
 
 ## Distribution
 
-The plugin and all four approved visual-grounding assets are distributed under the MIT License. The deterministic public release archive contains exactly 20 plugin entries and is written to:
+The plugin and all four approved visual-grounding assets are distributed under the MIT License. The deterministic release archive build contains exactly 20 plugin entries and is written locally to:
 
 ```text
 dist/plugin/fantasy-mouse-ui.zip
