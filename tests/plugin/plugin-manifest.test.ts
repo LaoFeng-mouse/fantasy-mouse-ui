@@ -153,52 +153,20 @@ describe("Fantasy Mouse UI plugin manifest", () => {
     );
   });
 
-  it("marks every remote install route pending until Task 6 publication is verified", () => {
+  it("publishes live remote install routes without pre-publication markers", () => {
     const installGuide = readFileSync(
       new URL("../../INSTALL_WITH_AI.md", import.meta.url),
       "utf8"
     );
-    const sectionBetween = (startMarker: string, endMarker?: string) => {
-      const start = installGuide.indexOf(startMarker);
-      const end = endMarker
-        ? installGuide.indexOf(endMarker, start + startMarker.length)
-        : installGuide.length;
-      expect(start, `missing section start: ${startMarker}`).toBeGreaterThanOrEqual(0);
-      expect(end, `missing section end: ${endMarker}`).toBeGreaterThan(start);
-      return installGuide.slice(start, end);
-    };
-    const englishCondition =
-      "These GitHub repository and Release URLs become usable only after Task 6 publication is verified. Before publication, use the verified local source and build `dist/plugin/fantasy-mouse-ui.zip`.";
-    const chineseCondition =
-      "这些 GitHub 仓库和 Release URL 仅在 Task 6 发布验证通过后可用。发布前请使用已验证的本地源码和构建产物 `dist/plugin/fantasy-mouse-ui.zip`。";
-
     expect(installGuide).toContain(
-      "Publication status: pending. The GitHub repository and v0.1.0 Release routes below become usable only after Task 6 publication is verified."
+      "https://github.com/LaoFeng-mouse/fantasy-mouse-ui"
     );
     expect(installGuide).toContain(
-      "发布状态：待完成。下方 GitHub 仓库和 v0.1.0 Release 路径仅在 Task 6 发布验证通过后可用。"
+      "https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/tag/v0.1.0"
     );
-
-    for (const section of [
-      sectionBetween("### Manual English Codex workflow", "### Codex 中文手动流程"),
-      sectionBetween("### Manual English ZIP workflow", "### 中文手动 ZIP 流程"),
-      sectionBetween("## English copy-paste deployment prompt")
-    ]) {
-      expect(section).toContain(englishCondition);
-      expect(section.indexOf(englishCondition)).toBeLessThan(
-        section.indexOf("https://github.com/")
-      );
-    }
-    for (const section of [
-      sectionBetween("### Codex 中文手动流程", "## Release ZIP / Release ZIP 安装"),
-      sectionBetween("### 中文手动 ZIP 流程", "## Agent entry points / Agent 入口"),
-      sectionBetween("## 中文一键部署提示词", "## English copy-paste deployment prompt")
-    ]) {
-      expect(section).toContain(chineseCondition);
-      expect(section.indexOf(chineseCondition)).toBeLessThan(
-        section.indexOf("https://github.com/")
-      );
-    }
+    expect(installGuide).not.toContain("Publication status: pending");
+    expect(installGuide).not.toContain("发布状态：待完成");
+    expect(installGuide).not.toContain("Task 6 publication");
   });
 
   it("orders preflight and targeted marketplace checks in every install route", () => {

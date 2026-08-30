@@ -68,5 +68,5 @@ The plugin and all four approved visual-grounding assets are released under the 
 
 Repository gates prove the plugin contract and package. Each future invocation has separate generated, tested, run, rendered, visually checked, and accepted states. Only the evidence appropriate to the actual target surface can advance those gates.
 
-After Task 6 publication is verified, remote installation uses the repository marketplace or Release ZIP documented in [Install with AI](../INSTALL_WITH_AI.md). Before publication, use the verified local source/build route. Source verification, installed-cache verification, and actual loading in a newly started task/session are separate layers; none can be inferred from another.
+Remote installation uses the repository marketplace or Release ZIP documented in [Install with AI](../INSTALL_WITH_AI.md). Source verification, installed-cache verification, and actual loading in a newly started task/session are separate layers; none can be inferred from another.
 
