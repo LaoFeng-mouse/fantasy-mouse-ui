@@ -8,7 +8,7 @@ The plugin is visually grounded. An Agent must inspect the bundled canonical pro
 
 ## Canonical protagonist
 
-The immutable identity source is the user-provided `plugins/fantasy-mouse-ui/assets/visual-grounding/canonical-protagonist.png`. It has highest visual authority, is private-reference-only, measures 1387×1134, and is pinned by SHA-256 `4C85BCE3AD50F33FC04BBF05147EFD96ED0BAE98866C12E1DB5E7096C8557316`. Its ordered identity anchors are `compact-grey-round-head`, `tiny-horizontal-ears`, `narrowed-vacant-eyes`, `human-like-toothy-grin`, `compact-white-bean-body`, `default-clasped-hands-v-or-u`, and `earnest-absurd-dreamer`.
+The immutable identity source is the user-provided `plugins/fantasy-mouse-ui/assets/visual-grounding/canonical-protagonist.png`. It has highest visual authority, is open-source-distributable under the MIT License, measures 1387×1134, and is pinned by SHA-256 `4C85BCE3AD50F33FC04BBF05147EFD96ED0BAE98866C12E1DB5E7096C8557316`. Its ordered identity anchors are `compact-grey-round-head`, `tiny-horizontal-ears`, `narrowed-vacant-eyes`, `human-like-toothy-grin`, `compact-white-bean-body`, `default-clasped-hands-v-or-u`, and `earnest-absurd-dreamer`.
 
 Derivatives may change only state expression, pose, clothing, profession, props, and fantasy scene. They must preserve the prototype's face, ears, teeth, silhouette and proportions, and temperament. The chest V/U is not a belly mark: it is the default pair of clasped hands. The two processing UI goldens are derivative layout and composition references only; they must never redefine the protagonist.
 

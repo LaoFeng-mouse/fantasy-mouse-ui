@@ -6,12 +6,12 @@ Use this reference after the bundle verifier passes and before choosing any visu
 
 | Asset | Authority | Use | Never infer |
 | --- | --- | --- | --- |
-| `canonical-protagonist.png` | `canonical-protagonist.png answers who the character is`; it is immutable identity authority | Lock identity, proportions, texture, expression, and temperament | Action anatomy, layout, or public reuse rights |
+| `canonical-protagonist.png` | `canonical-protagonist.png answers who the character is`; it is immutable identity authority | Lock identity, proportions, texture, expression, and temperament | Action anatomy, layout, UI-style authority, or rights beyond the MIT License |
 | `processing-action-hands.png` | `processing-action-hands.png is the sole positive action anatomy authority` | Learn body-connected forearms, real prop contact, one action hand pair, and occlusion | A new canonical face, layout, theme, or business workflow |
 | `processing-with-bubble.png` | layout-only observation; single example with zero anatomy authority and zero universal UI-style authority | Observe that a character can participate in work and fantasy content can support hierarchy | Its conflicting chest V/U or any UI-style treatment |
 | `processing-without-bubble.png` | layout-only observation; single example with zero anatomy authority and zero universal UI-style authority | Observe that a character can participate in work and fantasy content can support hierarchy | Its conflicting chest V/U or any UI-style treatment |
 
-Treat every manifest asset as `private-reference-only`. Viewing private visual authority permits inspection, not public redistribution, publication, tracing, or a public rights claim.
+Every bundled asset is `open-source-distributable` under the repository MIT License. Public redistribution is permitted with the license notice; asset publication does not make compositions a universal UI-style authority.
 
 Both processing compositions are single examples with zero universal UI-style authority. They may demonstrate that a character participates in work and that fantasy content can support hierarchy. They do not authorize copying their layout, palette, paper material, taped labels, thick borders, title treatment, spacing, window chrome, or character placement into another workflow.
 

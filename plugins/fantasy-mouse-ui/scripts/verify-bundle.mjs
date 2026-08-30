@@ -12,7 +12,7 @@ const EXPECTED_ASSETS = [
   {
     path: "assets/visual-grounding/canonical-protagonist.png",
     role: "canonical-identity",
-    publication: "private-reference-only",
+    publication: "open-source-distributable",
     sha256: "4C85BCE3AD50F33FC04BBF05147EFD96ED0BAE98866C12E1DB5E7096C8557316",
     width: 1387,
     height: 1134,
@@ -24,7 +24,7 @@ const EXPECTED_ASSETS = [
   {
     path: "assets/visual-grounding/processing-action-hands.png",
     role: "approved-action-hand-pose",
-    publication: "private-reference-only",
+    publication: "open-source-distributable",
     sha256: "A22C3E5EBA3E4F417075F54F38DA3D7B6E177D294D42ED627F350AB38C7652A1",
     width: 1254,
     height: 1254,
@@ -37,7 +37,7 @@ const EXPECTED_ASSETS = [
   {
     path: "assets/visual-grounding/processing-with-bubble.png",
     role: "composition-only-with-bubble",
-    publication: "private-reference-only",
+    publication: "open-source-distributable",
     sha256: "68376DD901AE3D10A311CBCA6BD06ED8D86A7BD58F8B24069203358711577EA5",
     width: 1487,
     height: 1058,
@@ -55,7 +55,7 @@ const EXPECTED_ASSETS = [
   {
     path: "assets/visual-grounding/processing-without-bubble.png",
     role: "composition-only-without-bubble",
-    publication: "private-reference-only",
+    publication: "open-source-distributable",
     sha256: "7C8461D4DC13319C60AFDA34525B70F3C6467B07D40CA9A987217AB489FFD401",
     width: 1487,
     height: 1058,

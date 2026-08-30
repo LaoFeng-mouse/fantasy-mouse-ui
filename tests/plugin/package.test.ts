@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { link, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { execFile } from "node:child_process";
@@ -11,10 +11,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 const execFileAsync = promisify(execFile);
 const repoRoot = new URL("../../", import.meta.url);
 const repoRootPath = fileURLToPath(repoRoot);
-const outputUrl = new URL(
-  "../../dist/plugin/fantasy-mouse-ui-private-local.zip",
-  import.meta.url,
-);
+const publicOutput = "dist/plugin/fantasy-mouse-ui.zip";
 
 type ZipEntry = {
   name: string;
@@ -110,8 +107,39 @@ function parseStoredZip(bytes: Buffer): ZipEntry[] {
   return entries;
 }
 
-async function packagePlugin(): Promise<Buffer> {
-  await execFileAsync(process.execPath, [
+type PackageResult = {
+  bytes: Buffer;
+  output: string;
+  outputPath: string;
+};
+
+function resolveReportedOutput(output: unknown): { output: string; outputPath: string } {
+  if (
+    typeof output !== "string" ||
+    output.length === 0 ||
+    isAbsolute(output) ||
+    /^[A-Za-z]:[\\/]/u.test(output) ||
+    /^[/\\]{2}/u.test(output)
+  ) {
+    throw new Error("invalid-package-output");
+  }
+
+  const outputPath = resolve(repoRootPath, output);
+  const repositoryRelativePath = relative(repoRootPath, outputPath);
+  if (
+    repositoryRelativePath === "" ||
+    repositoryRelativePath === ".." ||
+    repositoryRelativePath.startsWith(`..${sep}`) ||
+    isAbsolute(repositoryRelativePath)
+  ) {
+    throw new Error("package-output-outside-repository");
+  }
+
+  return { output, outputPath };
+}
+
+async function packagePlugin(): Promise<PackageResult> {
+  const { stdout, stderr } = await execFileAsync(process.execPath, [
     "--import",
     "tsx",
     "scripts/package-fantasy-mouse-plugin.ts",
@@ -119,7 +147,14 @@ async function packagePlugin(): Promise<Buffer> {
     cwd: repoRootPath,
     windowsHide: true,
   });
-  return readFile(outputUrl);
+  expect(stderr).toBe("");
+  const report = JSON.parse(stdout) as { ok?: unknown; output?: unknown };
+  expect(report.ok).toBe(true);
+  const resolvedOutput = resolveReportedOutput(report.output);
+  return {
+    ...resolvedOutput,
+    bytes: await readFile(resolvedOutput.outputPath),
+  };
 }
 
 function fileSystemErrorCode(error: unknown): string | undefined {
@@ -202,14 +237,41 @@ async function packageFailure(preloadPath?: string): Promise<string> {
 
 let firstPackage: Buffer;
 let secondPackage: Buffer;
+let firstReportedOutput: string;
+let secondReportedOutput: string;
+let actualOutputPath: string;
 
 beforeAll(async () => {
-  await rm(outputUrl, { force: true });
-  firstPackage = await packagePlugin();
-  secondPackage = await packagePlugin();
+  const firstResult = await packagePlugin();
+  const secondResult = await packagePlugin();
+  firstPackage = firstResult.bytes;
+  secondPackage = secondResult.bytes;
+  firstReportedOutput = firstResult.output;
+  secondReportedOutput = secondResult.output;
+  actualOutputPath = secondResult.outputPath;
 }, 30_000);
 
-describe("private-local plugin package", () => {
+describe("public plugin package", () => {
+  it("keeps the repository and plugin MIT licenses identical", async () => {
+    const [repositoryLicense, pluginLicense] = await Promise.all([
+      readFile(new URL("../../LICENSE", import.meta.url), "utf8").catch(() => null),
+      readFile(new URL("../../plugins/fantasy-mouse-ui/LICENSE", import.meta.url), "utf8").catch(
+        () => null,
+      ),
+    ]);
+
+    expect(repositoryLicense, "repository LICENSE").not.toBeNull();
+    expect(pluginLicense, "plugin LICENSE").not.toBeNull();
+    if (repositoryLicense === null || pluginLicense === null) return;
+
+    const normalizeLf = (text: string) => text.replace(/\r\n?/g, "\n");
+    const normalizedRepositoryLicense = normalizeLf(repositoryLicense);
+    const normalizedPluginLicense = normalizeLf(pluginLicense);
+    expect(normalizedPluginLicense).toBe(normalizedRepositoryLicense);
+    expect(normalizedRepositoryLicense).toContain("MIT License");
+    expect(normalizedRepositoryLicense).toContain("Copyright (c) 2026 LI-2004-feng");
+  });
+
   it("exposes the exact verification and packaging scripts", async () => {
     const packageJson = JSON.parse(
       await readFile(new URL("../../package.json", import.meta.url), "utf8"),
@@ -220,6 +282,11 @@ describe("private-local plugin package", () => {
     expect(packageJson.scripts["plugin:package"]).toBe(
       "tsx scripts/package-fantasy-mouse-plugin.ts",
     );
+  });
+
+  it("emits the public plugin archive path", () => {
+    expect(firstReportedOutput).toBe(publicOutput);
+    expect(secondReportedOutput).toBe(publicOutput);
   });
 
   it("is byte-for-byte deterministic with fixed safe ZIP metadata", async () => {
@@ -271,7 +338,17 @@ describe("private-local plugin package", () => {
     expect(names.some((name) => name.startsWith("assets/frontend-starter/"))).toBe(false);
     expect(names.some((name) => /(?:^|\/)(?:tests?|\.git|dist|work|docs|src)(?:\/|$)/i.test(name))).toBe(false);
     expect(names.some((name) => /(?:\.gitkeep|\.DS_Store|Thumbs\.db|\.log|\.tmp)$/i.test(name))).toBe(false);
+  });
 
+  it("contains the repository MIT License", () => {
+    const entries = parseStoredZip(secondPackage);
+    const license = entries.find(({ name }) => name === "LICENSE");
+    expect(license, "LICENSE").toBeDefined();
+    expect(license!.data.toString("utf8")).toContain("MIT License");
+  });
+
+  it("publishes every bundled visual asset for open-source distribution", () => {
+    const entries = parseStoredZip(secondPackage);
     const manifest = JSON.parse(
       entries.find(({ name }) => name === "assets/visual-grounding/manifest.json")!.data.toString("utf8"),
     ) as { assets: Array<{ path: string; sha256: string; publication: string }> };
@@ -279,8 +356,14 @@ describe("private-local plugin package", () => {
       const entry = entries.find(({ name }) => name === asset.path);
       expect(entry, asset.path).toBeDefined();
       expect(createHash("sha256").update(entry!.data).digest("hex").toUpperCase()).toBe(asset.sha256);
-      expect(asset.publication).toBe("private-reference-only");
+      expect(asset.publication).toBe("open-source-distributable");
     }
+  });
+
+  it("excludes the optional sponsor QR from the plugin archive", () => {
+    const names = parseStoredZip(secondPackage).map(({ name }) => name);
+    expect(names.some((name) => name.includes("sponsor-qr"))).toBe(false);
+    expect(names).not.toContain("docs/assets/sponsor-qr.jpg");
   });
 
   it("normalizes text to UTF-8 LF while preserving PNG bytes", async () => {
@@ -317,11 +400,11 @@ describe("private-local plugin package", () => {
       const stderr = await packageFailure(preloadPath);
       expect(JSON.parse(stderr)).toEqual({ ok: false, error: "plugin-source-multi-link" });
       expect(stderr).not.toContain(repoRootPath);
-      expect(Buffer.compare(await readFile(outputUrl), secondPackage)).toBe(0);
+      expect(Buffer.compare(await readFile(actualOutputPath), secondPackage)).toBe(0);
     } finally {
       await rm(temporaryRoot, { recursive: true, force: true });
       if (preloadPath !== undefined) await rm(dirname(preloadPath), { recursive: true, force: true });
-      await writeFile(outputUrl, secondPackage);
+      await writeFile(actualOutputPath, secondPackage);
     }
   });
 
@@ -332,10 +415,10 @@ describe("private-local plugin package", () => {
       const stderr = await packageFailure();
       expect(JSON.parse(stderr)).toEqual({ ok: false, error: "unexpected-plugin-entry" });
       expect(stderr).not.toContain("TOKEN");
-      expect(Buffer.compare(await readFile(outputUrl), secondPackage)).toBe(0);
+      expect(Buffer.compare(await readFile(actualOutputPath), secondPackage)).toBe(0);
     } finally {
       await rm(secretUrl, { force: true });
-      await writeFile(outputUrl, secondPackage);
+      await writeFile(actualOutputPath, secondPackage);
     }
   });
 
@@ -347,10 +430,10 @@ describe("private-local plugin package", () => {
     try {
       const stderr = await packageFailure(preloadPath);
       expect(JSON.parse(stderr)).toEqual({ ok: false, error: "plugin-source-unreliable-identity" });
-      expect(Buffer.compare(await readFile(outputUrl), secondPackage)).toBe(0);
+      expect(Buffer.compare(await readFile(actualOutputPath), secondPackage)).toBe(0);
     } finally {
       await rm(dirname(preloadPath), { recursive: true, force: true });
-      await writeFile(outputUrl, secondPackage);
+      await writeFile(actualOutputPath, secondPackage);
     }
   });
 
@@ -364,10 +447,10 @@ describe("private-local plugin package", () => {
         const stderr = await packageFailure(preloadPath);
         expect(JSON.parse(stderr)).toEqual({ ok: false, error: "plugin-source-changed" });
         expect(stderr).not.toContain(repoRootPath);
-        expect(Buffer.compare(await readFile(outputUrl), secondPackage)).toBe(0);
+        expect(Buffer.compare(await readFile(actualOutputPath), secondPackage)).toBe(0);
       } finally {
         await rm(dirname(preloadPath), { recursive: true, force: true });
-        await writeFile(outputUrl, secondPackage);
+        await writeFile(actualOutputPath, secondPackage);
       }
     },
   );
@@ -382,11 +465,11 @@ describe("private-local plugin package", () => {
 
       expect(JSON.parse(stderr)).toEqual({ ok: false, error: "plugin-source-too-large" });
       expect(stderr).not.toContain(repoRootPath);
-      const survivingArchive = await readFile(outputUrl);
+      const survivingArchive = await readFile(actualOutputPath);
       expect(Buffer.compare(survivingArchive, secondPackage)).toBe(0);
     } finally {
       await rm(dirname(preloadPath), { recursive: true, force: true });
-      await writeFile(outputUrl, secondPackage);
+      await writeFile(actualOutputPath, secondPackage);
     }
   }, 30_000);
 });

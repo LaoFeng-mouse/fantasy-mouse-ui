@@ -73,4 +73,4 @@ Put the canonical image, approved action-hand image, selected composition refere
 
 ### 12. Export and hand off
 
-Export the editable source plus the workflow brief, recipe, rationale, evidence, and handoff. Include both the character-role translation table and the product-style derivation table, run/render evidence, comparison findings, repairs, unresolved limits, and capability-dependent next action. Do not claim rights to private references or mark an unrun/unrendered surface complete.
+Export the editable source plus the workflow brief, recipe, rationale, evidence, and handoff. Include both the character-role translation table and the product-style derivation table, run/render evidence, comparison findings, repairs, unresolved limits, and capability-dependent next action. Preserve the bundled MIT License in redistributed copies and report any third-party target-project asset limitations separately.

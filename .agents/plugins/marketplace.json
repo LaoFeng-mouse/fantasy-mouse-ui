@@ -1,0 +1,12 @@
+{
+  "name": "fantasy-mouse-ui",
+  "interface": { "displayName": "Fantasy Mouse UI" },
+  "plugins": [
+    {
+      "name": "fantasy-mouse-ui",
+      "source": { "source": "local", "path": "./plugins/fantasy-mouse-ui" },
+      "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+      "category": "Design"
+    }
+  ]
+}
