@@ -25,7 +25,7 @@ These GitHub repository and Release URLs become usable only after Task 6 publica
 The first mandatory operation is the targeted add for the exact expected repository:
 
 ```powershell
-codex plugin marketplace add https://github.com/LI-2004-feng/fantasy-mouse-ui --json
+codex plugin marketplace add https://github.com/LaoFeng-mouse/fantasy-mouse-ui --json
 ```
 
 Accept identity only when successful JSON reports `alreadyAdded` as `false` or `true` for that exact expected URL. If `alreadyAdded` is `true`, run `codex plugin marketplace upgrade fantasy-mouse-ui --json`. If the CLI reports a same-name/different-source collision or error, stop and report it. Do not continue through that marketplace identity.
@@ -55,7 +55,7 @@ The global marketplace list is optional diagnostics; its failure must not block 
 第一个强制操作是针对精确预期仓库执行定向添加：
 
 ```powershell
-codex plugin marketplace add https://github.com/LI-2004-feng/fantasy-mouse-ui --json
+codex plugin marketplace add https://github.com/LaoFeng-mouse/fantasy-mouse-ui --json
 ```
 
 只有成功 JSON 针对该精确预期 URL 返回 `alreadyAdded` 为 `false` 或 `true` 时，才接受市场身份。如果 `alreadyAdded` 为 `true`，运行 `codex plugin marketplace upgrade fantasy-mouse-ui --json`。如果 CLI 报告同名不同来源冲突或错误，必须停止并报告。不得继续使用该市场身份。
@@ -84,10 +84,10 @@ codex plugin marketplace list --json
 
 These GitHub repository and Release URLs become usable only after Task 6 publication is verified. Before publication, use the verified local source and build `dist/plugin/fantasy-mouse-ui.zip`.
 
-Download `fantasy-mouse-ui.zip` from the GitHub [`v0.1.0` release](https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/tag/v0.1.0), the [latest release](https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/latest), or the direct latest asset:
+Download `fantasy-mouse-ui.zip` from the GitHub [`v0.1.0` release](https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/tag/v0.1.0), the [latest release](https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/latest), or the direct latest asset:
 
 ```text
-https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/latest/download/fantasy-mouse-ui.zip
+https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/latest/download/fantasy-mouse-ui.zip
 ```
 
 The final `fantasy-mouse-ui` destination must not exist or must be empty. If an existing installation is present, stop and report it; updating requires a separate explicit backup-and-replacement decision or host-supported reinstall flow.
@@ -131,10 +131,10 @@ skills/fantasy-mouse-ui/SKILL.md
 
 这些 GitHub 仓库和 Release URL 仅在 Task 6 发布验证通过后可用。发布前请使用已验证的本地源码和构建产物 `dist/plugin/fantasy-mouse-ui.zip`。
 
-从 GitHub [`v0.1.0` Release](https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/tag/v0.1.0)、[latest Release](https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/latest) 或以下 latest 资源直链下载 `fantasy-mouse-ui.zip`：
+从 GitHub [`v0.1.0` Release](https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/tag/v0.1.0)、[latest Release](https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/latest) 或以下 latest 资源直链下载 `fantasy-mouse-ui.zip`：
 
 ```text
-https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/latest/download/fantasy-mouse-ui.zip
+https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/latest/download/fantasy-mouse-ui.zip
 ```
 
 最终的 `fantasy-mouse-ui` 目标目录必须不存在或为空。发现现有安装时必须停止并报告；更新必须作为单独的明确备份与替换决策，或使用宿主支持的重新安装流程。
@@ -201,8 +201,8 @@ The adapter is an entry point, not a standalone installation artifact. Every hos
 
 ```text
 这些 GitHub 仓库和 Release URL 仅在 Task 6 发布验证通过后可用。发布前请使用已验证的本地源码和构建产物 `dist/plugin/fantasy-mouse-ui.zip`。
-请部署 Fantasy Mouse UI 插件，仓库为 https://github.com/LI-2004-feng/fantasy-mouse-ui。必须安装完整插件目录，不要只复制单个 SKILL.md。Codex 的第一个强制操作必须是：
-codex plugin marketplace add https://github.com/LI-2004-feng/fantasy-mouse-ui --json
+请部署 Fantasy Mouse UI 插件，仓库为 https://github.com/LaoFeng-mouse/fantasy-mouse-ui。必须安装完整插件目录，不要只复制单个 SKILL.md。Codex 的第一个强制操作必须是：
+codex plugin marketplace add https://github.com/LaoFeng-mouse/fantasy-mouse-ui --json
 只有成功 JSON 针对该精确预期 URL 返回 `alreadyAdded` 为 `false` 或 `true` 时，才接受市场身份。如果 `alreadyAdded` 为 `true`，运行 `codex plugin marketplace upgrade fantasy-mouse-ui --json`。如果 CLI 报告同名不同来源冲突或错误，必须停止并报告。
 随后依次运行：
 codex plugin list --marketplace fantasy-mouse-ui --available --json
@@ -212,7 +212,7 @@ codex plugin list --marketplace fantasy-mouse-ui --json
 codex plugin marketplace list --json
 全局市场列表仅是可选诊断；其失败不得阻断此定向流程。
 
-Release ZIP 可从 https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/tag/v0.1.0、https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/latest 或 https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/latest/download/fantasy-mouse-ui.zip 获取。最终目标必须不存在或为空；存在安装时停止并报告，更新走单独的备份替换或宿主重装流程。
+Release ZIP 可从 https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/tag/v0.1.0、https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/latest 或 https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/latest/download/fantasy-mouse-ui.zip 获取。最终目标必须不存在或为空；存在安装时停止并报告，更新走单独的备份替换或宿主重装流程。
 
 [1. 压缩包预检] 解压任何内容前，必须枚举 ZIP 中央目录的全部条目和元数据。原始条目名包含反斜杠时必须拒绝。只把已接受名称规范化为正斜杠。规范化后的正斜杠名称必须与独立的 20 文件允许清单完全一致。必须拒绝绝对路径、盘符路径、UNC 路径、空名称、`.` 或 `..` 组件、路径逃逸、重复名称和大小写冲突名称。必须拒绝目录条目以及链接、符号链接、junction、重解析点、设备或其他非常规条目。
 允许清单：.codex-plugin/plugin.json；adapters/claude/SKILL.md；adapters/deepseek/SKILL.md；adapters/gemini/SKILL.md；adapters/generic/AGENT.md；assets/visual-grounding/canonical-protagonist.png；assets/visual-grounding/manifest.json；assets/visual-grounding/processing-action-hands.png；assets/visual-grounding/processing-with-bubble.png；assets/visual-grounding/processing-without-bubble.png；LICENSE；protocol/mouse-ui-project.schema.json；protocol/workflow-brief.schema.json；references/qa.md；references/style-independence.md；references/visual-grounding.md；references/workflow-to-ui.md；scripts/validate-workflow.mjs；scripts/verify-bundle.mjs；skills/fantasy-mouse-ui/SKILL.md。
@@ -231,8 +231,8 @@ Copy the entire prompt below into a file-capable and image-capable AI Agent:
 
 ```text
 These GitHub repository and Release URLs become usable only after Task 6 publication is verified. Before publication, use the verified local source and build `dist/plugin/fantasy-mouse-ui.zip`.
-Install Fantasy Mouse UI from https://github.com/LI-2004-feng/fantasy-mouse-ui. Install the complete plugin directory. Do not copy only SKILL.md. For Codex, the first mandatory operation is:
-codex plugin marketplace add https://github.com/LI-2004-feng/fantasy-mouse-ui --json
+Install Fantasy Mouse UI from https://github.com/LaoFeng-mouse/fantasy-mouse-ui. Install the complete plugin directory. Do not copy only SKILL.md. For Codex, the first mandatory operation is:
+codex plugin marketplace add https://github.com/LaoFeng-mouse/fantasy-mouse-ui --json
 Accept identity only when successful JSON reports `alreadyAdded` as `false` or `true` for that exact expected URL. If `alreadyAdded` is `true`, run `codex plugin marketplace upgrade fantasy-mouse-ui --json`. If the CLI reports a same-name/different-source collision or error, stop and report it.
 Then run, in order:
 codex plugin list --marketplace fantasy-mouse-ui --available --json
@@ -242,7 +242,7 @@ The targeted available listing must first confirm the expected plugin and accept
 codex plugin marketplace list --json
 The global marketplace list is optional diagnostics; its failure must not block this targeted flow.
 
-Obtain the Release ZIP from https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/tag/v0.1.0, https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/latest, or https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/latest/download/fantasy-mouse-ui.zip. Final must be absent or empty; stop and report an existing installation, and handle updates only through a separate backup/replacement or host reinstall flow.
+Obtain the Release ZIP from https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/tag/v0.1.0, https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/latest, or https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/latest/download/fantasy-mouse-ui.zip. Final must be absent or empty; stop and report an existing installation, and handle updates only through a separate backup/replacement or host reinstall flow.
 
 [1. Archive preflight] Before extracting anything, enumerate ZIP central-directory entries and metadata. Raw entry names containing backslashes are rejected. Normalize accepted names to forward slashes. Normalized forward-slash names must exactly equal the independent 20-file allowlist. Reject absolute paths, drive-letter paths, UNC paths, empty names, `.` or `..` components, path escape, duplicate names, and case-colliding names. Reject directory entries and link, symlink, junction, reparse-point, device, or other non-regular entries.
 Allowlist: .codex-plugin/plugin.json; adapters/claude/SKILL.md; adapters/deepseek/SKILL.md; adapters/gemini/SKILL.md; adapters/generic/AGENT.md; assets/visual-grounding/canonical-protagonist.png; assets/visual-grounding/manifest.json; assets/visual-grounding/processing-action-hands.png; assets/visual-grounding/processing-with-bubble.png; assets/visual-grounding/processing-without-bubble.png; LICENSE; protocol/mouse-ui-project.schema.json; protocol/workflow-brief.schema.json; references/qa.md; references/style-independence.md; references/visual-grounding.md; references/workflow-to-ui.md; scripts/validate-workflow.mjs; scripts/verify-bundle.mjs; skills/fantasy-mouse-ui/SKILL.md.

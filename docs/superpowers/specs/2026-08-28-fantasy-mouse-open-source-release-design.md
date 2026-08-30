@@ -6,7 +6,7 @@ Publish Fantasy Mouse UI as a genuinely installable open-source plugin rather th
 
 ## Authorization and license
 
-The user explicitly authorizes the four bundled mouse images for public release and redistribution with this project. The repository will use the MIT License and identify `LI-2004-feng` as the copyright holder unless GitHub reports a different authenticated owner during publication.
+The user explicitly authorizes the four bundled mouse images for public release and redistribution with this project. The repository uses the MIT License and identifies the confirmed authenticated GitHub owner `LaoFeng-mouse` as the copyright holder.
 
 The existing `private-reference-only`, `private-local`, and “do not publish” rules must be changed consistently. Public release must not leave contradictory rights metadata in manifests, verifier trust roots, tests, package names, Skill instructions, references, or documentation.
 
@@ -43,7 +43,7 @@ The repository marketplace name will be `fantasy-mouse-ui`. Its entry points to 
 The documented Codex deployment path is:
 
 ```powershell
-codex plugin marketplace add https://github.com/LI-2004-feng/fantasy-mouse-ui
+codex plugin marketplace add https://github.com/LaoFeng-mouse/fantasy-mouse-ui
 codex plugin add fantasy-mouse-ui@fantasy-mouse-ui
 ```
 

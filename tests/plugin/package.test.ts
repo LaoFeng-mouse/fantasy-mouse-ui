@@ -269,7 +269,7 @@ describe("public plugin package", () => {
     const normalizedPluginLicense = normalizeLf(pluginLicense);
     expect(normalizedPluginLicense).toBe(normalizedRepositoryLicense);
     expect(normalizedRepositoryLicense).toContain("MIT License");
-    expect(normalizedRepositoryLicense).toContain("Copyright (c) 2026 LI-2004-feng");
+    expect(normalizedRepositoryLicense).toContain("Copyright (c) 2026 LaoFeng-mouse");
   });
 
   it("exposes the exact verification and packaging scripts", async () => {

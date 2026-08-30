@@ -126,9 +126,9 @@ describe("Fantasy Mouse UI plugin manifest", () => {
     }
 
     for (const releaseRoute of [
-      "https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/tag/v0.1.0",
-      "https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/latest",
-      "https://github.com/LI-2004-feng/fantasy-mouse-ui/releases/latest/download/fantasy-mouse-ui.zip"
+      "https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/tag/v0.1.0",
+      "https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/latest",
+      "https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/latest/download/fantasy-mouse-ui.zip"
     ]) {
       expect(installGuide).toContain(releaseRoute);
     }
@@ -333,7 +333,7 @@ describe("Fantasy Mouse UI plugin manifest", () => {
     const englishMarketplaceRoutes = [manualEnglishMarketplace, englishPrompt];
     const chineseMarketplaceRoutes = [manualChineseMarketplace, chinesePrompt];
     const addCommand =
-      "codex plugin marketplace add https://github.com/LI-2004-feng/fantasy-mouse-ui --json";
+      "codex plugin marketplace add https://github.com/LaoFeng-mouse/fantasy-mouse-ui --json";
     const targetedAvailable =
       "codex plugin list --marketplace fantasy-mouse-ui --available --json";
     const pluginAdd = "codex plugin add fantasy-mouse-ui@fantasy-mouse-ui --json";

@@ -228,7 +228,7 @@ Create both license files with the standard MIT License text headed:
 ```text
 MIT License
 
-Copyright (c) 2026 LI-2004-feng
+Copyright (c) 2026 LaoFeng-mouse
 ```
 
 The two files must be byte-identical after LF normalization.
@@ -301,14 +301,14 @@ codex plugin marketplace add --help
 codex plugin add --help
 ```
 
-Record only syntax accepted by this CLI. The intended repository URL is `https://github.com/LI-2004-feng/fantasy-mouse-ui`.
+Record only syntax accepted by this CLI. The intended repository URL is `https://github.com/LaoFeng-mouse/fantasy-mouse-ui`.
 
 - [ ] **Step 3: Create `INSTALL_WITH_AI.md`**
 
 Include a Chinese prompt whose operational core is:
 
 ```text
-请部署 Fantasy Mouse UI 插件，仓库为 https://github.com/LI-2004-feng/fantasy-mouse-ui 。先识别当前 Agent 类型。Codex 使用仓库 marketplace；Claude、Gemini、DeepSeek 使用对应 adapters；其他 Agent 使用 adapters/generic/AGENT.md。必须安装完整插件目录，不要只复制单个 SKILL.md。安装后运行 scripts/verify-bundle.mjs，只有得到 {"ok":true,"assets":4} 才能报告素材验证通过。请返回实际安装目录、使用的命令、验证输出，以及是否必须新建会话。
+请部署 Fantasy Mouse UI 插件，仓库为 https://github.com/LaoFeng-mouse/fantasy-mouse-ui 。先识别当前 Agent 类型。Codex 使用仓库 marketplace；Claude、Gemini、DeepSeek 使用对应 adapters；其他 Agent 使用 adapters/generic/AGENT.md。必须安装完整插件目录，不要只复制单个 SKILL.md。安装后运行 scripts/verify-bundle.mjs，只有得到 {"ok":true,"assets":4} 才能报告素材验证通过。请返回实际安装目录、使用的命令、验证输出，以及是否必须新建会话。
 ```
 
 Add an English prompt with the same requirements and include manual Release ZIP instructions.
@@ -414,7 +414,7 @@ Validate the installed cache with the official plugin validator and `scripts/ver
 
 **Files:**
 - Git remote: `origin`
-- GitHub repository: `LI-2004-feng/fantasy-mouse-ui`
+- GitHub repository: `LaoFeng-mouse/fantasy-mouse-ui`
 - GitHub Release: `v0.1.0`
 - Release asset: `dist/plugin/fantasy-mouse-ui.zip`
 
@@ -440,21 +440,21 @@ gh auth login -h github.com -w
 gh auth status
 ```
 
-Expected: active authenticated account `LI-2004-feng`. If authentication is not restored, stop before creating external state.
+Expected: active authenticated account `LaoFeng-mouse`. If authentication is not restored, stop before creating external state.
 
 - [ ] **Step 3: Check repository identity before creation**
 
 ```powershell
-gh repo view LI-2004-feng/fantasy-mouse-ui --json nameWithOwner,visibility,url
+gh repo view LaoFeng-mouse/fantasy-mouse-ui --json nameWithOwner,visibility,url
 ```
 
 If absent, create it public from the current repository:
 
 ```powershell
-gh repo create LI-2004-feng/fantasy-mouse-ui --public --source . --remote origin --description "Model-neutral Fantasy Mouse UI design plugin for Codex, Claude, Gemini, DeepSeek, and generic Agents"
+gh repo create LaoFeng-mouse/fantasy-mouse-ui --public --source . --remote origin --description "Model-neutral Fantasy Mouse UI design plugin for Codex, Claude, Gemini, DeepSeek, and generic Agents"
 ```
 
-If it exists, verify it belongs to `LI-2004-feng` before setting or using `origin`.
+If it exists, verify it belongs to `LaoFeng-mouse` before setting or using `origin`.
 
 - [ ] **Step 4: Push only `main`**
 
@@ -469,16 +469,16 @@ Do not use `--all`; the dirty legacy branch must remain local.
 ```powershell
 git tag -a v0.1.0 -m "Fantasy Mouse UI v0.1.0"
 git push origin v0.1.0
-gh release create v0.1.0 dist\plugin\fantasy-mouse-ui.zip --repo LI-2004-feng/fantasy-mouse-ui --title "Fantasy Mouse UI v0.1.0" --notes "First MIT-licensed public release with Codex marketplace metadata, cross-agent adapters, four approved visual authority assets, and AI-assisted installation instructions."
+gh release create v0.1.0 dist\plugin\fantasy-mouse-ui.zip --repo LaoFeng-mouse/fantasy-mouse-ui --title "Fantasy Mouse UI v0.1.0" --notes "First MIT-licensed public release with Codex marketplace metadata, cross-agent adapters, four approved visual authority assets, and AI-assisted installation instructions."
 ```
 
 - [ ] **Step 6: Verify live GitHub state and downloaded bytes**
 
 ```powershell
-gh repo view LI-2004-feng/fantasy-mouse-ui --json nameWithOwner,visibility,url,defaultBranchRef
-gh release view v0.1.0 --repo LI-2004-feng/fantasy-mouse-ui --json tagName,url,assets
+gh repo view LaoFeng-mouse/fantasy-mouse-ui --json nameWithOwner,visibility,url,defaultBranchRef
+gh release view v0.1.0 --repo LaoFeng-mouse/fantasy-mouse-ui --json tagName,url,assets
 $download = Join-Path ([System.IO.Path]::GetTempPath()) 'fantasy-mouse-ui-v0.1.0.zip'
-gh release download v0.1.0 --repo LI-2004-feng/fantasy-mouse-ui --pattern fantasy-mouse-ui.zip --output $download --clobber
+gh release download v0.1.0 --repo LaoFeng-mouse/fantasy-mouse-ui --pattern fantasy-mouse-ui.zip --output $download --clobber
 $localHash = (Get-FileHash -Algorithm SHA256 dist\plugin\fantasy-mouse-ui.zip).Hash
 $remoteHash = (Get-FileHash -Algorithm SHA256 $download).Hash
 if ($localHash -ne $remoteHash) { throw "release-hash-mismatch" }

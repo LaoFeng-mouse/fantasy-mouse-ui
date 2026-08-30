@@ -3,7 +3,7 @@
 ## Current branch state
 
 - Release preparation is on branch `codex/open-source-release` in the dedicated open-source-release worktree.
-- GitHub repository target (publication pending): https://github.com/LI-2004-feng/fantasy-mouse-ui.
+- GitHub repository target (publication pending): https://github.com/LaoFeng-mouse/fantasy-mouse-ui.
 - Local repository marketplace metadata, bilingual [Install with AI](../INSTALL_WITH_AI.md), MIT licenses, 20-entry packager, host adapters, and layered verification contract are present. No remote repository or Release availability is claimed.
 - `package.json` remains `"private": true` only to block accidental npm publication; it does not alter MIT distribution rights.
 

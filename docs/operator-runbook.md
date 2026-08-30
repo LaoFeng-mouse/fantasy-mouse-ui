@@ -65,7 +65,7 @@ The hashes must match. A changed plugin source intentionally produces a new hash
 
 ## Publication and installation
 
-- GitHub repository target (publication pending): https://github.com/LI-2004-feng/fantasy-mouse-ui.
+- GitHub repository target (publication pending): https://github.com/LaoFeng-mouse/fantasy-mouse-ui.
 - The verified local release archive is `dist/plugin/fantasy-mouse-ui.zip`; it contains the MIT-licensed plugin and four approved visual assets.
 - Remote marketplace and Release URLs become usable only after Task 6 publication is verified. Before publication, use the verified local source/build route.
 - After verified publication, use the repository marketplace or release-ZIP procedures in [Install with AI](../INSTALL_WITH_AI.md).
