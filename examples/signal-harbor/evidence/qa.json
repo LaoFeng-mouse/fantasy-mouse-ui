@@ -3,12 +3,12 @@
   "caseId": "signal-harbor",
   "mode": "strict",
   "gates": {
-    "generated": false,
-    "tested": false,
-    "run": false,
-    "rendered": false,
-    "visuallyChecked": false,
-    "accepted": false
+    "generated": true,
+    "tested": true,
+    "run": true,
+    "rendered": true,
+    "visuallyChecked": true,
+    "accepted": true
   },
   "primaryJourney": {
     "steps": [
@@ -19,30 +19,56 @@
       "resolving",
       "resolved"
     ],
-    "result": "pending"
+    "result": "passed"
   },
   "accessibility": {
-    "keyboard": "pending",
-    "contrast": "pending",
-    "reducedMotion": "pending"
+    "keyboard": "passed",
+    "contrast": "passed",
+    "reducedMotion": "passed"
   },
   "comparison": {
-    "status": "pending",
-    "repeatedDimensions": [],
-    "repairs": []
+    "status": "passed",
+    "repeatedDimensions": [
+      "canonical identity: gray photographic face, narrow eyes, toothy grin, thin ears, and white bean body",
+      "default anatomy: chest U retained as the sole resting hand pair",
+      "action anatomy: chest U removed and replaced by exactly one body-connected hand pair",
+      "composition continuity: character remains subordinate to the real workflow control and operational content"
+    ],
+    "repairs": [
+      "Replaced baked checkerboard backgrounds with chroma-keyed genuine alpha and verified non-opaque PNG bounds.",
+      "Optimized generated role assets to 800 by 800 pixels so each declared artifact remains below the validator file limit.",
+      "Kept the action asset restricted to assigning and resolving; all recovery and resting states use the chest-U idle asset."
+    ]
   },
   "artifacts": {
-    "source": [],
-    "output": [],
-    "screenshots": [],
-    "comparison": ""
+    "source": [
+      "source/index.html",
+      "source/styles.css",
+      "source/state.mjs",
+      "source/app.mjs",
+      "source/assets/dispatcher-idle.png",
+      "source/assets/dispatcher-action.png"
+    ],
+    "output": [
+      "output/index.html",
+      "output/styles.css",
+      "output/state.mjs",
+      "output/app.mjs",
+      "output/assets/dispatcher-idle.png",
+      "output/assets/dispatcher-action.png"
+    ],
+    "screenshots": [
+      "screenshots/hero-monitoring.png",
+      "screenshots/incident-selected.png",
+      "screenshots/assigning.png",
+      "screenshots/blocked-assignment.png",
+      "screenshots/resolving.png",
+      "screenshots/failed-resolution.png",
+      "screenshots/resolved.png"
+    ],
+    "comparison": "evidence/comparison.png"
   },
   "limits": [
-    "Blocked assignment and failed resolution recovery are specified but not implemented or tested.",
-    "Keyboard navigation and deterministic visible focus are pending.",
-    "Polite live-region status announcements are pending.",
-    "Reduced-motion behavior and contrast checks are pending.",
-    "Required visual grounding, raster asset generation, real browser rendering, and same-context comparison have not occurred.",
-    "No source, output, screenshots, or comparison artifact exists."
+    "The real-browser accessibility journey is recorded as a manual Playwright CLI run in the case README; the repository guards its hooks and public state contract but does not add Playwright as a permanent development dependency."
   ]
 }

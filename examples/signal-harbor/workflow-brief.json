@@ -38,7 +38,7 @@
       "purpose": "Confirm the incident is resolved and announce the final status."
     },
     {
-      "id": "blocked-assignment",
+      "id": "blocked",
       "purpose": "Explain that an owner is required and provide a recoverable route back to assignment."
     },
     {
@@ -73,14 +73,14 @@
       "label": "Require an owner",
       "kind": "utility",
       "from": "assigning",
-      "to": "blocked-assignment"
+      "to": "blocked"
     },
     {
       "id": "retry-assignment",
       "label": "Retry assignment",
       "kind": "recovery",
-      "from": "blocked-assignment",
-      "to": "assigning"
+      "from": "blocked",
+      "to": "incident-selected"
     },
     {
       "id": "start-resolution",
@@ -108,7 +108,7 @@
       "label": "Retry resolution",
       "kind": "recovery",
       "from": "failed-resolution",
-      "to": "resolving"
+      "to": "incident-selected"
     }
   ],
   "states": [
@@ -118,7 +118,7 @@
     "assigned",
     "resolving",
     "resolved",
-    "blocked-assignment",
+    "blocked",
     "failed-resolution"
   ],
   "primaryJourney": [

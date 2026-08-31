@@ -601,6 +601,24 @@ async function validateArtifactPaths(caseRoot, evidence, accepted, allowPending)
   }
 }
 
+async function validateRuntimeParity(caseRoot, evidence, accepted) {
+  if (!accepted) return;
+
+  const sourceTails = evidence.artifacts.source.map((path) => path.slice("source/".length));
+  const outputTails = evidence.artifacts.output.map((path) => path.slice("output/".length));
+  assert(
+    sourceTails.length === outputTails.length &&
+      sourceTails.every((tail) => outputTails.includes(tail)),
+    "runtime-output-mismatch",
+  );
+
+  for (const tail of sourceTails) {
+    const source = await safeFile(resolve(caseRoot, "source", tail));
+    const output = await safeFile(resolve(caseRoot, "output", tail));
+    assert(source.equals(output), "runtime-output-mismatch");
+  }
+}
+
 async function invokeJson(script, args, invalidCode) {
   let result;
   try {
@@ -671,6 +689,7 @@ async function validateCase(entry, allowPending) {
   const accepted = validateEvidence(evidence, entry.id, caseRoot);
   assert(allowPending || accepted, "benchmark-not-accepted");
   await validateArtifactPaths(caseRoot, evidence, accepted, allowPending);
+  await validateRuntimeParity(caseRoot, evidence, accepted);
 
   for (const runtimePath of RUNTIME_PATHS) {
     try {

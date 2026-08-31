@@ -8,7 +8,7 @@
 | `assigned` | Restrained | The dispatcher confirms ownership without implying another action is underway. | Preserve the chest V/U as the sole default clasped hand pair; no action-hand pair. |
 | `resolving` | Active | The dispatcher participates in resolution confirmation and may connect to the real resolution control. | Use exactly one coherent action-hand pair; no chest V/U. |
 | `resolved` | Restrained | The dispatcher supports closure while the resolved status remains primary. | Preserve the chest V/U as the sole default clasped hand pair; no action-hand pair. |
-| `blocked-assignment` | Recovery | The dispatcher may direct attention to the owner requirement without blame or alarm inflation. | Preserve the chest V/U as the sole default clasped hand pair; no action-hand pair. |
+| `blocked` | Recovery | The dispatcher may direct attention to the owner requirement without blame or alarm inflation. | Preserve the chest V/U as the sole default clasped hand pair; no action-hand pair. |
 | `failed-resolution` | Recovery | The dispatcher may direct attention to the missing note and retry path without implying resolution succeeded. | Preserve the chest V/U as the sole default clasped hand pair; no action-hand pair. |
 
 ## Boundaries
@@ -17,4 +17,4 @@
 - The mouse is not persistent navigation chrome and must not be pasted over a generic dashboard.
 - Action mode is limited to `assigning` and `resolving`; it is prohibited in every other state.
 - Default and resting appearances preserve the chest V/U as the sole default clasped hand pair; only `assigning` and `resolving` action mode removes it and replaces it with exactly one coherent action-hand pair.
-- No generated character asset or visual-continuity judgment exists yet; this table is a pending implementation contract.
+- The generated idle and action assets were checked against this table in the same-context comparison; the accepted QA record names the repeated identity and anatomy dimensions and the repairs performed.

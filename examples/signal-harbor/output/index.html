@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Signal Harbor — Incident Operations</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#workspace">Skip to incident workspace</a>
+    <div class="app-shell" data-testid="signal-harbor-app" data-phase="monitoring">
+      <header class="topbar">
+        <div class="brand" aria-label="Signal Harbor operations">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span>Signal Harbor</span>
+          <span class="environment">PROD · GLOBAL</span>
+        </div>
+        <div class="system-status">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          Ingest healthy
+          <span class="clock" data-testid="utc-clock">20:42:17 UTC</span>
+        </div>
+      </header>
+
+      <aside class="rail" aria-label="Primary navigation">
+        <nav>
+          <a href="#workspace" class="rail-item active" aria-current="page">
+            <span aria-hidden="true">⌁</span><span>Incidents</span><b>12</b>
+          </a>
+          <a href="#services" class="rail-item"><span aria-hidden="true">◇</span><span>Services</span></a>
+          <a href="#timeline" class="rail-item"><span aria-hidden="true">≋</span><span>Timeline</span></a>
+          <a href="#on-call" class="rail-item"><span aria-hidden="true">◎</span><span>On-call</span></a>
+        </nav>
+        <div class="rail-footer" id="on-call">
+          <span class="avatar" aria-hidden="true">MC</span>
+          <span><b>Maya Chen</b><small>Incident commander</small></span>
+        </div>
+      </aside>
+
+      <main id="workspace" tabindex="-1">
+        <section class="overview" aria-labelledby="page-title">
+          <div>
+            <p class="eyebrow">OPERATIONS / LIVE QUEUE</p>
+            <h1 id="page-title">Incident command</h1>
+            <p class="subtitle">Triage active signals, establish ownership, and close the loop.</p>
+          </div>
+          <dl class="metrics" aria-label="Incident metrics">
+            <div><dt>Critical</dt><dd class="critical">3</dd><small>+1 / hour</small></div>
+            <div><dt>Unassigned</dt><dd>5</dd><small>Needs action</small></div>
+            <div><dt>MTTA</dt><dd>04:18</dd><small>−32 sec</small></div>
+            <div><dt>Services</dt><dd>18/21</dd><small>3 degraded</small></div>
+          </dl>
+        </section>
+
+        <div class="console-grid">
+          <section class="panel queue-panel" aria-labelledby="queue-title">
+            <div class="panel-head">
+              <div><span class="panel-kicker">ACTIVE FEED</span><h2 id="queue-title">Incident queue</h2></div>
+              <span class="count-badge">12 open</span>
+            </div>
+            <div class="queue-columns" aria-hidden="true"><span>Signal</span><span>Service</span><span>Age</span></div>
+            <div class="incident-list" data-testid="incident-list" aria-label="Active incidents"></div>
+          </section>
+
+          <section class="panel detail-panel" aria-labelledby="detail-title" data-testid="incident-detail">
+            <div class="detail-content"></div>
+          </section>
+
+          <aside class="panel dispatcher-panel" aria-labelledby="dispatcher-title">
+            <div class="dispatcher-copy">
+              <span class="panel-kicker">INCIDENT DISPATCHER</span>
+              <h2 id="dispatcher-title">Queue watch</h2>
+              <p data-testid="dispatcher-message">Twelve active signals are under watch. Select a row to begin.</p>
+            </div>
+            <div class="dispatcher-stage">
+              <span class="scanner-line" aria-hidden="true"></span>
+              <img
+                src="./assets/dispatcher-idle.png"
+                alt="Signal Harbor dispatcher monitoring the incident queue"
+                data-testid="dispatcher-image"
+                data-hand-mode="default-clasped"
+              />
+            </div>
+            <div class="dispatcher-state"><span aria-hidden="true"></span><b data-testid="dispatcher-state">Monitoring</b></div>
+          </aside>
+
+          <section class="panel telemetry-panel" id="services" aria-labelledby="telemetry-title">
+            <div class="panel-head"><div><span class="panel-kicker">SIGNAL PRESSURE</span><h2 id="telemetry-title">Regional telemetry</h2></div><span class="window-label">LAST 30 MIN</span></div>
+            <div class="telemetry-chart" aria-label="Latency pressure rising in the US East region">
+              <div class="chart-y" aria-hidden="true"><span>900</span><span>600</span><span>300</span><span>0 ms</span></div>
+              <svg viewBox="0 0 620 130" role="img" aria-label="Latency rises sharply near the current time">
+                <defs><linearGradient id="area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#27c7b8" stop-opacity=".3"/><stop offset="1" stop-color="#27c7b8" stop-opacity="0"/></linearGradient></defs>
+                <path class="area" d="M0 108 L45 103 L90 106 L135 95 L180 99 L225 89 L270 91 L315 78 L360 84 L405 71 L450 74 L495 53 L540 58 L580 28 L620 18 L620 130 L0 130Z"/>
+                <path class="line" d="M0 108 L45 103 L90 106 L135 95 L180 99 L225 89 L270 91 L315 78 L360 84 L405 71 L450 74 L495 53 L540 58 L580 28 L620 18"/>
+              </svg>
+            </div>
+            <div class="telemetry-legend"><span><i class="teal"></i>api-gateway</span><span><i class="amber"></i>payments</span><span><i class="muted"></i>auth-edge</span></div>
+          </section>
+
+          <section class="panel timeline-panel" id="timeline" aria-labelledby="timeline-title">
+            <div class="panel-head"><div><span class="panel-kicker">COMMAND LOG</span><h2 id="timeline-title">Recent activity</h2></div></div>
+            <ol class="activity-list">
+              <li><time>20:39:12</time><span><b>Signal correlated</b><small>Checkout latency crossed regional threshold.</small></span></li>
+              <li><time>20:36:45</time><span><b>Runbook attached</b><small>Gateway Saturation v4.2</small></span></li>
+              <li><time>20:31:08</time><span><b>Deploy observed</b><small>api-gateway / build 8f12ac</small></span></li>
+            </ol>
+          </section>
+        </div>
+      </main>
+    </div>
+    <div class="sr-only" aria-live="polite" aria-atomic="true" data-testid="live-region"></div>
+    <script type="module" src="./app.mjs"></script>
+  </body>
+</html>

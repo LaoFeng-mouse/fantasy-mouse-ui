@@ -123,6 +123,33 @@ async function createFixture(): Promise<string> {
   temporaryRoots.push(root);
 
   await cp(join(repositoryRoot, "examples"), join(root, "examples"), { recursive: true });
+  const benchmark = await readJson(join(root, "examples", "benchmark.json")) as {
+    cases: Array<{ id: string }>;
+  };
+  for (const benchmarkCase of benchmark.cases) {
+    const caseRoot = join(root, "examples", benchmarkCase.id);
+    await rm(join(caseRoot, "source"), { recursive: true, force: true });
+    await rm(join(caseRoot, "output"), { recursive: true, force: true });
+    await rm(join(caseRoot, "screenshots"), { recursive: true, force: true });
+    await rm(join(caseRoot, "evidence", "comparison.png"), { force: true });
+
+    const evidencePath = join(caseRoot, "evidence", "qa.json");
+    const evidence = await readJson(evidencePath) as {
+      gates: Record<string, boolean>;
+      primaryJourney: { result: string };
+      accessibility: Record<string, string>;
+      comparison: { status: string; repeatedDimensions: string[]; repairs: string[] };
+      artifacts: { source: string[]; output: string[]; screenshots: string[]; comparison: string };
+    };
+    for (const gate of Object.keys(evidence.gates)) evidence.gates[gate] = false;
+    evidence.primaryJourney.result = "pending";
+    for (const check of Object.keys(evidence.accessibility)) {
+      evidence.accessibility[check] = "pending";
+    }
+    evidence.comparison = { status: "pending", repeatedDimensions: [], repairs: [] };
+    evidence.artifacts = { source: [], output: [], screenshots: [], comparison: "" };
+    await writeFile(evidencePath, JSON.stringify(evidence), "utf8");
+  }
   await mkdir(join(root, "scripts"), { recursive: true });
   await copyFile(join(repositoryRoot, validator), join(root, validator));
 
@@ -154,8 +181,8 @@ async function createAcceptedFixture(): Promise<{
   await mkdir(join(caseRoot, "source"));
   await mkdir(join(caseRoot, "output"));
   await mkdir(join(caseRoot, "screenshots"));
-  await writeFile(join(caseRoot, "source", "index.html"), "<main>source</main>", "utf8");
-  await writeFile(join(caseRoot, "output", "index.html"), "<main>output</main>", "utf8");
+  await writeFile(join(caseRoot, "source", "index.html"), "<main>runtime</main>", "utf8");
+  await writeFile(join(caseRoot, "output", "index.html"), "<main>runtime</main>", "utf8");
   await writeFile(join(caseRoot, "screenshots", "hero.png"), png);
   await writeFile(join(caseRoot, "evidence", "comparison.png"), png);
 
@@ -356,6 +383,7 @@ describe("v0.2 benchmark contract", () => {
   });
 
   it("anchors the repository and plugin scripts independently of caller cwd", async () => {
+    const root = await createFixture();
     const hostile = await mkdtemp(join(tmpdir(), "fantasy-mouse-hostile-"));
     temporaryRoots.push(hostile);
     await mkdir(join(hostile, "examples"));
@@ -371,7 +399,7 @@ describe("v0.2 benchmark contract", () => {
       );
     }
 
-    const result = await invokeValidator(["--allow-pending"], repositoryRoot, hostile);
+    const result = await invokeValidator(["--allow-pending"], root, hostile);
     expect(result.stderr).toBe("");
     expect(JSON.parse(result.stdout)).toEqual({
       ok: true,
@@ -383,7 +411,8 @@ describe("v0.2 benchmark contract", () => {
   });
 
   it("reports the four cases as pending before artifacts are built", async () => {
-    const result = await invokeValidator(["--allow-pending"]);
+    const root = await createFixture();
+    const result = await invokeValidator(["--allow-pending"], root);
     expect(result.stderr).toBe("");
     expect(JSON.parse(result.stdout)).toEqual({
       ok: true,
@@ -620,6 +649,19 @@ describe("v0.2 benchmark contract", () => {
     expectBoundedFailure(
       await invokeValidator(["--allow-pending"], root),
       "unsafe-example-entry",
+    );
+  });
+
+  it("rejects stale accepted output that does not mirror source", async () => {
+    const fixture = await createAcceptedFixture();
+    await writeFile(
+      join(fixture.root, "examples", "signal-harbor", "output", "index.html"),
+      "<main>stale output</main>",
+      "utf8",
+    );
+    expectBoundedFailure(
+      await invokeValidator(["--allow-pending"], fixture.root),
+      "runtime-output-mismatch",
     );
   });
 
