@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "cases": [
+    { "id": "signal-harbor", "surface": "saas-dashboard", "mode": "strict" },
+    { "id": "fieldnote-festival", "surface": "website", "mode": "strict" },
+    { "id": "grid-forward-2030", "surface": "presentation", "mode": "strict" },
+    { "id": "archive-lantern", "surface": "desktop", "mode": "strict" }
+  ]
+}

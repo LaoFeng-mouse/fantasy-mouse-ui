@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "caseId": "grid-forward-2030",
+  "mode": "strict",
+  "gates": {
+    "generated": false,
+    "tested": false,
+    "run": false,
+    "rendered": false,
+    "visuallyChecked": false,
+    "accepted": false
+  },
+  "primaryJourney": {
+    "steps": [
+      "open-briefing",
+      "review-decision",
+      "inspect-gap",
+      "align-priorities",
+      "compare-portfolios",
+      "review-roadmap",
+      "address-risks",
+      "request-approval",
+      "approve-portfolio"
+    ],
+    "result": "pending"
+  },
+  "accessibility": {
+    "keyboard": "pending",
+    "contrast": "pending",
+    "reducedMotion": "pending"
+  },
+  "comparison": {
+    "status": "pending",
+    "repeatedDimensions": [],
+    "repairs": []
+  },
+  "artifacts": {
+    "source": [],
+    "output": [],
+    "screenshots": [],
+    "comparison": ""
+  },
+  "limits": [
+    "Planning metadata only; no editable deck source has been generated.",
+    "No presentation output has been exported or run.",
+    "No slides have been rendered or visually checked.",
+    "No same-context or cross-case comparison has been created.",
+    "Accessibility checks and committee acceptance remain pending."
+  ]
+}

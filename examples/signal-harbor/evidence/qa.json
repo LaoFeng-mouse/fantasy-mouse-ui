@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "caseId": "signal-harbor",
+  "mode": "strict",
+  "gates": {
+    "generated": false,
+    "tested": false,
+    "run": false,
+    "rendered": false,
+    "visuallyChecked": false,
+    "accepted": false
+  },
+  "primaryJourney": {
+    "steps": [
+      "monitoring",
+      "incident-selected",
+      "assigning",
+      "assigned",
+      "resolving",
+      "resolved"
+    ],
+    "result": "pending"
+  },
+  "accessibility": {
+    "keyboard": "pending",
+    "contrast": "pending",
+    "reducedMotion": "pending"
+  },
+  "comparison": {
+    "status": "pending",
+    "repeatedDimensions": [],
+    "repairs": []
+  },
+  "artifacts": {
+    "source": [],
+    "output": [],
+    "screenshots": [],
+    "comparison": ""
+  },
+  "limits": [
+    "Blocked assignment and failed resolution recovery are specified but not implemented or tested.",
+    "Keyboard navigation and deterministic visible focus are pending.",
+    "Polite live-region status announcements are pending.",
+    "Reduced-motion behavior and contrast checks are pending.",
+    "Required visual grounding, raster asset generation, real browser rendering, and same-context comparison have not occurred.",
+    "No source, output, screenshots, or comparison artifact exists."
+  ]
+}

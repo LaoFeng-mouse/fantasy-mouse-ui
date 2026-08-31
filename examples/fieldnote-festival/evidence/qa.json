@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "caseId": "fieldnote-festival",
+  "mode": "strict",
+  "gates": {
+    "generated": false,
+    "tested": false,
+    "run": false,
+    "rendered": false,
+    "visuallyChecked": false,
+    "accepted": false
+  },
+  "primaryJourney": {
+    "steps": [
+      "browse-program",
+      "filter-day",
+      "inspect-session",
+      "add-to-plan",
+      "resolve-time-conflict",
+      "saved-plan"
+    ],
+    "result": "pending"
+  },
+  "accessibility": {
+    "keyboard": "pending",
+    "contrast": "pending",
+    "reducedMotion": "pending"
+  },
+  "comparison": {
+    "status": "pending",
+    "repeatedDimensions": [],
+    "repairs": []
+  },
+  "artifacts": {
+    "source": [],
+    "output": [],
+    "screenshots": [],
+    "comparison": ""
+  },
+  "limits": [
+    "Metadata-only scaffold; source, output, screenshots, and comparison evidence are intentionally absent.",
+    "No generation, runtime, visual, accessibility, comparison, or owner-acceptance claim has been made."
+  ]
+}

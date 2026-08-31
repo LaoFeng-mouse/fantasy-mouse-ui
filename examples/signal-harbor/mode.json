@@ -1,0 +1,6 @@
+{
+  "requested": "standard",
+  "triggers": [
+    "public-benchmark"
+  ]
+}

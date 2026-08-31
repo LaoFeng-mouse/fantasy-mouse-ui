@@ -1,0 +1,166 @@
+{
+  "protocolVersion": 1,
+  "id": "archive-lantern",
+  "purpose": "Help a desktop user import a personal document archive, index it locally, organize it with tags, find an item, and open the selected result without losing work when imports fail or duplicates are found.",
+  "users": [
+    "archive-owner"
+  ],
+  "entities": [
+    "library",
+    "archive-item",
+    "import-file",
+    "index-job",
+    "tag",
+    "search-query",
+    "search-result",
+    "duplicate-record",
+    "status-message"
+  ],
+  "screens": [
+    {
+      "id": "library-workspace",
+      "purpose": "Show the empty library or indexed collection, expose import and tagging controls, and preserve the user's current selection."
+    },
+    {
+      "id": "indexing-status",
+      "purpose": "Report real import and indexing progress, announce status changes, and keep failure and retry controls in keyboard order."
+    },
+    {
+      "id": "search-workspace",
+      "purpose": "Accept title or tag searches, show result counts or a recoverable no-results state, and allow opening a selected result."
+    },
+    {
+      "id": "result-viewer",
+      "purpose": "Open the selected indexed item while retaining a clear keyboard path back to the search results."
+    }
+  ],
+  "actions": [
+    {
+      "id": "start-import",
+      "label": "Import archive files",
+      "kind": "primary",
+      "from": "empty-library",
+      "to": "import"
+    },
+    {
+      "id": "begin-indexing",
+      "label": "Begin local indexing after validating selected files",
+      "kind": "primary",
+      "from": "import",
+      "to": "indexing"
+    },
+    {
+      "id": "finish-indexing",
+      "label": "Finish indexing and expose the collection",
+      "kind": "primary",
+      "from": "indexing",
+      "to": "indexed"
+    },
+    {
+      "id": "add-tag",
+      "label": "Add a tag to the selected indexed item",
+      "kind": "secondary",
+      "from": "indexed",
+      "to": "tag"
+    },
+    {
+      "id": "submit-search",
+      "label": "Search indexed titles and tags",
+      "kind": "primary",
+      "from": "tag",
+      "to": "search"
+    },
+    {
+      "id": "open-selected-result",
+      "label": "Open the selected search result",
+      "kind": "navigation",
+      "from": "search",
+      "to": "open-result"
+    },
+    {
+      "id": "report-import-failure",
+      "label": "Report a failed import without changing the existing library",
+      "kind": "utility",
+      "from": "import",
+      "to": "import-failed"
+    },
+    {
+      "id": "retry-import",
+      "label": "Retry the failed import from the preserved file selection",
+      "kind": "recovery",
+      "from": "import-failed",
+      "to": "indexing"
+    },
+    {
+      "id": "identify-duplicate",
+      "label": "Identify an already indexed item before creating another record",
+      "kind": "utility",
+      "from": "indexing",
+      "to": "duplicate-detected"
+    },
+    {
+      "id": "keep-canonical-item",
+      "label": "Keep the canonical item and preserve its existing metadata",
+      "kind": "recovery",
+      "from": "duplicate-detected",
+      "to": "indexed"
+    },
+    {
+      "id": "report-no-results",
+      "label": "Report that the current query has no matches",
+      "kind": "utility",
+      "from": "search",
+      "to": "no-results"
+    },
+    {
+      "id": "revise-search",
+      "label": "Clear or revise the query and return focus to search",
+      "kind": "recovery",
+      "from": "no-results",
+      "to": "search"
+    },
+    {
+      "id": "return-to-results",
+      "label": "Return from the open item to the prior result selection",
+      "kind": "navigation",
+      "from": "open-result",
+      "to": "search"
+    }
+  ],
+  "states": [
+    "empty-library",
+    "import",
+    "indexing",
+    "indexed",
+    "tag",
+    "search",
+    "open-result",
+    "import-failed",
+    "duplicate-detected",
+    "no-results"
+  ],
+  "primaryJourney": [
+    "start-import",
+    "begin-indexing",
+    "finish-indexing",
+    "add-tag",
+    "submit-search",
+    "open-selected-result"
+  ],
+  "surfaces": [
+    "windows-desktop",
+    "powershell-wpf"
+  ],
+  "constraints": [
+    "Use PowerShell 7 with PresentationFramework and XAML for a Windows desktop WPF application.",
+    "Use one shared state and action model for UI, smoke, and render paths so visible status corresponds to actual behavior.",
+    "Keep archive indexing local and do not imply cloud upload, synchronization, or network access.",
+    "Do not overwrite existing item metadata when duplicate content is detected.",
+    "Preserve the selected files and existing library when an import fails so retry is reversible and safe.",
+    "Provide keyboard navigation, visible focus, accessible names, status announcements, sufficient contrast, and reduced-motion behavior.",
+    "Show the mouse librarian only in empty-library, indexing, and recovery states.",
+    "In action states remove the default chest V/U and use exactly one body-connected action-hand pair touching the real book, card, index, or retry control.",
+    "Derive interface styling only from the archive workflow, Windows desktop conventions, and accessibility evidence; bundled character and composition images provide no UI-style authority.",
+    "Keep generated, tested, run, rendered, visually checked, and accepted gates independent until evidence exists."
+  ]
+}

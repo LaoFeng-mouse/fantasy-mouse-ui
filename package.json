@@ -10,6 +10,7 @@
   "scripts": {
     "test": "vitest run tests/plugin",
     "typecheck": "tsc --noEmit",
+    "examples:verify": "node scripts/validate-examples.mjs",
     "plugin:verify": "node plugins/fantasy-mouse-ui/scripts/verify-bundle.mjs",
     "plugin:package": "tsx scripts/package-fantasy-mouse-plugin.ts"
   },

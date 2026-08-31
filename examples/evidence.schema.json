@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "evidence.schema.json",
+  "title": "Fantasy Mouse UI benchmark evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "caseId",
+    "mode",
+    "gates",
+    "primaryJourney",
+    "accessibility",
+    "comparison",
+    "artifacts",
+    "limits"
+  ],
+  "properties": {
+    "schemaVersion": { "type": "integer", "const": 1 },
+    "caseId": { "$ref": "#/$defs/id" },
+    "mode": { "type": "string", "const": "strict" },
+    "gates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generated", "tested", "run", "rendered", "visuallyChecked", "accepted"],
+      "properties": {
+        "generated": { "type": "boolean" },
+        "tested": { "type": "boolean" },
+        "run": { "type": "boolean" },
+        "rendered": { "type": "boolean" },
+        "visuallyChecked": { "type": "boolean" },
+        "accepted": { "type": "boolean" }
+      }
+    },
+    "primaryJourney": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["steps", "result"],
+      "properties": {
+        "steps": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true, "maxItems": 256 },
+        "result": { "$ref": "#/$defs/status" }
+      }
+    },
+    "accessibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["keyboard", "contrast", "reducedMotion"],
+      "properties": {
+        "keyboard": { "$ref": "#/$defs/status" },
+        "contrast": { "$ref": "#/$defs/status" },
+        "reducedMotion": { "$ref": "#/$defs/status" }
+      }
+    },
+    "comparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "repeatedDimensions", "repairs"],
+      "properties": {
+        "status": { "$ref": "#/$defs/status" },
+        "repeatedDimensions": { "$ref": "#/$defs/textArray" },
+        "repairs": { "$ref": "#/$defs/textArray" }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "output", "screenshots", "comparison"],
+      "properties": {
+        "source": { "$ref": "#/$defs/pathArray" },
+        "output": { "$ref": "#/$defs/pathArray" },
+        "screenshots": { "$ref": "#/$defs/pathArray" },
+        "comparison": {
+          "type": "string",
+          "maxLength": 512,
+          "anyOf": [{ "const": "" }, { "pattern": "\\S" }]
+        }
+      }
+    },
+    "limits": { "$ref": "#/$defs/textArray" }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "gates": {
+            "properties": { "accepted": { "const": true } },
+            "required": ["accepted"]
+          }
+        },
+        "required": ["gates"]
+      },
+      "then": {
+        "properties": {
+          "gates": {
+            "properties": {
+              "generated": { "const": true },
+              "tested": { "const": true },
+              "run": { "const": true },
+              "rendered": { "const": true },
+              "visuallyChecked": { "const": true },
+              "accepted": { "const": true }
+            }
+          },
+          "primaryJourney": {
+            "properties": {
+              "steps": { "minItems": 1 },
+              "result": { "const": "passed" }
+            }
+          },
+          "accessibility": {
+            "properties": {
+              "keyboard": { "const": "passed" },
+              "contrast": { "const": "passed" },
+              "reducedMotion": { "const": "passed" }
+            }
+          },
+          "comparison": {
+            "properties": {
+              "status": { "const": "passed" }
+            }
+          },
+          "artifacts": {
+            "properties": {
+              "source": {
+                "minItems": 1,
+                "items": { "pattern": "^source/.+" }
+              },
+              "output": {
+                "minItems": 1,
+                "items": { "pattern": "^output/.+" }
+              },
+              "screenshots": {
+                "minItems": 1,
+                "items": { "pattern": "^screenshots/.+\\.png$" }
+              },
+              "comparison": {
+                "minLength": 1,
+                "const": "evidence/comparison.png"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "id": {
+      "type": "string",
+      "maxLength": 128,
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "status": { "type": "string", "enum": ["pending", "passed", "failed", "unavailable"] },
+    "textArray": {
+      "type": "array",
+      "maxItems": 256,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "pattern": "\\S", "maxLength": 512 }
+    },
+    "pathArray": {
+      "type": "array",
+      "maxItems": 256,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "pattern": "\\S", "maxLength": 512 }
+    }
+  }
+}

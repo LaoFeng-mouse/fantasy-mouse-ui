@@ -1,0 +1,112 @@
+{
+  "protocolVersion": 1,
+  "id": "fieldnote-festival",
+  "purpose": "Help visitors build a conflict-free personal itinerary for a regional botany festival while preserving enough editorial context to choose sessions confidently.",
+  "users": [
+    "festival-visitor",
+    "program-editor"
+  ],
+  "entities": [
+    "festival-day",
+    "session",
+    "speaker",
+    "habitat",
+    "venue",
+    "visit-plan",
+    "time-conflict"
+  ],
+  "screens": [
+    {
+      "id": "program",
+      "purpose": "Introduce the regional event, expose day filters, and present the browsable session program."
+    },
+    {
+      "id": "session-detail",
+      "purpose": "Show the selected session's time, venue, guide, habitat context, description, and plan action."
+    },
+    {
+      "id": "visit-plan",
+      "purpose": "Show an empty invitation or the visitor's ordered, removable, saved session selections."
+    },
+    {
+      "id": "time-conflict",
+      "purpose": "Explain an overlap without mutating the plan and provide explicit replace or cancel recovery."
+    }
+  ],
+  "actions": [
+    {
+      "id": "browse-program",
+      "label": "Browse the festival program",
+      "kind": "navigation",
+      "from": "program-loading",
+      "to": "browse-program"
+    },
+    {
+      "id": "filter-day",
+      "label": "Filter sessions by day",
+      "kind": "utility",
+      "from": "browse-program",
+      "to": "day-filtered"
+    },
+    {
+      "id": "inspect-session",
+      "label": "Inspect session details",
+      "kind": "navigation",
+      "from": "day-filtered",
+      "to": "session-inspected"
+    },
+    {
+      "id": "add-to-plan",
+      "label": "Add session to my plan",
+      "kind": "primary",
+      "from": "session-inspected",
+      "to": "time-conflict"
+    },
+    {
+      "id": "resolve-time-conflict",
+      "label": "Replace the clashing session",
+      "kind": "recovery",
+      "from": "time-conflict",
+      "to": "saved-plan"
+    },
+    {
+      "id": "saved-plan",
+      "label": "Review the saved plan",
+      "kind": "navigation",
+      "from": "saved-plan",
+      "to": "saved-plan"
+    }
+  ],
+  "states": [
+    "program-loading",
+    "browse-program",
+    "day-filtered",
+    "session-inspected",
+    "empty-plan",
+    "time-conflict",
+    "saved-plan",
+    "program-error"
+  ],
+  "primaryJourney": [
+    "browse-program",
+    "filter-day",
+    "inspect-session",
+    "add-to-plan",
+    "resolve-time-conflict",
+    "saved-plan"
+  ],
+  "surfaces": [
+    "website"
+  ],
+  "constraints": [
+    "Strict mode is required by the public-benchmark trigger.",
+    "The mouse is an embedded field guide only in editorial and empty-plan states, never persistent navigation chrome.",
+    "A clashing add must preserve the existing plan until the visitor explicitly confirms replacement.",
+    "Conflict resolution must be reversible by cancellation and must return focus to the initiating control.",
+    "Program filters, session inspection, planning, conflict recovery, and saved feedback must work with keyboard and pointer input.",
+    "Status changes must be announced without relying on color, motion, or the character.",
+    "Reduced-motion preferences must remove nonessential movement while preserving state clarity.",
+    "The narrow layout must remain usable at 390 pixels without horizontal scrolling.",
+    "Source, output, screenshots, comparison artifacts, and acceptance claims remain absent in the metadata-only phase."
+  ]
+}

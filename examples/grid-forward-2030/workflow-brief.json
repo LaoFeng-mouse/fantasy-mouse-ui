@@ -1,0 +1,173 @@
+{
+  "protocolVersion": 1,
+  "id": "grid-forward-2030",
+  "purpose": "Enable a fictional regional-grid steering committee to approve a staged 2030 modernization portfolio by showing, through an illustrative planning scenario, why visibility, flexibility, and resilience investments must be sequenced together.",
+  "users": [
+    "steering-committee-member",
+    "portfolio-sponsor",
+    "grid-planning-lead",
+    "delivery-risk-lead"
+  ],
+  "entities": [
+    "modernization-portfolio",
+    "illustrative-planning-scenario",
+    "reliability-gap",
+    "visibility-priority",
+    "flexibility-priority",
+    "resilience-priority",
+    "phase-gate",
+    "delivery-risk",
+    "mitigation",
+    "approval-decision"
+  ],
+  "screens": [
+    {
+      "id": "title",
+      "purpose": "Orient the committee to the Grid Forward 2030 decision and fictional planning context."
+    },
+    {
+      "id": "decision",
+      "purpose": "State the staged portfolio approval requested and the conditions attached to it."
+    },
+    {
+      "id": "gap",
+      "purpose": "Make the illustrative demand and reliability gap visible without presenting scenario figures as forecasts."
+    },
+    {
+      "id": "priorities",
+      "purpose": "Explain how visibility, flexibility, and resilience work as three linked modernization priorities."
+    },
+    {
+      "id": "portfolio",
+      "purpose": "Compare portfolio choices and identify the staged balanced portfolio as the recommended option."
+    },
+    {
+      "id": "roadmap",
+      "purpose": "Show the phase sequence, dependencies, decision gates, and intended progression through 2030."
+    },
+    {
+      "id": "risks",
+      "purpose": "Connect principal delivery risks to mitigations, owners, and gate conditions."
+    },
+    {
+      "id": "approval",
+      "purpose": "Request approval and make immediate next actions and accountability explicit."
+    }
+  ],
+  "actions": [
+    {
+      "id": "open-briefing",
+      "label": "Open the Grid Forward 2030 briefing",
+      "kind": "navigation",
+      "from": "unopened",
+      "to": "oriented"
+    },
+    {
+      "id": "review-decision",
+      "label": "Review the requested portfolio decision",
+      "kind": "navigation",
+      "from": "oriented",
+      "to": "decision-framed"
+    },
+    {
+      "id": "inspect-gap",
+      "label": "Inspect the illustrative demand and reliability gap",
+      "kind": "navigation",
+      "from": "decision-framed",
+      "to": "gap-understood"
+    },
+    {
+      "id": "align-priorities",
+      "label": "Align on visibility, flexibility, and resilience",
+      "kind": "navigation",
+      "from": "gap-understood",
+      "to": "priorities-aligned"
+    },
+    {
+      "id": "compare-portfolios",
+      "label": "Compare portfolio choices",
+      "kind": "navigation",
+      "from": "priorities-aligned",
+      "to": "portfolio-reviewed"
+    },
+    {
+      "id": "review-roadmap",
+      "label": "Review the phased roadmap and gates",
+      "kind": "navigation",
+      "from": "portfolio-reviewed",
+      "to": "roadmap-reviewed"
+    },
+    {
+      "id": "address-risks",
+      "label": "Review risks and mitigations",
+      "kind": "navigation",
+      "from": "roadmap-reviewed",
+      "to": "risks-addressed"
+    },
+    {
+      "id": "request-approval",
+      "label": "Request approval for the staged portfolio",
+      "kind": "primary",
+      "from": "risks-addressed",
+      "to": "approval-requested"
+    },
+    {
+      "id": "approve-portfolio",
+      "label": "Approve the staged portfolio subject to phase gates",
+      "kind": "primary",
+      "from": "approval-requested",
+      "to": "approved"
+    },
+    {
+      "id": "defer-decision",
+      "label": "Defer approval and request additional analysis",
+      "kind": "secondary",
+      "from": "approval-requested",
+      "to": "deferred"
+    },
+    {
+      "id": "return-to-risks",
+      "label": "Return to unresolved risks",
+      "kind": "recovery",
+      "from": "deferred",
+      "to": "risks-addressed"
+    }
+  ],
+  "states": [
+    "unopened",
+    "oriented",
+    "decision-framed",
+    "gap-understood",
+    "priorities-aligned",
+    "portfolio-reviewed",
+    "roadmap-reviewed",
+    "risks-addressed",
+    "approval-requested",
+    "approved",
+    "deferred"
+  ],
+  "primaryJourney": [
+    "open-briefing",
+    "review-decision",
+    "inspect-gap",
+    "align-priorities",
+    "compare-portfolios",
+    "review-roadmap",
+    "address-risks",
+    "request-approval",
+    "approve-portfolio"
+  ],
+  "surfaces": [
+    "presentation"
+  ],
+  "constraints": [
+    "Use exactly eight slides in this order: title, decision, gap, priorities, portfolio, roadmap, risks, approval.",
+    "Label every figure and quantitative callout Illustrative planning scenario — not a forecast.",
+    "Treat all organizations, portfolio data, metrics, dates, and outcomes as fictional scenario content rather than external facts.",
+    "Use a Swiss/data-driven visual system grounded in the steering-committee decision workflow, not in bundled character compositions.",
+    "Use the Fantasy Mouse only as a restrained presenter and preserve canonical identity and mutually exclusive default/action hand modes.",
+    "Keep the deck editable, accessible, legible at presentation scale, and structured as one clear composition per slide.",
+    "Require explicit phase gates, owners, mitigations, and next actions before the approval state.",
+    "Do not claim generated, tested, run, rendered, visually checked, compared, or accepted status without corresponding evidence."
+  ]
+}

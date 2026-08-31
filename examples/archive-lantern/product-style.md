@@ -1,0 +1,23 @@
+# Archive Lantern product-style derivation
+
+## Selected direction: quiet archival workstation
+
+Archive Lantern is a keyboard-capable Windows desktop utility for repeated local-library work. The interface should feel dependable, information-dense, and calm enough for long indexing and search sessions. No source brand was supplied. Windows/WPF conventions, the archive workflow, and accessibility requirements are the only style authorities; bundled character and composition assets are explicitly excluded from UI-style derivation.
+
+| Target-product evidence | Surface/platform | Hierarchy | Navigation | Layout | Component model | Palette | Typography | Density | Materials | Edge and elevation treatment | Motion | Feedback | Accessibility | Resize behavior |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Repeated import, catalog, tag, and search work in a local personal archive | Windows desktop; PowerShell 7 and WPF/XAML | Current library state and primary action first; collection/search results second; details and status remain visible but subordinate | Persistent command bar plus predictable Tab order; results open in-place with a clear Back command | Three-region workstation: command/search bar, flexible collection/result list, and details/status pane; empty and recovery states replace only the work region | Native WPF buttons, text boxes, list/grid selection, progress indicator, status region, tag chips implemented as focusable controls, and explicit retry/clear actions | Neutral warm-grey surfaces with dark text; restrained amber only for the current selection or active indexing; red reserved for import failure; green reserved for completed indexing | Windows system UI font with clear title, body, metadata, and status levels; no decorative display type | Compact but not cramped, optimized for scanning titles, paths, tags, and result counts | Flat opaque desktop surfaces; no paper, tape, sticker, grain, or composition-derived texture | Thin high-contrast separators, modest control radius consistent with the selected WPF treatment, and minimal elevation only for transient overlays | State transitions use short opacity/progress changes; reduced-motion mode removes nonessential animation without hiding progress | Persistent live status text announces import, indexing progress, duplicate resolution, completion, failure, result count, open result, and recovery; messages state what happened and what action is available | Logical Tab order, visible focus, keyboard activation, accessible names, status announcements, sufficient contrast, non-color status cues, minimum practical targets, and focus restoration after retry/no-results recovery | At 1440x900 the three regions remain visible; narrower windows collapse details below the list, preserve command/search access, and use scrolling rather than clipping |
+
+## Interaction and state rules
+
+- `empty-library`: center the empty-state explanation in the work region and make Import the first primary control in keyboard order. Character participation may support the state but must not obscure or replace the real Import button.
+- `import` and `indexing`: retain the collection frame, expose the current filename and determinate progress where available, disable only actions that would corrupt the active operation, and announce progress changes without moving keyboard focus.
+- `indexed` and `tag`: keep the selected item stable while a keyboard-reachable tag control adds or removes metadata. Confirmation appears in the status region.
+- `search` and `open-result`: search accepts title and tag terms, reports result count, preserves result selection, and opens the selected item with Enter or the real Open control. Back returns to the same query and selection.
+- `import-failed`: preserve the current library and selected files, place precise error text next to Retry and Cancel, and return focus to Retry or the first invalid item as appropriate.
+- `duplicate-detected`: identify the existing canonical item, keep its metadata by default, and require an explicit user choice before any merge or replacement behavior.
+- `no-results`: keep the query visible and offer Clear search plus focus restoration to the search box.
+
+## Intentional exclusions
+
+Do not copy the bundled examples' page skeleton, character placement or scale, bright palette, paper texture, taped labels, heavy rough borders, block title treatment, decorative motifs, or interaction arrangement. The mouse's photographic-face/drawn-body contrast remains inside approved character raster assets and does not prescribe interface materials.

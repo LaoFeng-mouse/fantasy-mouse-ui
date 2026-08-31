@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "caseId": "archive-lantern",
+  "mode": "strict",
+  "gates": {
+    "generated": false,
+    "tested": false,
+    "run": false,
+    "rendered": false,
+    "visuallyChecked": false,
+    "accepted": false
+  },
+  "primaryJourney": {
+    "steps": [
+      "empty-library",
+      "import",
+      "indexing",
+      "indexed",
+      "tag",
+      "search",
+      "open-result"
+    ],
+    "result": "pending"
+  },
+  "accessibility": {
+    "keyboard": "pending",
+    "contrast": "pending",
+    "reducedMotion": "pending"
+  },
+  "comparison": {
+    "status": "pending",
+    "repeatedDimensions": [],
+    "repairs": []
+  },
+  "artifacts": {
+    "source": [],
+    "output": [],
+    "screenshots": [],
+    "comparison": ""
+  },
+  "limits": []
+}

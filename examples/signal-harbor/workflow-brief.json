@@ -1,0 +1,147 @@
+{
+  "protocolVersion": 1,
+  "id": "signal-harbor",
+  "purpose": "Help operations responders select, assign, and resolve active incidents while preserving clear recovery and status feedback.",
+  "users": [
+    "operations-responder",
+    "incident-commander"
+  ],
+  "entities": [
+    "incident",
+    "owner",
+    "resolution-note",
+    "status-announcement"
+  ],
+  "screens": [
+    {
+      "id": "monitoring",
+      "purpose": "Scan the active incident queue and identify an incident requiring action."
+    },
+    {
+      "id": "incident-selected",
+      "purpose": "Review the selected incident, its operational context, and available actions."
+    },
+    {
+      "id": "assigning",
+      "purpose": "Choose an incident owner and confirm assignment."
+    },
+    {
+      "id": "assigned",
+      "purpose": "Confirm ownership and expose the resolution workflow."
+    },
+    {
+      "id": "resolving",
+      "purpose": "Enter a resolution note and confirm incident resolution."
+    },
+    {
+      "id": "resolved",
+      "purpose": "Confirm the incident is resolved and announce the final status."
+    },
+    {
+      "id": "blocked-assignment",
+      "purpose": "Explain that an owner is required and provide a recoverable route back to assignment."
+    },
+    {
+      "id": "failed-resolution",
+      "purpose": "Explain that a resolution note is required and provide a recoverable retry route."
+    }
+  ],
+  "actions": [
+    {
+      "id": "select-incident",
+      "label": "Select incident",
+      "kind": "navigation",
+      "from": "monitoring",
+      "to": "incident-selected"
+    },
+    {
+      "id": "start-assignment",
+      "label": "Assign incident",
+      "kind": "primary",
+      "from": "incident-selected",
+      "to": "assigning"
+    },
+    {
+      "id": "confirm-assignment",
+      "label": "Confirm assignment",
+      "kind": "primary",
+      "from": "assigning",
+      "to": "assigned"
+    },
+    {
+      "id": "block-assignment",
+      "label": "Require an owner",
+      "kind": "utility",
+      "from": "assigning",
+      "to": "blocked-assignment"
+    },
+    {
+      "id": "retry-assignment",
+      "label": "Retry assignment",
+      "kind": "recovery",
+      "from": "blocked-assignment",
+      "to": "assigning"
+    },
+    {
+      "id": "start-resolution",
+      "label": "Resolve incident",
+      "kind": "primary",
+      "from": "assigned",
+      "to": "resolving"
+    },
+    {
+      "id": "confirm-resolution",
+      "label": "Confirm resolution",
+      "kind": "primary",
+      "from": "resolving",
+      "to": "resolved"
+    },
+    {
+      "id": "fail-resolution",
+      "label": "Require a resolution note",
+      "kind": "utility",
+      "from": "resolving",
+      "to": "failed-resolution"
+    },
+    {
+      "id": "retry-resolution",
+      "label": "Retry resolution",
+      "kind": "recovery",
+      "from": "failed-resolution",
+      "to": "resolving"
+    }
+  ],
+  "states": [
+    "monitoring",
+    "incident-selected",
+    "assigning",
+    "assigned",
+    "resolving",
+    "resolved",
+    "blocked-assignment",
+    "failed-resolution"
+  ],
+  "primaryJourney": [
+    "monitoring",
+    "incident-selected",
+    "assigning",
+    "assigned",
+    "resolving",
+    "resolved"
+  ],
+  "surfaces": [
+    "saas-dashboard"
+  ],
+  "constraints": [
+    "The public-benchmark trigger resolves execution to Strict mode.",
+    "Blocked assignment must explain that an owner is required and remain recoverable.",
+    "Failed resolution must explain that a resolution note is required and remain recoverable.",
+    "All interactive controls must support keyboard navigation and deterministic visible focus.",
+    "Status changes must be announced through a polite live region.",
+    "Motion must respect reduced-motion preferences.",
+    "The incident-dispatcher mouse may use action mode only while assigning or resolving.",
+    "Default or resting mouse appearances must preserve the chest V/U as the sole default clasped hand pair; only assigning or resolving action mode removes it and uses exactly one coherent action-hand pair with no chest V/U.",
+    "Dashboard styling must derive from incident-monitoring needs rather than character or composition references.",
+    "No generation, runtime, rendering, visual QA, or acceptance claim is valid without corresponding evidence."
+  ]
+}
