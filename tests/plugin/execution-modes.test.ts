@@ -1,5 +1,19 @@
-import { readFile } from "node:fs/promises";
-import { describe, expect, it } from "vitest";
+import { execFile } from "node:child_process";
+import {
+  copyFile,
+  mkdir,
+  mkdtemp,
+  readFile,
+  rm,
+  writeFile,
+} from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { promisify } from "node:util";
+import { afterEach, describe, expect, it } from "vitest";
+
+const execFileAsync = promisify(execFile);
 
 const configPath = new URL(
   "../../plugins/fantasy-mouse-ui/config/execution-modes.json",
@@ -9,6 +23,63 @@ const schemaPath = new URL(
   "../../plugins/fantasy-mouse-ui/protocol/execution-modes.schema.json",
   import.meta.url,
 );
+const resolverPath = new URL(
+  "../../plugins/fantasy-mouse-ui/scripts/resolve-mode.mjs",
+  import.meta.url,
+);
+const worktreePath = fileURLToPath(new URL("../..", import.meta.url));
+const temporaryRoots = new Set<string>();
+
+type ResolverResult = {
+  code: number;
+  stdout: string;
+  stderr: string;
+};
+
+async function runResolver(
+  args: string[],
+  executableResolverPath = fileURLToPath(resolverPath),
+): Promise<ResolverResult> {
+  try {
+    const { stdout, stderr } = await execFileAsync(process.execPath, [
+      executableResolverPath,
+      ...args,
+    ]);
+    return { code: 0, stdout, stderr };
+  } catch (error) {
+    const failure = error as Error & {
+      code?: number;
+      stdout?: string;
+      stderr?: string;
+    };
+    return {
+      code: failure.code ?? -1,
+      stdout: failure.stdout ?? "",
+      stderr: failure.stderr ?? "",
+    };
+  }
+}
+
+function expectOneBoundedJsonObject(output: string): unknown {
+  expect(Buffer.byteLength(output)).toBeLessThanOrEqual(1024);
+  expect(output.endsWith("\n")).toBe(true);
+  expect(output.match(/\n/g)).toHaveLength(1);
+  return JSON.parse(output) as unknown;
+}
+
+function expectNoPathLeak(output: string, additionalPaths: string[] = []): void {
+  for (const sensitivePath of [
+    worktreePath,
+    fileURLToPath(configPath),
+    ...additionalPaths,
+  ]) {
+    expect(output).not.toContain(sensitivePath);
+    expect(output).not.toContain(JSON.stringify(sensitivePath).slice(1, -1));
+  }
+  expect(output).not.toContain("execution-modes.json");
+  expect(output).not.toMatch(/[A-Za-z]:[\\/]/);
+  expect(output).not.toMatch(/\\\\[^\\/\s]+[\\/][^\\/\s]+/);
+}
 
 const approvedConfig = {
   $schema: "../protocol/execution-modes.schema.json",
@@ -93,6 +164,305 @@ const approvedConfig = {
     },
   },
 };
+
+type ModeProfile = {
+  label: string;
+  required: string[];
+  mayOmit: string[];
+  [key: string]: unknown;
+};
+
+type MutableExecutionModeConfig = {
+  $schema: string;
+  schemaVersion: number;
+  defaultMode: string;
+  strictTriggers: string[];
+  modes: Record<string, ModeProfile>;
+  [key: string]: unknown;
+};
+
+type MalformedConfigCase = {
+  name: string;
+  mutate: (config: MutableExecutionModeConfig) => unknown;
+};
+
+const malformedConfigCases: MalformedConfigCase[] = [
+  {
+    name: "wrong top-level key",
+    mutate: ({ $schema, schemaVersion, defaultMode, strictTriggers, modes }) => ({
+      $schema,
+      version: schemaVersion,
+      defaultMode,
+      strictTriggers,
+      modes,
+    }),
+  },
+  {
+    name: "extra top-level key",
+    mutate: (config) => ({ ...config, extra: true }),
+  },
+  {
+    name: "reordered top-level keys",
+    mutate: ({ $schema, schemaVersion, defaultMode, strictTriggers, modes }) => ({
+      schemaVersion,
+      $schema,
+      defaultMode,
+      strictTriggers,
+      modes,
+    }),
+  },
+  {
+    name: "wrong schema reference",
+    mutate: (config) => ({ ...config, $schema: "../protocol/other.schema.json" }),
+  },
+  {
+    name: "wrong schema version",
+    mutate: (config) => ({ ...config, schemaVersion: 2 }),
+  },
+  {
+    name: "unknown default mode",
+    mutate: (config) => ({ ...config, defaultMode: "turbo" }),
+  },
+  {
+    name: "empty strict triggers",
+    mutate: (config) => ({ ...config, strictTriggers: [] }),
+  },
+  {
+    name: "duplicate strict trigger",
+    mutate: (config) => ({
+      ...config,
+      strictTriggers: [...config.strictTriggers, config.strictTriggers[0]],
+    }),
+  },
+  {
+    name: "blank strict trigger",
+    mutate: (config) => ({ ...config, strictTriggers: [" "] }),
+  },
+  {
+    name: "wrong mode key",
+    mutate: (config) => ({
+      ...config,
+      modes: {
+        fast: config.modes.fast,
+        standard: config.modes.standard,
+        careful: config.modes.strict,
+      },
+    }),
+  },
+  {
+    name: "extra mode key",
+    mutate: (config) => ({
+      ...config,
+      modes: { ...config.modes, careful: config.modes.strict },
+    }),
+  },
+  {
+    name: "reordered mode keys",
+    mutate: (config) => ({
+      ...config,
+      modes: {
+        standard: config.modes.standard,
+        fast: config.modes.fast,
+        strict: config.modes.strict,
+      },
+    }),
+  },
+  {
+    name: "wrong profile key",
+    mutate: (config) => ({
+      ...config,
+      modes: {
+        ...config.modes,
+        fast: {
+          title: config.modes.fast.label,
+          required: config.modes.fast.required,
+          mayOmit: config.modes.fast.mayOmit,
+        },
+      },
+    }),
+  },
+  {
+    name: "extra profile key",
+    mutate: (config) => ({
+      ...config,
+      modes: {
+        ...config.modes,
+        fast: { ...config.modes.fast, extra: true },
+      },
+    }),
+  },
+  {
+    name: "reordered profile keys",
+    mutate: (config) => ({
+      ...config,
+      modes: {
+        ...config.modes,
+        fast: {
+          required: config.modes.fast.required,
+          label: config.modes.fast.label,
+          mayOmit: config.modes.fast.mayOmit,
+        },
+      },
+    }),
+  },
+  {
+    name: "blank profile label",
+    mutate: (config) => ({
+      ...config,
+      modes: {
+        ...config.modes,
+        fast: { ...config.modes.fast, label: " " },
+      },
+    }),
+  },
+  {
+    name: "empty required list",
+    mutate: (config) => ({
+      ...config,
+      modes: {
+        ...config.modes,
+        fast: { ...config.modes.fast, required: [] },
+      },
+    }),
+  },
+  {
+    name: "duplicate required item",
+    mutate: (config) => ({
+      ...config,
+      modes: {
+        ...config.modes,
+        fast: {
+          ...config.modes.fast,
+          required: [
+            ...config.modes.fast.required,
+            config.modes.fast.required[0],
+          ],
+        },
+      },
+    }),
+  },
+  {
+    name: "blank required item",
+    mutate: (config) => ({
+      ...config,
+      modes: {
+        ...config.modes,
+        fast: { ...config.modes.fast, required: [" "] },
+      },
+    }),
+  },
+  {
+    name: "missing shared required invariant",
+    mutate: (config) => ({
+      ...config,
+      modes: {
+        ...config.modes,
+        fast: {
+          ...config.modes.fast,
+          required: config.modes.fast.required.filter(
+            (item) => item !== "honest-evidence",
+          ),
+        },
+      },
+    }),
+  },
+  {
+    name: "duplicate mayOmit item",
+    mutate: (config) => ({
+      ...config,
+      modes: {
+        ...config.modes,
+        fast: {
+          ...config.modes.fast,
+          mayOmit: [
+            ...config.modes.fast.mayOmit,
+            config.modes.fast.mayOmit[0],
+          ],
+        },
+      },
+    }),
+  },
+  {
+    name: "blank mayOmit item",
+    mutate: (config) => ({
+      ...config,
+      modes: {
+        ...config.modes,
+        fast: { ...config.modes.fast, mayOmit: [" "] },
+      },
+    }),
+  },
+  {
+    name: "required and mayOmit overlap",
+    mutate: (config) => ({
+      ...config,
+      modes: {
+        ...config.modes,
+        fast: {
+          ...config.modes.fast,
+          mayOmit: [...config.modes.fast.mayOmit, "open-or-render"],
+        },
+      },
+    }),
+  },
+  {
+    name: "shared required invariant and mayOmit overlap",
+    mutate: (config) => ({
+      ...config,
+      modes: {
+        ...config.modes,
+        standard: {
+          ...config.modes.standard,
+          mayOmit: [...config.modes.standard.mayOmit, "honest-evidence"],
+        },
+      },
+    }),
+  },
+];
+
+async function runCopiedResolver(config: unknown): Promise<{
+  result: ResolverResult;
+  temporaryRoot: string;
+}> {
+  const temporaryRoot = await mkdtemp(join(tmpdir(), "fantasy-mouse-mode-"));
+  temporaryRoots.add(temporaryRoot);
+  const scriptsDirectory = join(temporaryRoot, "scripts");
+  const configDirectory = join(temporaryRoot, "config");
+  const copiedResolverPath = join(scriptsDirectory, "resolve-mode.mjs");
+
+  await Promise.all([
+    mkdir(scriptsDirectory, { recursive: true }),
+    mkdir(configDirectory, { recursive: true }),
+  ]);
+  await Promise.all([
+    copyFile(fileURLToPath(resolverPath), copiedResolverPath),
+    writeFile(
+      join(configDirectory, "execution-modes.json"),
+      `${JSON.stringify(config)}\n`,
+      "utf8",
+    ),
+  ]);
+
+  return {
+    result: await runResolver([], copiedResolverPath),
+    temporaryRoot,
+  };
+}
+
+afterEach(async () => {
+  const roots = [...temporaryRoots];
+  temporaryRoots.clear();
+  await Promise.all(
+    roots.map((root) =>
+      rm(root, {
+        recursive: true,
+        force: true,
+        maxRetries: 3,
+        retryDelay: 50,
+      }),
+    ),
+  );
+});
 
 describe("Fantasy Mouse execution modes", () => {
   it("locks the canonical execution-mode profile", async () => {
@@ -200,4 +570,154 @@ describe("Fantasy Mouse execution modes", () => {
       ],
     });
   });
+
+  it.each([
+    {
+      args: [],
+      expected: {
+        ok: true,
+        mode: "standard",
+        reason: "default",
+        upgradedFrom: null,
+      },
+    },
+    {
+      args: ["--requested", "fast"],
+      expected: {
+        ok: true,
+        mode: "fast",
+        reason: "requested:fast",
+        upgradedFrom: null,
+      },
+    },
+    {
+      args: ["--requested", "strict"],
+      expected: {
+        ok: true,
+        mode: "strict",
+        reason: "requested:strict",
+        upgradedFrom: null,
+      },
+    },
+    {
+      args: ["--requested", "fast", "--trigger", "public-benchmark"],
+      expected: {
+        ok: true,
+        mode: "strict",
+        reason: "trigger:public-benchmark",
+        upgradedFrom: "fast",
+      },
+    },
+    {
+      args: ["--requested", "standard", "--trigger", "medical"],
+      expected: {
+        ok: true,
+        mode: "strict",
+        reason: "trigger:medical",
+        upgradedFrom: "standard",
+      },
+    },
+    {
+      args: [
+        "--requested",
+        "fast",
+        "--trigger",
+        "financial",
+        "--trigger",
+        "medical",
+      ],
+      expected: {
+        ok: true,
+        mode: "strict",
+        reason: "trigger:financial",
+        upgradedFrom: "fast",
+      },
+    },
+  ])("resolves execution mode for $args", async ({ args, expected }) => {
+    const result = await runResolver(args);
+
+    expect(result.code).toBe(0);
+    expect(result.stderr).toBe("");
+    expect(expectOneBoundedJsonObject(result.stdout)).toEqual(expected);
+    expectNoPathLeak(result.stdout);
+  });
+
+  it.each([
+    {
+      name: "invalid requested mode",
+      args: ["--requested", "turbo"],
+      error: "invalid-requested-mode",
+    },
+    {
+      name: "unknown trigger",
+      args: ["--trigger", "private-preview"],
+      error: "unknown-trigger",
+    },
+    {
+      name: "duplicate identical requested mode",
+      args: ["--requested", "fast", "--requested", "fast"],
+      error: "duplicate-requested",
+    },
+    {
+      name: "duplicate conflicting requested mode",
+      args: ["--requested", "fast", "--requested", "strict"],
+      error: "duplicate-requested",
+    },
+    {
+      name: "duplicate identical trigger",
+      args: ["--trigger", "medical", "--trigger", "medical"],
+      error: "duplicate-trigger",
+    },
+    {
+      name: "missing requested value",
+      args: ["--requested"],
+      error: "missing-requested-value",
+    },
+    {
+      name: "missing trigger value",
+      args: ["--trigger"],
+      error: "missing-trigger-value",
+    },
+    {
+      name: "unknown flag",
+      args: ["--config", "elsewhere.json"],
+      error: "unknown-argument",
+    },
+    {
+      name: "positional argument",
+      args: ["fast"],
+      error: "unknown-argument",
+    },
+  ])("rejects $name", async ({ args, error }) => {
+    const result = await runResolver(args);
+
+    expect(result.code).toBe(1);
+    expect(result.stdout).toBe("");
+    expect(expectOneBoundedJsonObject(result.stderr)).toEqual({
+      ok: false,
+      error,
+    });
+    expectNoPathLeak(result.stderr);
+  });
+
+  it.each(malformedConfigCases)(
+    "rejects malformed bundled config: $name",
+    async ({ mutate }) => {
+      const config = structuredClone(
+        approvedConfig,
+      ) as MutableExecutionModeConfig;
+      const { result, temporaryRoot } = await runCopiedResolver(mutate(config));
+
+      expect(result.code).toBe(1);
+      expect(result.stdout).toBe("");
+      expect(result.stderr).toBe(
+        `${JSON.stringify({ ok: false, error: "invalid-config" })}\n`,
+      );
+      expect(expectOneBoundedJsonObject(result.stderr)).toEqual({
+        ok: false,
+        error: "invalid-config",
+      });
+      expectNoPathLeak(result.stderr, [temporaryRoot]);
+    },
+  );
 });
