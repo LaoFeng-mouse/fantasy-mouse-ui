@@ -5,7 +5,11 @@ import { describe, expect, it } from "vitest";
 // @ts-expect-error The benchmark runtime deliberately ships as plain ESM.
 import { escapeHtml, initialSignalState, reduceSignal } from "../../examples/signal-harbor/source/state.mjs";
 
+// @ts-expect-error The benchmark runtime deliberately ships as plain ESM.
+import { initialFestivalState, reduceFestival } from "../../examples/fieldnote-festival/source/state.mjs";
+
 const caseRoot = fileURLToPath(new URL("../../examples/signal-harbor/", import.meta.url));
+const festivalRoot = fileURLToPath(new URL("../../examples/fieldnote-festival/", import.meta.url));
 
 describe("Signal Harbor state reducer", () => {
   it("starts by monitoring the active incident queue", () => {
@@ -156,5 +160,177 @@ describe("Signal Harbor state reducer", () => {
     expect(app).not.toContain('role="listitem"');
     expect(css).toContain("prefers-reduced-motion: reduce");
     expect(css).toContain(":focus-visible");
+  });
+});
+
+describe("Fieldnote Festival state reducer", () => {
+  it("starts with the complete program and an empty plan", () => {
+    expect(initialFestivalState()).toEqual({
+      phase: "browse-program",
+      day: "all",
+      selectedId: null,
+      plan: [],
+      pendingId: null,
+      liveRegion: "",
+    });
+  });
+
+  it("filters a day and inspects a session", () => {
+    const filtered = reduceFestival(initialFestivalState(), {
+      type: "filter-day",
+      day: "saturday",
+    });
+    expect(filtered).toMatchObject({
+      phase: "day-filtered",
+      day: "saturday",
+      liveRegion: "Showing Saturday sessions",
+    });
+
+    expect(
+      reduceFestival(filtered, { type: "inspect", id: "fern-walk" }),
+    ).toMatchObject({
+      phase: "session-inspected",
+      selectedId: "fern-walk",
+      day: "saturday",
+    });
+  });
+
+  it("saves a non-clashing session", () => {
+    expect(
+      reduceFestival(initialFestivalState(), {
+        type: "add",
+        id: "fern-walk",
+      }),
+    ).toMatchObject({
+      phase: "saved",
+      plan: ["fern-walk"],
+      pendingId: null,
+      liveRegion: "Saved to your plan: Fern Walk at Mill Creek",
+    });
+  });
+
+  it("holds a clashing session pending without mutating the existing plan", () => {
+    const existing = {
+      ...initialFestivalState(),
+      phase: "session-inspected",
+      selectedId: "seed-library",
+      plan: ["fern-walk"],
+    };
+    const result = reduceFestival(existing, {
+      type: "add",
+      id: "seed-library",
+    });
+
+    expect(result).toMatchObject({
+      phase: "conflict",
+      plan: ["fern-walk"],
+      pendingId: "seed-library",
+    });
+    expect(result.plan).toBe(existing.plan);
+  });
+
+  it("atomically replaces the clashing session and announces the saved plan", () => {
+    const conflict = {
+      ...initialFestivalState(),
+      phase: "conflict",
+      selectedId: "seed-library",
+      plan: ["fern-walk", "river-moss"],
+      pendingId: "seed-library",
+    };
+
+    expect(
+      reduceFestival(conflict, {
+        type: "replace",
+        removeId: "fern-walk",
+        addId: "seed-library",
+      }),
+    ).toEqual({
+      ...conflict,
+      phase: "saved",
+      plan: ["river-moss", "seed-library"],
+      pendingId: null,
+      liveRegion: "Saved plan: River Moss Lab and Seed Library Exchange",
+    });
+  });
+
+  it("removes a session and returns to the empty plan", () => {
+    expect(
+      reduceFestival(
+        { ...initialFestivalState(), phase: "saved", plan: ["fern-walk"] },
+        { type: "remove", id: "fern-walk" },
+      ),
+    ).toMatchObject({
+      phase: "empty-plan",
+      plan: [],
+      liveRegion: "Removed Fern Walk at Mill Creek. Your plan is empty.",
+    });
+  });
+
+  it("cancels a pending conflict and restores the inspected session", () => {
+    expect(
+      reduceFestival(
+        {
+          ...initialFestivalState(),
+          phase: "conflict",
+          selectedId: "seed-library",
+          plan: ["fern-walk"],
+          pendingId: "seed-library",
+        },
+        { type: "close-dialog" },
+      ),
+    ).toMatchObject({
+      phase: "session-inspected",
+      plan: ["fern-walk"],
+      pendingId: null,
+      liveRegion: "Kept Fern Walk at Mill Creek in your plan",
+    });
+  });
+
+  it("throws for unknown events", () => {
+    expect(() =>
+      reduceFestival(initialFestivalState(), { type: "harvest" }),
+    ).toThrow("unknown-festival-event:harvest");
+  });
+
+  it("ships accessible, responsive runtime hooks and scoped character roles", async () => {
+    const [html, app, css] = await Promise.all([
+      readFile(`${festivalRoot}source/index.html`, "utf8"),
+      readFile(`${festivalRoot}source/app.mjs`, "utf8"),
+      readFile(`${festivalRoot}source/styles.css`, "utf8"),
+    ]);
+
+    expect(html).toContain('data-testid="day-filters"');
+    expect(html).toContain('data-testid="session-detail"');
+    expect(html).toContain('data-testid="plan-region"');
+    expect(html).toContain('data-testid="conflict-dialog"');
+    expect(html).toContain('aria-live="polite"');
+    expect(html).toContain('aria-describedby="conflict-description"');
+    expect(html.match(/field-guide-idle\.png/g)).toHaveLength(1);
+    expect(html).not.toContain("field-guide-notebook.png");
+    expect(app).toContain("field-guide-notebook.png");
+    expect(app).toContain("dialog.showModal()");
+    expect(app).toContain("initiatingControl?.focus()");
+    expect(app).not.toContain("innerHTML");
+    expect(css).toContain("min-height: 44px");
+    expect(css).toContain("prefers-reduced-motion: reduce");
+    expect(css).toContain(":focus-visible");
+    expect(css).toContain("overflow-x: clip");
+  });
+
+  it("keeps every declared runtime file byte-identical between source and output", async () => {
+    for (const path of [
+      "index.html",
+      "styles.css",
+      "state.mjs",
+      "app.mjs",
+      "assets/field-guide-idle.png",
+      "assets/field-guide-notebook.png",
+    ]) {
+      const [source, output] = await Promise.all([
+        readFile(`${festivalRoot}source/${path}`),
+        readFile(`${festivalRoot}output/${path}`),
+      ]);
+      expect(output.equals(source), path).toBe(true);
+    }
   });
 });

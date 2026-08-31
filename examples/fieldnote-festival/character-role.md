@@ -21,4 +21,4 @@ The default chest V/U is one clasped hand pair, not a belly mark. In an action p
 - Do not repeat it on session cards or use it as an icon, loading indicator, status badge, error symbol, or button label.
 - Keep the conflict dialog literal and character-free so times, replacement consequences, cancel recovery, and focus behavior remain authoritative.
 - Keep saved confirmation understandable without character imagery. The state is conveyed by text and semantics, not expression.
-- Do not reconstruct the mouse with CSS, SVG, emoji, ASCII, or placeholder geometry. A future implementation must use approved or generated raster assets and preserve one hand pair.
+- Do not reconstruct the mouse with CSS, SVG, emoji, ASCII, or placeholder geometry. The implementation uses generated raster assets and preserves one hand pair in each role state.

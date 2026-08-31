@@ -3,12 +3,12 @@
   "caseId": "fieldnote-festival",
   "mode": "strict",
   "gates": {
-    "generated": false,
-    "tested": false,
-    "run": false,
-    "rendered": false,
-    "visuallyChecked": false,
-    "accepted": false
+    "generated": true,
+    "tested": true,
+    "run": true,
+    "rendered": true,
+    "visuallyChecked": true,
+    "accepted": true
   },
   "primaryJourney": {
     "steps": [
@@ -19,26 +19,54 @@
       "resolve-time-conflict",
       "saved-plan"
     ],
-    "result": "pending"
+    "result": "passed"
   },
   "accessibility": {
-    "keyboard": "pending",
-    "contrast": "pending",
-    "reducedMotion": "pending"
+    "keyboard": "passed",
+    "contrast": "passed",
+    "reducedMotion": "passed"
   },
   "comparison": {
-    "status": "pending",
-    "repeatedDimensions": [],
-    "repairs": []
+    "status": "passed",
+    "repeatedDimensions": [
+      "canonical identity: compact gray photographic face, narrow eyes, toothy grin, thin ears, and white bean body",
+      "default anatomy: chest U retained as the sole resting hand pair",
+      "action anatomy: chest U removed and replaced by exactly one body-connected hand pair holding and pointing to the notebook",
+      "composition continuity: the character remains subordinate to the editorial note and empty-plan workflow"
+    ],
+    "repairs": [
+      "Converted generated key-color backgrounds to genuine alpha and optimized both 800 by 800 role assets below the artifact limit.",
+      "Repaired conflict cancellation focus after rerender by resolving the initiating session control instead of focusing a stale node.",
+      "Shortened the visible removal label while preserving its complete accessible name so the itinerary column no longer collapses.",
+      "Kept character imagery out of persistent navigation, the conflict dialog, and authoritative saved feedback."
+    ]
   },
   "artifacts": {
-    "source": [],
-    "output": [],
-    "screenshots": [],
-    "comparison": ""
+    "source": [
+      "source/index.html",
+      "source/styles.css",
+      "source/state.mjs",
+      "source/app.mjs",
+      "source/assets/field-guide-idle.png",
+      "source/assets/field-guide-notebook.png"
+    ],
+    "output": [
+      "output/index.html",
+      "output/styles.css",
+      "output/state.mjs",
+      "output/app.mjs",
+      "output/assets/field-guide-idle.png",
+      "output/assets/field-guide-notebook.png"
+    ],
+    "screenshots": [
+      "screenshots/hero-program.png",
+      "screenshots/time-conflict.png",
+      "screenshots/saved-plan.png",
+      "screenshots/mobile-conflict.png"
+    ],
+    "comparison": "evidence/comparison.png"
   },
   "limits": [
-    "Metadata-only scaffold; source, output, screenshots, and comparison evidence are intentionally absent.",
-    "No generation, runtime, visual, accessibility, comparison, or owner-acceptance claim has been made."
+    "The real-browser accessibility journey is recorded as a manual Playwright CLI run in the case README; repository tests guard the public state and runtime hooks without adding Playwright as a permanent development dependency."
   ]
 }

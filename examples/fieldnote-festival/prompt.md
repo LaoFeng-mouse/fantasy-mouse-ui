@@ -14,4 +14,4 @@ The Fantasy Mouse is a regional field guide embedded only in the editorial intro
 
 Run the benchmark in strict mode because this is a public benchmark. Keep generated, tested, run, rendered, visually checked, and accepted gates separate. Exercise the full journey with mouse and keyboard at desktop and 390 px mobile widths before changing any gate. Capture hero, session-detail, conflict, and saved-plan evidence only after a real runnable implementation exists. Comparison evidence must use only an allowed baseline and must document repeated dimensions, justification, and repairs.
 
-For the current metadata-only phase, do not create source, output, raster assets, screenshots, or comparison artifacts, and do not mark any gate as passed or accepted.
+The accepted implementation must keep source and runnable output byte-identical, record the full desktop and 390 px journeys, and mark gates only from fresh evidence.

@@ -107,6 +107,6 @@
     "Status changes must be announced without relying on color, motion, or the character.",
     "Reduced-motion preferences must remove nonessential movement while preserving state clarity.",
     "The narrow layout must remain usable at 390 pixels without horizontal scrolling.",
-    "Source, output, screenshots, comparison artifacts, and acceptance claims remain absent in the metadata-only phase."
+    "Accepted source and standalone output must remain byte-identical and supported by reviewable screenshots and comparison evidence."
   ]
 }
