@@ -1,0 +1,23 @@
+{
+  "$schema": "../protocol/execution-modes.schema.json",
+  "schemaVersion": 1,
+  "defaultMode": "standard",
+  "strictTriggers": ["public-benchmark", "formal-release", "permissions", "financial", "medical", "destructive", "multi-page"],
+  "modes": {
+    "fast": {
+      "label": "Fast",
+      "required": ["declare-mode", "verify-bundle", "view-required-images", "inspect-target-source", "derive-product-style", "produce-editable-output", "open-or-render", "focused-visual-qa", "honest-evidence"],
+      "mayOmit": ["three-direction-gate", "complete-state-matrix", "formal-benchmark-package", "long-form-handoff"]
+    },
+    "standard": {
+      "label": "Standard",
+      "required": ["declare-mode", "verify-bundle", "view-required-images", "inspect-target-source", "workflow-brief", "derive-character-role", "derive-product-style", "primary-journey", "key-states", "responsive-behavior", "baseline-accessibility", "produce-editable-output", "open-or-render", "screenshot-comparison", "honest-evidence"],
+      "mayOmit": ["exhaustive-threat-states", "formal-release-package"]
+    },
+    "strict": {
+      "label": "Strict",
+      "required": ["declare-mode", "verify-bundle", "view-required-images", "inspect-target-source", "protocol-validation", "workflow-brief", "derive-character-role", "derive-product-style", "direction-gate", "all-applicable-states", "keyboard-access", "contrast-check", "recovery-paths", "produce-editable-output", "run-real-target", "same-context-comparison", "anti-template-comparison", "provenance", "full-evidence-package", "honest-evidence"],
+      "mayOmit": []
+    }
+  }
+}

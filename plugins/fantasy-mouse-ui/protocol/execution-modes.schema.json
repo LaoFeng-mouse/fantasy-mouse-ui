@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "execution-modes.schema.json",
+  "title": "Fantasy Mouse execution modes",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "defaultMode",
+    "strictTriggers",
+    "modes"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "const": "../protocol/execution-modes.schema.json"
+    },
+    "schemaVersion": {
+      "type": "integer",
+      "const": 1
+    },
+    "defaultMode": {
+      "type": "string",
+      "enum": ["fast", "standard", "strict"]
+    },
+    "strictTriggers": {
+      "$ref": "#/$defs/nonEmptyUniqueStringArray"
+    },
+    "modes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fast", "standard", "strict"],
+      "properties": {
+        "fast": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["label", "required", "mayOmit"],
+          "properties": {
+            "label": {
+              "$ref": "#/$defs/nonEmptyString"
+            },
+            "required": {
+              "$ref": "#/$defs/nonEmptyUniqueStringArray"
+            },
+            "mayOmit": {
+              "$ref": "#/$defs/uniqueStringArray"
+            }
+          }
+        },
+        "standard": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["label", "required", "mayOmit"],
+          "properties": {
+            "label": {
+              "$ref": "#/$defs/nonEmptyString"
+            },
+            "required": {
+              "$ref": "#/$defs/nonEmptyUniqueStringArray"
+            },
+            "mayOmit": {
+              "$ref": "#/$defs/uniqueStringArray"
+            }
+          }
+        },
+        "strict": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["label", "required", "mayOmit"],
+          "properties": {
+            "label": {
+              "$ref": "#/$defs/nonEmptyString"
+            },
+            "required": {
+              "$ref": "#/$defs/nonEmptyUniqueStringArray"
+            },
+            "mayOmit": {
+              "$ref": "#/$defs/uniqueStringArray"
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "uniqueStringArray": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/nonEmptyString"
+      }
+    },
+    "nonEmptyUniqueStringArray": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/uniqueStringArray"
+        },
+        {
+          "minItems": 1
+        }
+      ]
+    }
+  }
+}
