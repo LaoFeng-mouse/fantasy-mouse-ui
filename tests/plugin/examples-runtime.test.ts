@@ -10,6 +10,7 @@ import { initialFestivalState, reduceFestival } from "../../examples/fieldnote-f
 
 const caseRoot = fileURLToPath(new URL("../../examples/signal-harbor/", import.meta.url));
 const festivalRoot = fileURLToPath(new URL("../../examples/fieldnote-festival/", import.meta.url));
+const gridForwardRoot = fileURLToPath(new URL("../../examples/grid-forward-2030/", import.meta.url));
 
 describe("Signal Harbor state reducer", () => {
   it("starts by monitoring the active incident queue", () => {
@@ -332,5 +333,30 @@ describe("Fieldnote Festival state reducer", () => {
       ]);
       expect(output.equals(source), path).toBe(true);
     }
+  });
+});
+
+describe("Grid Forward 2030 presentation", () => {
+  it("keeps an explicit eight-slide editable authoring sequence and source notes", async () => {
+    const builder = await readFile(`${gridForwardRoot}source/build-deck.mjs`, "utf8");
+
+    expect(builder).toContain('Presentation.create({ slideSize: { width: 1280, height: 720 } })');
+    expect(builder.match(/^function build(?:Title|Decision|Gap|Priorities|Portfolio|Roadmap|Risks|Approval)\(/gmu)).toHaveLength(8);
+    expect(builder).toContain("if (deck.slides.items.length !== 8)");
+    expect(builder).toContain("slide.speakerNotes.textFrame.setText");
+    expect(builder).toContain("[Sources]");
+    expect(builder).toContain("Illustrative planning scenario — not a forecast");
+    expect(builder).toContain("presenter.flipHorizontal = true");
+    expect(builder).not.toContain("Codex Grid");
+  });
+
+  it("keeps the accepted editable PPTX byte-identical between source and output", async () => {
+    const [source, output] = await Promise.all([
+      readFile(`${gridForwardRoot}source/Grid-Forward-2030.pptx`),
+      readFile(`${gridForwardRoot}output/Grid-Forward-2030.pptx`),
+    ]);
+
+    expect(source.subarray(0, 2).toString("ascii")).toBe("PK");
+    expect(output.equals(source)).toBe(true);
   });
 });

@@ -3,12 +3,12 @@
   "caseId": "grid-forward-2030",
   "mode": "strict",
   "gates": {
-    "generated": false,
-    "tested": false,
-    "run": false,
-    "rendered": false,
-    "visuallyChecked": false,
-    "accepted": false
+    "generated": true,
+    "tested": true,
+    "run": true,
+    "rendered": true,
+    "visuallyChecked": true,
+    "accepted": true
   },
   "primaryJourney": {
     "steps": [
@@ -22,29 +22,51 @@
       "request-approval",
       "approve-portfolio"
     ],
-    "result": "pending"
+    "result": "passed"
   },
   "accessibility": {
-    "keyboard": "pending",
-    "contrast": "pending",
-    "reducedMotion": "pending"
+    "keyboard": "passed",
+    "contrast": "passed",
+    "reducedMotion": "passed"
   },
   "comparison": {
-    "status": "pending",
-    "repeatedDimensions": [],
-    "repairs": []
+    "status": "passed",
+    "repeatedDimensions": [
+      "canonical identity: gray photographic face, narrow eyes, toothy grin, thin ears, and white bean body",
+      "default anatomy: chest U retained as the sole listening hand pair",
+      "action anatomy: chest U removed and exactly one body-connected pair grips a real pointer",
+      "cross-case boundary: character identity and anatomy repeat while slide layout, typography, palette, materials, density, and placement derive from the presentation task"
+    ],
+    "repairs": [
+      "Shortened four takeaway titles after full-size renders exposed wrapping that automated overflow checks did not flag.",
+      "Moved and resized the gap presenter so it no longer obscures explanatory text.",
+      "Flipped the action asset and aligned its pointer tip to the lower bracket datum instead of empty space.",
+      "Separated the quantitative callout from the presenter and kept all authoritative labels literal.",
+      "Darkened flexibility and resilience accents after contrast calculation exposed sub-threshold initial values.",
+      "Restricted character appearances to the gap and approval slides so the deck remains restrained and decision-led."
+    ]
   },
   "artifacts": {
-    "source": [],
-    "output": [],
-    "screenshots": [],
-    "comparison": ""
+    "source": [
+      "source/Grid-Forward-2030.pptx"
+    ],
+    "output": [
+      "output/Grid-Forward-2030.pptx"
+    ],
+    "screenshots": [
+      "screenshots/slide-01.png",
+      "screenshots/slide-02.png",
+      "screenshots/slide-03.png",
+      "screenshots/slide-04.png",
+      "screenshots/slide-05.png",
+      "screenshots/slide-06.png",
+      "screenshots/slide-07.png",
+      "screenshots/slide-08.png"
+    ],
+    "comparison": "evidence/comparison.png"
   },
   "limits": [
-    "Planning metadata only; no editable deck source has been generated.",
-    "No presentation output has been exported or run.",
-    "No slides have been rendered or visually checked.",
-    "No same-context or cross-case comparison has been created.",
-    "Accessibility checks and committee acceptance remain pending."
+    "All quantitative content is an explicitly labelled fictional planning scenario and not an external forecast.",
+    "The deck uses native linear slide order and no animations or custom interactive controls; keyboard and reduced-motion acceptance therefore rely on the presentation tool's native behavior."
   ]
 }

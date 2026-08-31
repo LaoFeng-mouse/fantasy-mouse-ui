@@ -24,3 +24,4 @@ Stable identity in every appearance: compact round grey texture-rich head, tiny 
 - Keep limbs clear of the eyes, teeth, ears, and defining silhouette.
 - Preserve readable body/arms/hands/prop occlusion at final presentation size.
 - The bundled composition examples have no slide-style authority and their chest-hand conflict must not be reproduced.
+- The accepted deck uses `presenter-listening.png` only on the approval slide and `presenter-pointer.png` only on the gap slide; all other slides remain character-free.
