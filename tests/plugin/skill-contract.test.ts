@@ -1,4 +1,4 @@
-import { readFile } from "node:fs/promises";
+import { lstat, readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 
 import manifest from "../../plugins/fantasy-mouse-ui/assets/visual-grounding/manifest.json" with {
@@ -13,6 +13,17 @@ const root = new URL(
 const readPluginFile = (path: string) => readFile(new URL(path, root), "utf8");
 const readDomainContext = () =>
   readFile(new URL("../../CONTEXT.md", import.meta.url), "utf8");
+const approvedStatement =
+  "The character assets originate from internet meme material and were personally collaged, drawn, and produced by the project maintainer. The original authors and license status of the underlying internet material have not been confirmed.";
+
+async function isRegularFile(url: URL) {
+  try {
+    const info = await lstat(url);
+    return info.isFile() && !info.isSymbolicLink();
+  } catch {
+    return false;
+  }
+}
 
 describe("Fantasy Mouse image-first Skill contract", () => {
   it("keeps root domain context aligned with independent UI-style authority", async () => {
@@ -209,7 +220,7 @@ describe("Fantasy Mouse image-first Skill contract", () => {
     expect(skill).not.toContain("and do not claim the gate passed");
   });
 
-  it("locks visual authority, hand anatomy, and open-source scope", async () => {
+  it("locks visual authority and hand anatomy while separating code and asset rights", async () => {
     const visual = await readPluginFile("references/visual-grounding.md");
 
     expect(visual).toContain(
@@ -229,8 +240,12 @@ describe("Fantasy Mouse image-first Skill contract", () => {
     expect(visual).toContain("layout-only");
     expect(visual).toContain("zero anatomy authority");
     expect(visual).toContain("bubble is optional");
-    expect(visual).toContain("open-source-distributable");
-    expect(visual).toContain("MIT License");
+    expect(visual).toContain("../ASSET_PROVENANCE.md");
+    expect(visual).toContain("software code is MIT licensed");
+    expect(visual).toContain("underlying author is unconfirmed");
+    expect(visual).toContain("underlying license is unconfirmed");
+    expect(visual).not.toContain("open-source-distributable");
+    expect(visual).not.toContain("assets are distributed under the repository MIT License");
     expect(visual).not.toContain("private-reference-only");
     expect(visual).not.toContain("public reuse rights");
     expect(visual).toContain(
@@ -241,6 +256,85 @@ describe("Fantasy Mouse image-first Skill contract", () => {
     );
     for (const asset of manifest.assets) {
       expect(visual).toContain(asset.path.split("/").at(-1));
+    }
+  });
+
+  it("discloses asset provenance without asserting third-party rights", async () => {
+    const provenance = await readPluginFile("ASSET_PROVENANCE.md").catch(
+      () => ""
+    );
+
+    expect(provenance).toContain(approvedStatement);
+    expect(provenance).toContain("software code is licensed under the MIT License");
+    expect(provenance).toContain("does not grant any rights in third-party material");
+    expect(provenance).toContain(
+      "does not establish ownership of the unknown underlying source material"
+    );
+    expect(provenance).toContain(
+      "does not assert that the underlying source material is copyright-free, public-domain, or open-source"
+    );
+    expect(provenance).toContain(
+      "https://github.com/LaoFeng-mouse/fantasy-mouse-ui/issues"
+    );
+    expect(provenance).toMatch(/review, removal, or takedown/i);
+    expect(provenance).toContain("assets/visual-grounding/canonical-protagonist.png");
+    expect(provenance).toContain("assets/visual-grounding/processing-action-hands.png");
+    expect(provenance).toContain("assets/visual-grounding/processing-with-bubble.png");
+    expect(provenance).toContain("assets/visual-grounding/processing-without-bubble.png");
+    expect(provenance).not.toMatch(
+      /(?:^|\n)the underlying source material is (?:copyright-free|public domain|open-source)/iu
+    );
+    expect(provenance.toLowerCase()).not.toContain("open-source-distributable");
+    expect(provenance.toLowerCase()).not.toContain(
+      "underlying material is mit licensed"
+    );
+  });
+
+  it("keeps MIT code grants intact and resolves both asset notices", async () => {
+    const [repositoryLicense, pluginLicense] = await Promise.all([
+      readFile(new URL("../../LICENSE", import.meta.url), "utf8"),
+      readPluginFile("LICENSE")
+    ]);
+    const rootNotice =
+      "This MIT License applies to the software code in this repository. Bundled character imagery is not represented as MIT-licensed third-party source material; see plugins/fantasy-mouse-ui/ASSET_PROVENANCE.md for its disclosed origin and unconfirmed underlying license status.";
+    const pluginNotice =
+      "This MIT License applies to the software code in this package. Bundled character imagery is not represented as MIT-licensed third-party source material; see ASSET_PROVENANCE.md for its disclosed origin and unconfirmed underlying license status.";
+
+    for (const license of [repositoryLicense, pluginLicense]) {
+      expect(license).toContain("MIT License");
+      expect(license).toContain("Copyright (c) 2026 LaoFeng-mouse");
+      expect(license).toContain("Permission is hereby granted");
+    }
+    expect(repositoryLicense).toContain(rootNotice);
+    expect(pluginLicense).toContain(pluginNotice);
+    expect(
+      await isRegularFile(
+        new URL(
+          "../../plugins/fantasy-mouse-ui/ASSET_PROVENANCE.md",
+          import.meta.url
+        )
+      )
+    ).toBe(true);
+    expect(await isRegularFile(new URL("ASSET_PROVENANCE.md", root))).toBe(
+      true
+    );
+  });
+
+  it("keeps active rights guidance factual and separated from the MIT code license", async () => {
+    const [visual, qa] = await Promise.all([
+      readPluginFile("references/visual-grounding.md"),
+      readPluginFile("references/qa.md")
+    ]);
+
+    for (const guidance of [visual, qa]) {
+      expect(guidance).toContain("../ASSET_PROVENANCE.md");
+      expect(guidance).toContain("software code is MIT licensed");
+      expect(guidance).toContain("underlying author is unconfirmed");
+      expect(guidance).toContain("underlying license is unconfirmed");
+      expect(guidance).not.toContain("open-source-distributable");
+      expect(guidance).not.toContain(
+        "Bundled visual-grounding assets are distributed under the repository MIT License"
+      );
     }
   });
 
@@ -309,9 +403,8 @@ describe("Fantasy Mouse image-first Skill contract", () => {
     expect(qa).toContain(
       "Do not claim the app or deck was run, rendered, or visually checked"
     );
-    expect(qa).toContain(
-      "Bundled visual-grounding assets are distributed under the repository MIT License"
-    );
+    expect(qa).toContain("underlying license is unconfirmed");
+    expect(qa).toContain("software code is MIT licensed");
     expect(qa).not.toContain("public rights claim");
   });
 

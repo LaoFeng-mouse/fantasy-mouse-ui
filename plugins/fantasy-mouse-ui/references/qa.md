@@ -69,6 +69,6 @@ An unavailable cross-output comparison does not block delivery. Report that subg
 
 ## Report rights and completion honestly
 
-Bundled visual-grounding assets are distributed under the repository MIT License. Preserve the license notice when redistributing the plugin or its assets, and do not claim that publication expands an asset's declared identity, anatomy, or composition authority.
+Read [ASSET_PROVENANCE.md](../ASSET_PROVENANCE.md) before reporting or redistributing the bundle. The software code is MIT licensed; the underlying author is unconfirmed and the underlying license is unconfirmed. Keep the code license separate from the bundled visual origin, do not imply rights in unknown third-party source material, and do not claim that publication expands an asset's declared identity, anatomy, or composition authority.
 
 Report passed, failed, partial, and unavailable gates separately. Export the editable source, brief, recipe, rationale, screenshots, comparison findings, repairs, and exact handoff. Reserve complete/accepted status for a result the user can run or render, edit, use, and visually verify.

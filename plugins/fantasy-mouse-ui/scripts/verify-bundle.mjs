@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { lstat, readFile, realpath } from "node:fs/promises";
+import { constants, lstat, open, readFile, realpath } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -8,11 +8,32 @@ const EXPECTED_STYLE_POLICY = {
   uiDerivation: "target-product-and-platform",
   templateLeakageThreshold: 3,
 };
+const EXPECTED_RIGHTS_POLICY = {
+  codeLicense: "MIT",
+  assetOrigin: "internet-meme-derived-maintainer-collage",
+  underlyingAuthor: "unconfirmed",
+  underlyingLicense: "unconfirmed",
+  provenancePath: "ASSET_PROVENANCE.md",
+};
+const EXPECTED_RIGHTS_POLICY_KEYS = Object.keys(EXPECTED_RIGHTS_POLICY);
+const EXPECTED_MANIFEST_KEYS = [
+  "schemaVersion",
+  "stylePolicy",
+  "rightsPolicy",
+  "assets",
+];
+const EXPECTED_PROVENANCE_SHA256 =
+  "2B7673ECEC0FA6F07F8B6BDC9DEA5FB761AD085A6A296DC34E1D6BAE692F236B";
+const MAX_PROVENANCE_BYTES = 64 * 1024;
+const PROVENANCE_OPEN_FLAGS =
+  constants.O_RDONLY |
+  (typeof constants.O_NOFOLLOW === "number" ? constants.O_NOFOLLOW : 0) |
+  (typeof constants.O_NONBLOCK === "number" ? constants.O_NONBLOCK : 0);
 const EXPECTED_ASSETS = [
   {
     path: "assets/visual-grounding/canonical-protagonist.png",
     role: "canonical-identity",
-    publication: "open-source-distributable",
+    publication: "bundled-with-disclosed-unverified-origin",
     sha256: "4C85BCE3AD50F33FC04BBF05147EFD96ED0BAE98866C12E1DB5E7096C8557316",
     width: 1387,
     height: 1134,
@@ -24,7 +45,7 @@ const EXPECTED_ASSETS = [
   {
     path: "assets/visual-grounding/processing-action-hands.png",
     role: "approved-action-hand-pose",
-    publication: "open-source-distributable",
+    publication: "bundled-with-disclosed-unverified-origin",
     sha256: "A22C3E5EBA3E4F417075F54F38DA3D7B6E177D294D42ED627F350AB38C7652A1",
     width: 1254,
     height: 1254,
@@ -37,7 +58,7 @@ const EXPECTED_ASSETS = [
   {
     path: "assets/visual-grounding/processing-with-bubble.png",
     role: "composition-only-with-bubble",
-    publication: "open-source-distributable",
+    publication: "bundled-with-disclosed-unverified-origin",
     sha256: "68376DD901AE3D10A311CBCA6BD06ED8D86A7BD58F8B24069203358711577EA5",
     width: 1487,
     height: 1058,
@@ -55,7 +76,7 @@ const EXPECTED_ASSETS = [
   {
     path: "assets/visual-grounding/processing-without-bubble.png",
     role: "composition-only-without-bubble",
-    publication: "open-source-distributable",
+    publication: "bundled-with-disclosed-unverified-origin",
     sha256: "7C8461D4DC13319C60AFDA34525B70F3C6467B07D40CA9A987217AB489FFD401",
     width: 1487,
     height: 1058,
@@ -125,6 +146,66 @@ function assertAssetAuthority(asset, expected) {
   if (stableJson(asset) !== stableJson(expected)) fail("invalid-asset-authority");
 }
 
+function sameIdentity(left, right) {
+  return left.dev === right.dev && left.ino === right.ino;
+}
+
+function hasValidProvenanceMetadata(info) {
+  return (
+    info.isFile() &&
+    info.nlink === 1n &&
+    info.dev !== 0n &&
+    info.ino !== 0n &&
+    info.size !== 0n &&
+    info.size <= BigInt(MAX_PROVENANCE_BYTES)
+  );
+}
+
+function hasSameProvenanceMetadata(left, right) {
+  return (
+    sameIdentity(left, right) &&
+    left.nlink === right.nlink &&
+    left.size === right.size &&
+    left.mtimeNs === right.mtimeNs &&
+    left.ctimeNs === right.ctimeNs
+  );
+}
+
+async function readVerifiedProvenance(provenanceCandidate, checkedPathInfo) {
+  let handle;
+  try {
+    handle = await open(provenanceCandidate, PROVENANCE_OPEN_FLAGS);
+  } catch {
+    fail("invalid-provenance-file");
+  }
+
+  try {
+    const before = await handle.stat({ bigint: true });
+    if (
+      !hasValidProvenanceMetadata(before) ||
+      !hasSameProvenanceMetadata(before, checkedPathInfo)
+    ) {
+      fail("invalid-provenance-file");
+    }
+
+    const bytes = await handle.readFile();
+    const after = await handle.stat({ bigint: true });
+    if (
+      !hasValidProvenanceMetadata(after) ||
+      !hasSameProvenanceMetadata(after, before) ||
+      BigInt(bytes.length) !== after.size
+    ) {
+      fail("invalid-provenance-file");
+    }
+    return bytes;
+  } catch (error) {
+    if (error instanceof VerificationError) throw error;
+    fail("invalid-provenance-file");
+  } finally {
+    await handle.close();
+  }
+}
+
 async function verify() {
   const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
   const pluginRoot = path.resolve(scriptDirectory, "..");
@@ -140,12 +221,70 @@ async function verify() {
   }
   if (
     !manifest ||
+    typeof manifest !== "object" ||
+    Array.isArray(manifest) ||
+    stableJson(Object.keys(manifest)) !== stableJson(EXPECTED_MANIFEST_KEYS)
+  ) {
+    fail("invalid-manifest");
+  }
+  if (
     manifest.schemaVersion !== 1 ||
     stableJson(manifest.stylePolicy) !== stableJson(EXPECTED_STYLE_POLICY) ||
     !Array.isArray(manifest.assets) ||
     manifest.assets.length !== EXPECTED_ASSET_COUNT
   ) {
     fail("invalid-asset-count");
+  }
+  const rightsPolicy = manifest.rightsPolicy;
+  if (
+    !rightsPolicy ||
+    typeof rightsPolicy !== "object" ||
+    Array.isArray(rightsPolicy) ||
+    stableJson(Object.keys(rightsPolicy)) !== stableJson(EXPECTED_RIGHTS_POLICY_KEYS) ||
+    typeof rightsPolicy.provenancePath !== "string"
+  ) {
+    fail("invalid-rights-policy");
+  }
+
+  const provenanceCandidate = path.resolve(
+    pluginRoot,
+    rightsPolicy.provenancePath
+  );
+  if (!isInside(pluginRoot, provenanceCandidate)) fail("provenance-path-escape");
+  if (stableJson(rightsPolicy) !== stableJson(EXPECTED_RIGHTS_POLICY)) {
+    fail("invalid-rights-policy");
+  }
+  const provenanceRelativePath = path.relative(pluginRoot, provenanceCandidate);
+  try {
+    await rejectSymlinkChain(pluginRoot, provenanceRelativePath);
+  } catch (error) {
+    if (error instanceof VerificationError) throw error;
+    fail("invalid-provenance-file");
+  }
+
+  let checkedPathInfo;
+  let provenanceReal;
+  try {
+    checkedPathInfo = await lstat(provenanceCandidate, { bigint: true });
+    if (!hasValidProvenanceMetadata(checkedPathInfo)) {
+      fail("invalid-provenance-file");
+    }
+    provenanceReal = await realpath(provenanceCandidate);
+  } catch (error) {
+    if (error instanceof VerificationError) throw error;
+    fail("invalid-provenance-file");
+  }
+  if (!isInside(pluginRootReal, provenanceReal)) fail("provenance-path-escape");
+  const provenanceBytes = await readVerifiedProvenance(
+    provenanceCandidate,
+    checkedPathInfo
+  );
+  const provenanceSha256 = createHash("sha256")
+    .update(provenanceBytes)
+    .digest("hex")
+    .toUpperCase();
+  if (provenanceSha256 !== EXPECTED_PROVENANCE_SHA256) {
+    fail("invalid-provenance-content");
   }
 
   const seenPaths = new Set();
