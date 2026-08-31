@@ -13,7 +13,7 @@ codex plugin add fantasy-mouse-ui@fantasy-mouse-ui --json
 codex plugin list --marketplace fantasy-mouse-ui --json
 ```
 
-If the marketplace already exists, follow the targeted upgrade path in [Install with AI](INSTALL_WITH_AI.md). That bilingual guide also provides a release-ZIP route, safe extraction requirements, complete 20-file inventory, host adapter entrypoints, and copy-paste prompts for an installation Agent.
+If the marketplace already exists, follow the targeted upgrade path in [Install with AI](INSTALL_WITH_AI.md). That bilingual guide also provides a release-ZIP route, safe extraction requirements, the exact 24-file plugin inventory, host adapter entrypoints, and copy-paste prompts for an installation Agent. Install or copy the complete plugin, never a standalone Skill.
 
 ## What stays fixed
 
@@ -31,7 +31,9 @@ Bundled character and composition images are never source-brand or universal UI-
 
 ## Distribution
 
-The plugin and all four approved visual-grounding assets are distributed under the MIT License. The deterministic release archive build contains exactly 20 plugin entries and is written locally to:
+The MIT License covers the software code. The four bundled visual assets have a separately disclosed, unverified internet-derived origin and unconfirmed underlying authorship/license; see [Asset provenance](plugins/fantasy-mouse-ui/ASSET_PROVENANCE.md). Bundling is not an affirmative MIT, copyright-free, or public-domain claim for that underlying material.
+
+The deterministic release archive uses the exact 24-file plugin inventory and is written locally to:
 
 ```text
 dist/plugin/fantasy-mouse-ui.zip
@@ -47,8 +49,9 @@ plugins/fantasy-mouse-ui/
   .codex-plugin/        plugin metadata
   skills/               canonical Skill
   adapters/             generic, Claude, Gemini, and DeepSeek loaders
-  assets/               MIT-licensed visual-grounding bundle
-  protocol/             workflow and project JSON Schemas
+  assets/               visual-grounding bundle with separate provenance
+  config/               execution-mode defaults and profiles
+  protocol/             execution-mode, workflow, and project JSON Schemas
   references/           grounding, translation, style, and QA rules
   scripts/              zero-dependency validation tools
 scripts/                deterministic public ZIP packager
@@ -71,11 +74,13 @@ pnpm plugin:package
 Verification is layered:
 
 1. repository tests and typecheck validate contracts and packaging behavior;
-2. `verify-bundle.mjs` validates the four pinned visual assets;
+2. `scripts/verify-bundle.mjs` validates the four pinned visual assets;
 3. the official Skill/plugin validators validate their respective structures;
-4. archive inventory and repeated SHA-256 checks validate the exact 20-entry public ZIP;
+4. archive inventory and repeated SHA-256 checks validate the exact 24-entry public ZIP;
 5. targeted host installation validates the deployed source and installed cache;
 6. actual loading in a new task/session remains a separate final boundary.
+
+Execution defaults to Standard. `config/execution-modes.json` is validated against `protocol/execution-modes.schema.json`; run `node scripts/resolve-mode.mjs` from the plugin root to resolve the default or a requested/triggered mode before an invocation.
 
 ## Use it with any supported host
 

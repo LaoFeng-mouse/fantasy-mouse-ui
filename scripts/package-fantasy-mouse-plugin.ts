@@ -32,6 +32,7 @@ const MAX_UINT32 = 0xffffffff;
 const MAX_ARCHIVE_SOURCE_BYTES = 256 * 1024 * 1024;
 const ALLOWED_PLUGIN_FILES = new Set([
   ".codex-plugin/plugin.json",
+  "ASSET_PROVENANCE.md",
   "LICENSE",
   "adapters/claude/SKILL.md",
   "adapters/deepseek/SKILL.md",
@@ -42,12 +43,15 @@ const ALLOWED_PLUGIN_FILES = new Set([
   "assets/visual-grounding/processing-action-hands.png",
   "assets/visual-grounding/processing-with-bubble.png",
   "assets/visual-grounding/processing-without-bubble.png",
+  "config/execution-modes.json",
+  "protocol/execution-modes.schema.json",
   "protocol/mouse-ui-project.schema.json",
   "protocol/workflow-brief.schema.json",
   "references/qa.md",
   "references/style-independence.md",
   "references/visual-grounding.md",
   "references/workflow-to-ui.md",
+  "scripts/resolve-mode.mjs",
   "scripts/validate-workflow.mjs",
   "scripts/verify-bundle.mjs",
   "skills/fantasy-mouse-ui/SKILL.md",

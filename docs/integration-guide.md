@@ -15,7 +15,9 @@ codex plugin add fantasy-mouse-ui@fantasy-mouse-ui --json
 codex plugin list --marketplace fantasy-mouse-ui --json
 ```
 
-For assisted marketplace or public release-ZIP installation, follow the bilingual [Install with AI](../INSTALL_WITH_AI.md) guide. It requires the exact 20-file inventory, safe staging, bundle verification, target-host validation, and an honest new-task/session loading boundary.
+For assisted marketplace or public release-ZIP installation, follow the bilingual [Install with AI](../INSTALL_WITH_AI.md) guide. It requires the exact 24-file plugin inventory, safe staging, bundle verification, target-host validation, and an honest new-task/session loading boundary. Install the complete plugin; an adapter or `SKILL.md` alone is not an installation.
+
+The MIT License covers the software code. The bundled visual assets have a separately disclosed, unverified internet-derived origin and unconfirmed underlying authorship/license; see [Asset provenance](../plugins/fantasy-mouse-ui/ASSET_PROVENANCE.md).
 
 ## Canonical entrypoint
 
@@ -35,7 +37,7 @@ Host adapters are compatibility layers, not alternate products. Validate the sou
 
 ## Invocation sequence
 
-1. Run the bundle verifier from the plugin root:
+1. From the complete installed plugin root, run the bundle verifier:
 
    ```powershell
    node scripts/verify-bundle.mjs
@@ -43,18 +45,25 @@ Host adapters are compatibility layers, not alternate products. Validate the sou
 
    Required result: `{"ok":true,"assets":4}`.
 
-2. View, in manifest order:
+2. Resolve the execution mode:
+
+   ```powershell
+   node scripts/resolve-mode.mjs
+   ```
+
+   `config/execution-modes.json`, validated by `protocol/execution-modes.schema.json`, defaults to Standard. Explicit requests can select Fast or Strict; configured strict triggers upgrade the result to Strict.
+3. View, in manifest order:
    - `canonical-protagonist.png` for identity;
    - `processing-action-hands.png` for positive action anatomy;
    - both processing compositions for composition-only observation.
-3. Inspect the target product or requirements.
-4. Create and validate a workflow brief.
-5. Produce two separate artifacts before implementation:
+4. Inspect the target product or requirements.
+5. Create and validate a workflow brief.
+6. Produce two separate artifacts before implementation:
    - character-role translation table;
    - product-style derivation table.
-6. Select or confirm one coherent direction.
-7. Implement the real primary path and applicable states.
-8. Run/render, visually compare, repair, and export editable source plus evidence.
+7. Select or confirm one coherent direction.
+8. Implement the real primary path and applicable states.
+9. Run/render, visually compare, repair, and export editable source plus evidence.
 
 ## Workflow brief
 

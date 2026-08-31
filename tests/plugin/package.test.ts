@@ -8,6 +8,8 @@ import { execFile } from "node:child_process";
 
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { expectedPluginFiles } from "./plugin-inventory.fixture.js";
+
 const execFileAsync = promisify(execFile);
 const repoRoot = new URL("../../", import.meta.url);
 const repoRootPath = fileURLToPath(repoRoot);
@@ -252,7 +254,7 @@ beforeAll(async () => {
 }, 30_000);
 
 describe("public plugin package", () => {
-  it("keeps the repository and plugin MIT licenses identical", async () => {
+  it("keeps the common MIT grant while using distinct asset notice paths", async () => {
     const [repositoryLicense, pluginLicense] = await Promise.all([
       readFile(new URL("../../LICENSE", import.meta.url), "utf8").catch(() => null),
       readFile(new URL("../../plugins/fantasy-mouse-ui/LICENSE", import.meta.url), "utf8").catch(
@@ -267,9 +269,25 @@ describe("public plugin package", () => {
     const normalizeLf = (text: string) => text.replace(/\r\n?/g, "\n");
     const normalizedRepositoryLicense = normalizeLf(repositoryLicense);
     const normalizedPluginLicense = normalizeLf(pluginLicense);
-    expect(normalizedPluginLicense).toBe(normalizedRepositoryLicense);
-    expect(normalizedRepositoryLicense).toContain("MIT License");
-    expect(normalizedRepositoryLicense).toContain("Copyright (c) 2026 LaoFeng-mouse");
+    const commonMitText = [
+      "MIT License",
+      "Copyright (c) 2026 LaoFeng-mouse",
+      "Permission is hereby granted, free of charge, to any person obtaining a copy",
+      "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND",
+    ];
+    for (const text of commonMitText) {
+      expect(normalizedRepositoryLicense).toContain(text);
+      expect(normalizedPluginLicense).toContain(text);
+    }
+    expect(normalizedPluginLicense).not.toBe(normalizedRepositoryLicense);
+    expect(normalizedRepositoryLicense).toContain(
+      "see plugins/fantasy-mouse-ui/ASSET_PROVENANCE.md for its disclosed origin and unconfirmed underlying license status.",
+    );
+    expect(normalizedPluginLicense).toContain(
+      "see ASSET_PROVENANCE.md for its disclosed origin and unconfirmed underlying license status.",
+    );
+    expect(normalizedRepositoryLicense).not.toContain("see ASSET_PROVENANCE.md for");
+    expect(normalizedPluginLicense).not.toContain("see plugins/fantasy-mouse-ui/ASSET_PROVENANCE.md");
   });
 
   it("exposes the exact verification and packaging scripts", async () => {
@@ -294,10 +312,8 @@ describe("public plugin package", () => {
     expect(Buffer.compare(secondPackage, firstPackage)).toBe(0);
 
     const entries = parseStoredZip(firstPackage);
-    expect(entries.map(({ name }) => name)).toEqual(
-      [...entries.map(({ name }) => name)].sort(),
-    );
-    expect(entries.length).toBeGreaterThan(17);
+    expect(expectedPluginFiles).toHaveLength(24);
+    expect(entries.map(({ name }) => name)).toEqual(expectedPluginFiles);
     for (const entry of entries) {
       expect(entry.flags & 0x0800).toBe(0x0800);
       expect(entry.method).toBe(0);
@@ -313,31 +329,18 @@ describe("public plugin package", () => {
   it("contains the complete model-neutral plugin and no repository debris", async () => {
     const entries = parseStoredZip(secondPackage);
     const names = entries.map(({ name }) => name);
-    const required = [
-      ".codex-plugin/plugin.json",
-      "skills/fantasy-mouse-ui/SKILL.md",
-      "references/style-independence.md",
-      "references/visual-grounding.md",
-      "references/workflow-to-ui.md",
-      "references/qa.md",
-      "protocol/workflow-brief.schema.json",
-      "protocol/mouse-ui-project.schema.json",
-      "scripts/verify-bundle.mjs",
-      "scripts/validate-workflow.mjs",
-      "adapters/generic/AGENT.md",
-      "adapters/claude/SKILL.md",
-      "adapters/gemini/SKILL.md",
-      "adapters/deepseek/SKILL.md",
-      "assets/visual-grounding/manifest.json",
-      "assets/visual-grounding/canonical-protagonist.png",
-      "assets/visual-grounding/processing-action-hands.png",
-      "assets/visual-grounding/processing-with-bubble.png",
-      "assets/visual-grounding/processing-without-bubble.png",
-    ];
-    expect(names).toEqual(expect.arrayContaining(required));
+    expect(names).toEqual(expectedPluginFiles);
+    expect(names).toContain("ASSET_PROVENANCE.md");
+    expect(names).toContain("config/execution-modes.json");
+    expect(names).toContain("protocol/execution-modes.schema.json");
+    expect(names).toContain("scripts/resolve-mode.mjs");
+    expect(names.some((name) => name.startsWith("examples/"))).toBe(false);
     expect(names.some((name) => name.startsWith("assets/frontend-starter/"))).toBe(false);
-    expect(names.some((name) => /(?:^|\/)(?:tests?|\.git|dist|work|docs|src)(?:\/|$)/i.test(name))).toBe(false);
-    expect(names.some((name) => /(?:\.gitkeep|\.DS_Store|Thumbs\.db|\.log|\.tmp)$/i.test(name))).toBe(false);
+    expect(names.some((name) => /(?:^|\/)(?:tests?|\.git|dist|work|docs|src|cache|tmp)(?:\/|$)/i.test(name))).toBe(false);
+    expect(names.some((name) => /(?:\.gitkeep|\.DS_Store|Thumbs\.db|\.log|\.tmp|~)$/i.test(name))).toBe(false);
+    expect(names).not.toContain("README.md");
+    expect(names).not.toContain("INSTALL_WITH_AI.md");
+    expect(names).not.toContain("CONTEXT.md");
   });
 
   it("contains the repository MIT License", () => {
@@ -347,16 +350,25 @@ describe("public plugin package", () => {
     expect(license!.data.toString("utf8")).toContain("MIT License");
   });
 
-  it("publishes every bundled visual asset for open-source distribution", () => {
+  it("bundles every pinned visual asset with its separate provenance disclosure", () => {
     const entries = parseStoredZip(secondPackage);
     const manifest = JSON.parse(
       entries.find(({ name }) => name === "assets/visual-grounding/manifest.json")!.data.toString("utf8"),
-    ) as { assets: Array<{ path: string; sha256: string; publication: string }> };
+    ) as {
+      rightsPolicy: { codeLicense: string; underlyingLicense: string; provenancePath: string };
+      assets: Array<{ path: string; sha256: string; publication: string }>;
+    };
+    expect(manifest.rightsPolicy).toMatchObject({
+      codeLicense: "MIT",
+      underlyingLicense: "unconfirmed",
+      provenancePath: "ASSET_PROVENANCE.md",
+    });
+    expect(entries.find(({ name }) => name === manifest.rightsPolicy.provenancePath)).toBeDefined();
     for (const asset of manifest.assets) {
       const entry = entries.find(({ name }) => name === asset.path);
       expect(entry, asset.path).toBeDefined();
       expect(createHash("sha256").update(entry!.data).digest("hex").toUpperCase()).toBe(asset.sha256);
-      expect(asset.publication).toBe("open-source-distributable");
+      expect(asset.publication).toBe("bundled-with-disclosed-unverified-origin");
     }
   });
 

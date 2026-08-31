@@ -1,9 +1,43 @@
 import { readFileSync, statSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
+import { expectedPluginFiles } from "./plugin-inventory.fixture.js";
+
 import manifest from "../../plugins/fantasy-mouse-ui/.codex-plugin/plugin.json" with {
   type: "json"
 };
+
+
+function withoutHistoricalV010Baseline(document: string): string {
+  return document.replace(
+    /(?:^|\n)## Historical v0\.1\.0 baseline[^\n]*\n[\s\S]*?(?=\n## |$)/giu,
+    "",
+  );
+}
+
+function extractFencedTextLinesAfter(document: string, marker: string): string[] {
+  const markerIndex = document.indexOf(marker);
+  expect(markerIndex, `missing allowlist marker: ${marker}`).toBeGreaterThanOrEqual(0);
+  const afterMarker = document.slice(markerIndex + marker.length);
+  const match = afterMarker.match(/^\s*```text\r?\n([\s\S]*?)\r?\n```/u);
+  expect(match, `missing fenced text block after: ${marker}`).not.toBeNull();
+  return (match?.[1] ?? "").split(/\r?\n/u);
+}
+
+function extractPromptInventory(
+  prompt: string,
+  marker: "Allowlist:" | "允许清单：",
+  delimiter: ";" | "；",
+): string[] {
+  const line = prompt.split(/\r?\n/u).find((candidate) => candidate.startsWith(marker));
+  expect(line, `missing prompt inventory line: ${marker}`).toBeDefined();
+  return (line ?? "")
+    .slice(marker.length)
+    .trim()
+    .replace(/[.。]$/u, "")
+    .split(delimiter)
+    .map((entry) => entry.trim());
+}
 
 describe("Fantasy Mouse UI plugin manifest", () => {
   it("defines the exact installation boundary without apps or MCP servers", () => {
@@ -100,28 +134,9 @@ describe("Fantasy Mouse UI plugin manifest", () => {
       "必须先创建名为 `fantasy-mouse-ui` 的目标目录，再把 ZIP 内的全部内容解压到该目录中。"
     );
 
-    for (const expectedPath of [
-      ".codex-plugin/plugin.json",
-      "adapters/claude/SKILL.md",
-      "adapters/deepseek/SKILL.md",
-      "adapters/gemini/SKILL.md",
-      "adapters/generic/AGENT.md",
-      "assets/visual-grounding/canonical-protagonist.png",
-      "assets/visual-grounding/manifest.json",
-      "assets/visual-grounding/processing-action-hands.png",
-      "assets/visual-grounding/processing-with-bubble.png",
-      "assets/visual-grounding/processing-without-bubble.png",
-      "LICENSE",
-      "protocol/mouse-ui-project.schema.json",
-      "protocol/workflow-brief.schema.json",
-      "references/qa.md",
-      "references/style-independence.md",
-      "references/visual-grounding.md",
-      "references/workflow-to-ui.md",
-      "scripts/validate-workflow.mjs",
-      "scripts/verify-bundle.mjs",
-      "skills/fantasy-mouse-ui/SKILL.md"
-    ]) {
+    expect(expectedPluginFiles).toHaveLength(24);
+    expect([...expectedPluginFiles].sort()).toEqual(expectedPluginFiles);
+    for (const expectedPath of expectedPluginFiles) {
       expect(installGuide).toContain(expectedPath);
     }
 
@@ -153,7 +168,55 @@ describe("Fantasy Mouse UI plugin manifest", () => {
     );
   });
 
-  it("publishes live remote install routes without pre-publication markers", () => {
+  it("documents the current 24-file mode and asset-rights contract in every active guide", () => {
+    const activeDocs = [
+      { path: "../../AGENTS.md", provenance: "plugins/fantasy-mouse-ui/ASSET_PROVENANCE.md" },
+      { path: "../../README.md", provenance: "plugins/fantasy-mouse-ui/ASSET_PROVENANCE.md" },
+      { path: "../../INSTALL_WITH_AI.md", provenance: "plugins/fantasy-mouse-ui/ASSET_PROVENANCE.md" },
+      { path: "../../CONTEXT.md", provenance: "plugins/fantasy-mouse-ui/ASSET_PROVENANCE.md" },
+      { path: "../../docs/architecture.md", provenance: "../plugins/fantasy-mouse-ui/ASSET_PROVENANCE.md" },
+      { path: "../../docs/handoff.md", provenance: "../plugins/fantasy-mouse-ui/ASSET_PROVENANCE.md" },
+      { path: "../../docs/integration-guide.md", provenance: "../plugins/fantasy-mouse-ui/ASSET_PROVENANCE.md" },
+      { path: "../../docs/operator-runbook.md", provenance: "../plugins/fantasy-mouse-ui/ASSET_PROVENANCE.md" }
+    ] as const;
+    const rejectedActiveClaims = [
+      /MIT-licensed plugin and four approved visual assets/iu,
+      /all four images are MIT licensed/iu,
+      /open-source-distributable/iu,
+      /\b20-(?:file|entry)/iu,
+      /(?:confirm|contains?|inventory:)?\s*exactly 20 entries/iu,
+      /MIT-licensed visual(?:-grounding)? assets?/iu,
+      /visual(?:-grounding)? assets?[^\n.]*(?:under|with) the MIT License/iu,
+      /(?:are|is) copyright-free/iu,
+      /(?:are|is) public[- ]domain/iu
+    ];
+
+    for (const { path, provenance } of activeDocs) {
+      const documentUrl = new URL(path, import.meta.url);
+      const document = readFileSync(documentUrl, "utf8");
+      const currentDocument = withoutHistoricalV010Baseline(document);
+      expect(currentDocument, path).toMatch(/(?:exact|complete) 24-(?:file|entry) plugin inventory/iu);
+      expect(currentDocument, path).toContain("config/execution-modes.json");
+      expect(currentDocument, path).toContain("protocol/execution-modes.schema.json");
+      expect(currentDocument, path).toContain("scripts/resolve-mode.mjs");
+      expect(currentDocument, path).toContain("Standard");
+      expect(currentDocument, path).toContain(`](${provenance})`);
+      expect(statSync(new URL(provenance, documentUrl)).isFile(), path).toBe(true);
+      expect(currentDocument, path).toMatch(/MIT[^\n]*(?:software )?code|(?:software )?code[^\n]*MIT/iu);
+      expect(currentDocument, path).toMatch(/visual assets?[^\n]*(?:unverified|unconfirmed)|(?:unverified|unconfirmed)[^\n]*visual assets?/iu);
+      for (const rejectedClaim of rejectedActiveClaims) {
+        expect(currentDocument, path).not.toMatch(rejectedClaim);
+      }
+    }
+
+    for (const historicalDoc of ["../../AGENTS.md", "../../docs/handoff.md"]) {
+      expect(readFileSync(new URL(historicalDoc, import.meta.url), "utf8"), historicalDoc).toContain(
+        "## Historical v0.1.0 baseline",
+      );
+    }
+  });
+
+  it("distinguishes fixed v0.1 history from mutable discovery and requires trusted ZIP identity", () => {
     const installGuide = readFileSync(
       new URL("../../INSTALL_WITH_AI.md", import.meta.url),
       "utf8"
@@ -164,9 +227,55 @@ describe("Fantasy Mouse UI plugin manifest", () => {
     expect(installGuide).toContain(
       "https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/tag/v0.1.0"
     );
+    expect(installGuide).toContain("Historical v0.1.0 release record");
+    expect(installGuide).toContain("历史 v0.1.0 发布记录");
+    expect(installGuide).toContain("mutable discovery endpoints");
+    expect(installGuide).toContain("可变发现端点");
+    expect(installGuide).toContain("trusted release-published SHA-256 digest");
+    expect(installGuide).toContain("可信发布流程公布的 SHA-256 摘要");
+    expect(installGuide).toContain(
+      "byte-for-byte identical to a separately trusted locally built archive",
+    );
+    expect(installGuide).toContain("与另一个单独受信任的本地构建压缩包逐字节相同");
+    expect(installGuide).toContain(
+      "Inventory validation and `verify-bundle.mjs` authenticate only archive structure and the four pinned visual bytes; they do not authenticate every script, schema, or Skill file.",
+    );
+    expect(installGuide).toContain(
+      "清单验证和 `verify-bundle.mjs` 只认证压缩包结构与四个固定视觉文件的字节；它们不认证每个脚本、Schema 或 Skill 文件。",
+    );
+    expect(installGuide).toContain(
+      "Before v0.2 publication, the current trusted route is a local source build.",
+    );
+    expect(installGuide).toContain("在 v0.2 发布前，当前受信任路径是本地源码构建。");
+    expect(installGuide).not.toContain("its `latest` aliases are retained below as historical routes");
+    expect(installGuide).not.toContain("latest asset remain historical discovery routes");
+    expect(installGuide).not.toContain("历史 v0.1.0 发布记录/别名");
+    expect(installGuide).not.toContain("historical v0.1.0 release records/aliases");
+    expect(installGuide).not.toMatch(
+      /(?:releases\/latest|latest release|latest download)[^.\n]*(?:is|are|remain)[^.\n]*historical/iu,
+    );
+    expect(installGuide).not.toMatch(/latest[^。\n]*(?:是|属于|作为)[^。\n]*历史/iu);
     expect(installGuide).not.toContain("Publication status: pending");
     expect(installGuide).not.toContain("发布状态：待完成");
     expect(installGuide).not.toContain("Task 6 publication");
+  });
+
+  it("documents both manual ZIP allowlists as the exact ordered inventory", () => {
+    const installGuide = readFileSync(
+      new URL("../../INSTALL_WITH_AI.md", import.meta.url),
+      "utf8",
+    );
+    const documentedInventories = [
+      extractFencedTextLinesAfter(installGuide, "The independent allowlist is exactly:"),
+      extractFencedTextLinesAfter(installGuide, "独立允许清单恰好为："),
+    ];
+
+    for (const inventory of documentedInventories) {
+      expect(inventory).toEqual(expectedPluginFiles);
+      expect(inventory).toHaveLength(24);
+      expect(new Set(inventory).size).toBe(24);
+      expect(new Set(inventory.map((entry) => entry.toLocaleLowerCase("en-US"))).size).toBe(24);
+    }
   });
 
   it("orders preflight and targeted marketplace checks in every install route", () => {
@@ -227,6 +336,17 @@ describe("Fantasy Mouse UI plugin manifest", () => {
       "Return the actual absolute installation directory, every command used, the complete output from every verification tier, and whether a new task/session is required and has loaded the plugin; do not claim installation success when any item is missing or failed."
     );
 
+    const promptInventories = [
+      extractPromptInventory(englishPrompt, "Allowlist:", ";"),
+      extractPromptInventory(chinesePrompt, "允许清单：", "；"),
+    ];
+    for (const inventory of promptInventories) {
+      expect(inventory).toEqual(expectedPluginFiles);
+      expect(inventory).toHaveLength(24);
+      expect(new Set(inventory).size).toBe(24);
+      expect(new Set(inventory.map((entry) => entry.toLocaleLowerCase("en-US"))).size).toBe(24);
+    }
+
     const englishZipRoutes = [manualEnglishZip, englishPrompt];
     const chineseZipRoutes = [manualChineseZip, chinesePrompt];
     for (const route of englishZipRoutes) {
@@ -240,11 +360,11 @@ describe("Fantasy Mouse UI plugin manifest", () => {
       for (const requirement of [
         "Before extracting anything, enumerate ZIP central-directory entries and metadata.",
         "Raw entry names containing backslashes are rejected.",
-        "Normalized forward-slash names must exactly equal the independent 20-file allowlist.",
+        "Normalized forward-slash names must exactly equal the independent 24-file allowlist.",
         "Reject absolute paths, drive-letter paths, UNC paths, empty names, `.` or `..` components, path escape, duplicate names, and case-colliding names.",
         "Reject directory entries and link, symlink, junction, reparse-point, device, or other non-regular entries.",
         "Use an extraction API that enforces every output destination remains inside the staged `fantasy-mouse-ui` root and refuses links and reparse points.",
-        "After extraction, lstat exactly 20 regular files and reject extras."
+        "After extraction, lstat exactly 24 regular files and reject extras."
       ]) {
         expect(route).toContain(requirement);
       }
@@ -260,40 +380,18 @@ describe("Fantasy Mouse UI plugin manifest", () => {
       for (const requirement of [
         "解压任何内容前，必须枚举 ZIP 中央目录的全部条目和元数据。",
         "原始条目名包含反斜杠时必须拒绝。",
-        "规范化后的正斜杠名称必须与独立的 20 文件允许清单完全一致。",
+        "规范化后的正斜杠名称必须与独立的 24 文件允许清单完全一致。",
         "必须拒绝绝对路径、盘符路径、UNC 路径、空名称、`.` 或 `..` 组件、路径逃逸、重复名称和大小写冲突名称。",
         "必须拒绝目录条目以及链接、符号链接、junction、重解析点、设备或其他非常规条目。",
         "必须使用能够强制每个输出目标都位于暂存 `fantasy-mouse-ui` 根目录内，并拒绝链接和重解析点的解压 API。",
-        "解压后必须用 lstat 核对恰好 20 个常规文件并拒绝额外条目。"
+        "解压后必须用 lstat 核对恰好 24 个常规文件并拒绝额外条目。"
       ]) {
         expect(route).toContain(requirement);
       }
     }
 
-    const expectedInventory = [
-      ".codex-plugin/plugin.json",
-      "adapters/claude/SKILL.md",
-      "adapters/deepseek/SKILL.md",
-      "adapters/gemini/SKILL.md",
-      "adapters/generic/AGENT.md",
-      "assets/visual-grounding/canonical-protagonist.png",
-      "assets/visual-grounding/manifest.json",
-      "assets/visual-grounding/processing-action-hands.png",
-      "assets/visual-grounding/processing-with-bubble.png",
-      "assets/visual-grounding/processing-without-bubble.png",
-      "LICENSE",
-      "protocol/mouse-ui-project.schema.json",
-      "protocol/workflow-brief.schema.json",
-      "references/qa.md",
-      "references/style-independence.md",
-      "references/visual-grounding.md",
-      "references/workflow-to-ui.md",
-      "scripts/validate-workflow.mjs",
-      "scripts/verify-bundle.mjs",
-      "skills/fantasy-mouse-ui/SKILL.md"
-    ];
     for (const route of [...englishZipRoutes, ...chineseZipRoutes]) {
-      for (const expectedPath of expectedInventory) {
+      for (const expectedPath of expectedPluginFiles) {
         expect(route).toContain(expectedPath);
       }
     }

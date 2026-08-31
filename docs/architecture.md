@@ -35,6 +35,8 @@ verify bundle
 
 ## Protocols
 
+`config/execution-modes.json` defines Fast, Standard, and Strict profiles, with Standard as the default. `protocol/execution-modes.schema.json` defines its closed shape, and `scripts/resolve-mode.mjs` validates and resolves the default, an explicit request, or a strict-trigger upgrade before invocation.
+
 `workflow-brief.schema.json` describes product truth: users, entities, screens, actions, transitions, states, surfaces, constraints, and primary journey.
 
 `mouse-ui-project.schema.json` describes the selected design recipe. Identity anchors remain exact, while persona, theme, states, and surfaces are project-specific. Each state records role, expression, pose, hand mode, props, bubble policy, and copy.
@@ -47,7 +49,7 @@ The canonical Skill and references are the semantic source. Codex loads the cano
 
 ## Packaging and security
 
-The packager accepts exactly 20 known plugin files, including the plugin MIT License. Unknown files—including `.env`, credentials, backups, tests, support images, or scratch outputs—fail packaging instead of being silently included.
+The packager accepts the exact 24-file plugin inventory, including `ASSET_PROVENANCE.md`, `config/execution-modes.json`, `protocol/execution-modes.schema.json`, `scripts/resolve-mode.mjs`, and the plugin MIT License. Unknown files—including `.env`, credentials, backups, examples, repository docs, tests, support images, caches, or scratch outputs—fail packaging instead of being silently included.
 
 For every source file it:
 
@@ -62,7 +64,9 @@ The visual bundle verifier rejects path escape, symlink chains, duplicate paths,
 
 ## Distribution boundary
 
-The plugin and all four approved visual-grounding assets are released under the MIT License. Their distribution status does not weaken authority separation: each image remains limited to the identity, action-anatomy, or single-example composition scope pinned by the manifest and verifier. The local release archive build is `dist/plugin/fantasy-mouse-ui.zip`; repository documentation and the optional support QR are outside its exact 20-entry allowlist.
+The MIT License covers the software code. The four bundled visual assets have a separately disclosed, unverified internet-derived origin and unconfirmed underlying authorship/license; see [Asset provenance](../plugins/fantasy-mouse-ui/ASSET_PROVENANCE.md). Bundling does not assert that unknown underlying material is MIT-licensed, copyright-free, or public domain. Each image remains limited to the identity, action-anatomy, or single-example composition scope pinned by the manifest and verifier.
+
+The local release archive build is `dist/plugin/fantasy-mouse-ui.zip`; repository documentation, examples, tests, and the optional support QR are outside its exact 24-entry allowlist. A complete installation copies all 24 entries, then runs `scripts/verify-bundle.mjs`; mode preflight runs `scripts/resolve-mode.mjs` and defaults to Standard.
 
 ## Acceptance model
 
