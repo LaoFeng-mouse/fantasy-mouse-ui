@@ -27,6 +27,10 @@ const resolverPath = new URL(
   "../../plugins/fantasy-mouse-ui/scripts/resolve-mode.mjs",
   import.meta.url,
 );
+const skillPath = new URL(
+  "../../plugins/fantasy-mouse-ui/skills/fantasy-mouse-ui/SKILL.md",
+  import.meta.url,
+);
 const worktreePath = fileURLToPath(new URL("../..", import.meta.url));
 const temporaryRoots = new Set<string>();
 
@@ -79,6 +83,17 @@ function expectNoPathLeak(output: string, additionalPaths: string[] = []): void 
   expect(output).not.toContain("execution-modes.json");
   expect(output).not.toMatch(/[A-Za-z]:[\\/]/);
   expect(output).not.toMatch(/\\\\[^\\/\s]+[\\/][^\\/\s]+/);
+}
+
+function expectMarkersInOrder(text: string, markers: readonly string[]): void {
+  let previous = -1;
+  for (const marker of markers) {
+    const current = text.indexOf(marker, previous + 1);
+    expect(current, `missing or out-of-order marker: ${marker}`).toBeGreaterThan(
+      previous,
+    );
+    previous = current;
+  }
 }
 
 const approvedConfig = {
@@ -465,6 +480,91 @@ afterEach(async () => {
 });
 
 describe("Fantasy Mouse execution modes", () => {
+  it("routes the canonical Skill through the execution-mode contract before bundle verification", async () => {
+    const skill = await readFile(skillPath, "utf8");
+    const preflight = skill.slice(
+      skill.indexOf("### Resolve the execution mode"),
+      skill.indexOf("### 1. Verify the bundle"),
+    );
+
+    expectMarkersInOrder(preflight, [
+      "Resolve the execution mode",
+      "config/execution-modes.json",
+      "identify the explicit requested mode and every matching known trigger",
+      "node scripts/resolve-mode.mjs [--requested fast|standard|strict] [--trigger <known-trigger> ...]",
+      "state the selected mode and reason",
+      "Fast",
+      "Standard",
+      "Strict",
+    ]);
+    expectMarkersInOrder(skill, [
+      "Resolve the execution mode",
+      "node scripts/resolve-mode.mjs [--requested fast|standard|strict] [--trigger <known-trigger> ...]",
+      "state the selected mode and reason",
+      "Fast",
+      "Standard",
+      "Strict",
+      "Verify the bundle",
+    ]);
+
+    expect(preflight).toContain(
+      "For the resolver-selected mode, `profile.required` is the exhaustive set of required gates for that mode.",
+    );
+    expect(preflight).toContain(
+      "`profile.mayOmit` names canonical workflow gates explicitly waived in that mode.",
+    );
+    expect(preflight).toContain(
+      "Strict-only gates not listed in the selected non-Strict `required` set do not apply unless the mode upgrades to Strict.",
+    );
+    expect(preflight).toContain(
+      "A trigger-driven resolver result of Strict is mandatory and cannot be downgraded.",
+    );
+    expect(preflight).toContain(
+      "An Agent may deliberately request a higher mode before resolution, but must explain why.",
+    );
+    expect(preflight).toContain("may upgrade but must not silently downgrade");
+    expect(preflight).toContain("public-benchmark");
+
+    const profileLines = preflight.split(/\r?\n/u);
+    const fast = profileLines.find((line) => line.includes("**Fast**")) ?? "";
+    const standard =
+      profileLines.find((line) => line.includes("**Standard**")) ?? "";
+    const strict = profileLines.find((line) => line.includes("**Strict**")) ?? "";
+    for (const marker of [
+      "bounded low-risk path",
+      "shared invariants",
+      "editable output",
+      "open/render",
+      "focused QA",
+      "honest evidence",
+      "profile-listed gates",
+    ]) {
+      expect(fast).toContain(marker);
+    }
+    for (const marker of [
+      "default",
+      "workflow brief",
+      "independent character-role and product-style derivations",
+      "primary journey and key states",
+      "responsive behavior",
+      "baseline accessibility",
+      "editable output",
+      "open/render",
+      "comparison",
+      "evidence",
+      "profile-listed gates",
+    ]) {
+      expect(standard).toContain(marker);
+    }
+    for (const marker of [
+      "complete twelve-section workflow",
+      "all profile `required` items",
+      "mandatory for strict triggers",
+    ]) {
+      expect(strict).toContain(marker);
+    }
+  });
+
   it("locks the canonical execution-mode profile", async () => {
     const config = JSON.parse(await readFile(configPath, "utf8")) as {
       modes: Record<string, unknown>;

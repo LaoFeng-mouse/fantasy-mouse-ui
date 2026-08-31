@@ -9,6 +9,20 @@ Each bundled image is authoritative only for its manifest-declared scope: canoni
 
 ## Execute in order
 
+### Resolve the execution mode
+
+Resolve the plugin root from this Skill before running commands when the current directory differs. Read `config/execution-modes.json`, then identify the explicit requested mode and every matching known trigger from its `strictTriggers` list. From the plugin root, run:
+
+`node scripts/resolve-mode.mjs [--requested fast|standard|strict] [--trigger <known-trigger> ...]`
+
+Before doing any design work, state the selected mode and reason returned by the resolver, then apply that profile. For the resolver-selected mode, `profile.required` is the exhaustive set of required gates for that mode. `profile.mayOmit` names canonical workflow gates explicitly waived in that mode. Strict-only gates not listed in the selected non-Strict `required` set do not apply unless the mode upgrades to Strict.
+
+- **Fast** is a bounded low-risk path that must retain the shared invariants, editable output, open/render, focused QA, and honest evidence; it may omit only the profile-listed gates in `mayOmit`.
+- **Standard** is the default and requires the workflow brief, independent character-role and product-style derivations, primary journey and key states, responsive behavior, baseline accessibility, editable output, open/render, comparison, and evidence; it may omit only the profile-listed gates in `mayOmit`.
+- **Strict** runs the existing complete twelve-section workflow below plus all profile `required` items and is mandatory for strict triggers.
+
+Standard remains the default; absent trigger escalation, an explicit Fast, Standard, or Strict request overrides it. A trigger-driven resolver result of Strict is mandatory and cannot be downgraded. An Agent may deliberately request a higher mode before resolution, but must explain why. Known triggers may upgrade but must not silently downgrade the requested mode. `public-benchmark` is a Strict trigger; all known triggers come from `config/execution-modes.json`. Treat the twelve numbered sections as the Strict path, and compress Fast or Standard only as their profiles permit instead of duplicating the workflow.
+
 ### 1. Verify the bundle
 
 Resolve the plugin root from this Skill, then run `scripts/verify-bundle.mjs`. Require `{ "ok": true, "assets": 4 }`. Stop on a hash, dimension, path, or manifest failure; do not substitute remembered or external images.
