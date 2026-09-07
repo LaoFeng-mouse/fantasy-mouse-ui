@@ -16,6 +16,18 @@ function expectOrdered(text: string, markers: string[]) {
 }
 
 describe("Fantasy Mouse Agent usage documentation", () => {
+  it("keeps the v0.2.0 Release source copy-ready and post-release-link honest", async () => {
+    const notes = await readFile("docs/release-notes-0.2.0.md", "utf8");
+    expect(notes).toContain("## How to use");
+    expect(notes).toContain(fixedReleaseZip);
+    expect(notes).toContain("不要只复制 SKILL.md");
+    expect(notes).toContain("自动选择 Fast、Standard 或 Strict 模式");
+    expect(notes).toContain(
+      "https://github.com/LaoFeng-mouse/fantasy-mouse-ui/blob/main/docs/agent-usage.md",
+    );
+    expect(notes).toContain("post-release documentation");
+  });
+
   it("labels future plugin improvements as planned rather than shipped", async () => {
     const roadmap = await readFile("docs/roadmap.md", "utf8");
     const plannedMarkers = [
