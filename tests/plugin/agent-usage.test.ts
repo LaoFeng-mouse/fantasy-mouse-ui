@@ -5,6 +5,12 @@ const fixedReleaseZip =
   "https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/download/v0.2.0/fantasy-mouse-ui.zip";
 const fixedReleaseHash =
   "4AA588B0DA90A6E669B3EE833A1BC3F48DA10E6009654668016B75AA3837AEB3";
+const guardedInstall =
+  "codex plugin marketplace add https://github.com/LaoFeng-mouse/fantasy-mouse-ui --json; if ($LASTEXITCODE -eq 0) { codex plugin add fantasy-mouse-ui@fantasy-mouse-ui --json }";
+const downloadPrompt =
+  "请从 https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/download/v0.2.0/fantasy-mouse-ui.zip 下载并安装完整的 Fantasy Mouse UI 插件，然后使用它为【项目路径或链接】设计【需要设计的界面】；请让插件自动选择合适模式并先说明原因，查看随包角色素材，交付可编辑源码、真实运行或渲染结果和视觉验收证据，不要只复制 SKILL.md。";
+const installedPrompt =
+  "请使用 Fantasy Mouse UI 插件为【项目路径或链接】设计【需要设计的界面】；自动选择 Fast、Standard 或 Strict 模式并先说明原因，保留鼠鼠角色特征，但界面布局、配色、字体和组件必须根据当前产品重新设计，最后交付可编辑源码并真实运行或渲染检查。";
 
 function expectOrdered(text: string, markers: string[]) {
   let previous = -1;
@@ -20,8 +26,6 @@ describe("Fantasy Mouse Agent usage documentation", () => {
     const notes = await readFile("docs/release-notes-0.2.0.md", "utf8");
     const howToUse = notes.slice(notes.indexOf("## How to use"));
     const boundedCompatibility = "does not mean every chatbot can complete the workflow";
-    const guardedInstall =
-      "codex plugin marketplace add https://github.com/LaoFeng-mouse/fantasy-mouse-ui --json; if ($LASTEXITCODE -eq 0) { codex plugin add fantasy-mouse-ui@fantasy-mouse-ui --json }";
     expectOrdered(howToUse, [
       "## How to use",
       "Codex Marketplace plus install (PowerShell)",
@@ -52,6 +56,20 @@ describe("Fantasy Mouse Agent usage documentation", () => {
       /(?:all|every|any) (?:AI|chatbots?|agents?) (?:is|are|can|works?)/iu,
       /works? with (?:all|every|any) (?:AI|chatbots?|agents?)/iu,
     ]) expect(claimsWithoutDisclaimer).not.toMatch(universalClaim);
+  });
+
+  it("keeps the guarded installer and approved prompts identical across public docs", async () => {
+    const documents = await Promise.all([
+      readFile("README.md", "utf8"),
+      readFile("docs/agent-usage.md", "utf8"),
+      readFile("docs/release-notes-0.2.0.md", "utf8"),
+    ]);
+    for (const document of documents) {
+      expect(document).toContain(guardedInstall);
+      expect(document).not.toContain("--json; codex plugin add");
+      expect(document.split(downloadPrompt)).toHaveLength(2);
+      expect(document.split(installedPrompt)).toHaveLength(2);
+    }
   });
 
   it("labels future plugin improvements as planned rather than shipped", async () => {

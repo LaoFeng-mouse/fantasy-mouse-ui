@@ -36,8 +36,8 @@ Network access is also needed when the Agent must download the release. A host m
 Codex can install Fantasy Mouse UI through its plugin Marketplace. Add the repository as a marketplace and install the plugin:
 
 ```powershell
-codex plugin marketplace add https://github.com/LaoFeng-mouse/fantasy-mouse-ui --json
-codex plugin add fantasy-mouse-ui@fantasy-mouse-ui --json
+codex plugin marketplace add https://github.com/LaoFeng-mouse/fantasy-mouse-ui --json; if ($LASTEXITCODE -eq 0) { codex plugin add fantasy-mouse-ui@fantasy-mouse-ui --json }
+codex plugin list --marketplace fantasy-mouse-ui --json
 ```
 
 Refresh the marketplace, then inspect the installed and available versions:

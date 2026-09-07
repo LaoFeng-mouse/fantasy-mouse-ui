@@ -3,7 +3,7 @@
 Design product-specific SaaS, websites, presentations, and desktop software with one visually grounded mouse character — without forcing every product into one template.
 
 ```powershell
-codex plugin marketplace add https://github.com/LaoFeng-mouse/fantasy-mouse-ui --json; codex plugin add fantasy-mouse-ui@fantasy-mouse-ui --json
+codex plugin marketplace add https://github.com/LaoFeng-mouse/fantasy-mouse-ui --json; if ($LASTEXITCODE -eq 0) { codex plugin add fantasy-mouse-ui@fantasy-mouse-ui --json }
 ```
 
 ## Real results
@@ -129,9 +129,8 @@ The release archive is written to `dist/plugin/fantasy-mouse-ui.zip`; `examples/
 For a fresh marketplace setup:
 
 ```powershell
-codex plugin marketplace add https://github.com/LaoFeng-mouse/fantasy-mouse-ui --json
+codex plugin marketplace add https://github.com/LaoFeng-mouse/fantasy-mouse-ui --json; if ($LASTEXITCODE -eq 0) { codex plugin add fantasy-mouse-ui@fantasy-mouse-ui --json }
 codex plugin list --marketplace fantasy-mouse-ui --available --json
-codex plugin add fantasy-mouse-ui@fantasy-mouse-ui --json
 ```
 
 See [Install with AI](INSTALL_WITH_AI.md), the [Integration guide](docs/integration-guide.md), [Architecture](docs/architecture.md), [Operator runbook](docs/operator-runbook.md), and [Handoff](docs/handoff.md).
