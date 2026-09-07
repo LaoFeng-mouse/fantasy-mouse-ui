@@ -54,6 +54,7 @@ describe("Fantasy Mouse Agent usage documentation", () => {
       "codex plugin list --marketplace fantasy-mouse-ui --available --json",
       "codex plugin remove fantasy-mouse-ui@fantasy-mouse-ui --json",
       "codex plugin add fantasy-mouse-ui@fantasy-mouse-ui --json",
+      "codex plugin list --marketplace fantasy-mouse-ui --json",
       "fresh-task initialization",
     ]);
     expectOrdered(guide, [

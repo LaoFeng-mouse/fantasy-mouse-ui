@@ -47,12 +47,15 @@ codex plugin marketplace upgrade fantasy-mouse-ui --json
 codex plugin list --marketplace fantasy-mouse-ui --available --json
 ```
 
-The marketplace upgrade refreshes the snapshot; it does not by itself prove that the installed copy changed. If the JSON reports that the desired marketplace version is not installed, replace the installed copy, then run the list command again to verify the reported version:
+The marketplace upgrade refreshes the snapshot; it does not by itself prove that the installed copy changed. In the JSON, inspect `installed` for the current installed version and `available` for marketplace entries that are not installed. If the desired marketplace version is not installed, replace the installed copy and then query the installed list again:
 
 ```powershell
 codex plugin remove fantasy-mouse-ui@fantasy-mouse-ui --json
 codex plugin add fantasy-mouse-ui@fantasy-mouse-ui --json
+codex plugin list --marketplace fantasy-mouse-ui --json
 ```
+
+Require the final `installed` entry to report the expected version and `enabled: true`; do not infer an update merely from a successful marketplace refresh.
 
 After installation or replacement, start a fresh Codex task. Plugin discovery is evaluated during fresh-task initialization; a task that was already running does not prove that the new installation loaded. Installation, reported version, and fresh-task loading are separate checks.
 
