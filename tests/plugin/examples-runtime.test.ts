@@ -1,5 +1,7 @@
+import { execFile } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
+import { promisify } from "node:util";
 import { describe, expect, it } from "vitest";
 
 // @ts-expect-error The benchmark runtime deliberately ships as plain ESM.
@@ -11,6 +13,8 @@ import { initialFestivalState, reduceFestival } from "../../examples/fieldnote-f
 const caseRoot = fileURLToPath(new URL("../../examples/signal-harbor/", import.meta.url));
 const festivalRoot = fileURLToPath(new URL("../../examples/fieldnote-festival/", import.meta.url));
 const gridForwardRoot = fileURLToPath(new URL("../../examples/grid-forward-2030/", import.meta.url));
+const archiveRoot = fileURLToPath(new URL("../../examples/archive-lantern/", import.meta.url));
+const execFileAsync = promisify(execFile);
 
 describe("Signal Harbor state reducer", () => {
   it("starts by monitoring the active incident queue", () => {
@@ -358,5 +362,57 @@ describe("Grid Forward 2030 presentation", () => {
 
     expect(source.subarray(0, 2).toString("ascii")).toBe("PK");
     expect(output.equals(source)).toBe(true);
+  });
+});
+
+describe("Archive Lantern desktop runtime", () => {
+  it("runs the primary and recovery journeys through the shared smoke model", async () => {
+    const result = await execFileAsync("pwsh", [
+      "-NoProfile",
+      "-File",
+      `${archiveRoot}source/ArchiveLantern.ps1`,
+      "-Mode",
+      "Smoke",
+    ], { encoding: "utf8", timeout: 10_000, windowsHide: true });
+
+    expect(result.stderr).toBe("");
+    expect(JSON.parse(result.stdout)).toEqual({
+      ok: true,
+      journey: [
+        "empty-library",
+        "import",
+        "indexing",
+        "indexed",
+        "tag",
+        "search",
+        "open-result",
+      ],
+      recovery: "passed",
+    });
+  });
+
+  it("uses one accessible WPF source tree and an exact packaged mirror", async () => {
+    const [sourceScript, outputScript, sourceXaml, outputXaml] = await Promise.all([
+      readFile(`${archiveRoot}source/ArchiveLantern.ps1`),
+      readFile(`${archiveRoot}output/ArchiveLantern.ps1`),
+      readFile(`${archiveRoot}source/ArchiveLantern.xaml`),
+      readFile(`${archiveRoot}output/ArchiveLantern.xaml`),
+    ]);
+
+    expect(outputScript.equals(sourceScript)).toBe(true);
+    expect(outputXaml.equals(sourceXaml)).toBe(true);
+
+    const script = sourceScript.toString("utf8");
+    const xaml = sourceXaml.toString("utf8");
+    expect(script).toContain("[Windows.Markup.XamlReader]::Load");
+    expect(script).toContain("[Windows.Media.Imaging.RenderTargetBitmap]::new");
+    expect(script).toContain("$null = $archiveWindow.ShowDialog()");
+    expect(script.indexOf("if ($Mode -eq 'Smoke')")).toBeLessThan(
+      script.indexOf("Add-Type -AssemblyName PresentationFramework"),
+    );
+    expect(xaml).toContain('x:Name="RetryButton"');
+    expect(xaml).toContain('x:Name="ArchiveList"');
+    expect(xaml).toContain('AutomationProperties.LiveSetting="Polite"');
+    expect(xaml).toContain('<Setter Property="MinHeight" Value="44" />');
   });
 });

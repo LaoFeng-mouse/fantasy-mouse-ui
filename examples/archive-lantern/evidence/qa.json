@@ -3,12 +3,12 @@
   "caseId": "archive-lantern",
   "mode": "strict",
   "gates": {
-    "generated": false,
-    "tested": false,
-    "run": false,
-    "rendered": false,
-    "visuallyChecked": false,
-    "accepted": false
+    "generated": true,
+    "tested": true,
+    "run": true,
+    "rendered": true,
+    "visuallyChecked": true,
+    "accepted": true
   },
   "primaryJourney": {
     "steps": [
@@ -20,23 +20,54 @@
       "search",
       "open-result"
     ],
-    "result": "pending"
+    "result": "passed"
   },
   "accessibility": {
-    "keyboard": "pending",
-    "contrast": "pending",
-    "reducedMotion": "pending"
+    "keyboard": "passed",
+    "contrast": "passed",
+    "reducedMotion": "passed"
   },
   "comparison": {
-    "status": "pending",
-    "repeatedDimensions": [],
-    "repairs": []
+    "status": "passed",
+    "repeatedDimensions": [
+      "canonical identity: gray photographic face, narrow eyes, toothy grin, thin ears, and white bean body",
+      "default anatomy: chest U retained as the sole resting hand pair in the empty state",
+      "action anatomy: chest U removed and exactly one body-connected pair operates the index card or Retry path",
+      "cross-case boundary: character identity and anatomy repeat while desktop layout, typography, palette, density, materials, controls, and placement derive from the archive workflow"
+    ],
+    "repairs": [
+      "Changed screenshot capture to show and lay out the real WPF visual tree off-screen before RenderTargetBitmap capture; the initial unshown tree rendered black.",
+      "Forced the singleton result into an object array after WPF rejected a scalar PSCustomObject as ItemsSource.",
+      "Reduced and wrapped the empty-state heading after the first full-size render clipped its final word.",
+      "Moved the recovery librarian and content column so the pointing fingertip meets the real Retry button while preserving readable error copy.",
+      "Added a visible damaged-sample path, timed real indexing completion, duplicate preservation, and a deterministic visible-window auto-close harness."
+    ]
   },
   "artifacts": {
-    "source": [],
-    "output": [],
-    "screenshots": [],
-    "comparison": ""
+    "source": [
+      "source/ArchiveLantern.ps1",
+      "source/ArchiveLantern.xaml",
+      "source/assets/librarian-empty.png",
+      "source/assets/librarian-indexing.png",
+      "source/assets/librarian-recovery.png"
+    ],
+    "output": [
+      "output/ArchiveLantern.ps1",
+      "output/ArchiveLantern.xaml",
+      "output/assets/librarian-empty.png",
+      "output/assets/librarian-indexing.png",
+      "output/assets/librarian-recovery.png"
+    ],
+    "screenshots": [
+      "screenshots/empty-library.png",
+      "screenshots/indexing.png",
+      "screenshots/open-result.png",
+      "screenshots/import-failed.png"
+    ],
+    "comparison": "evidence/comparison.png"
   },
-  "limits": []
+  "limits": [
+    "The benchmark uses deterministic local sample records rather than opening the native Windows file picker, so the interaction and recovery model remain reproducible in smoke and render modes.",
+    "Reduced motion is satisfied by using no decorative animation; the only timed UI transition represents indexing completion and preserves the visible determinate progress state."
+  ]
 }
