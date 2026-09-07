@@ -40,20 +40,23 @@ codex plugin marketplace add https://github.com/LaoFeng-mouse/fantasy-mouse-ui -
 codex plugin add fantasy-mouse-ui@fantasy-mouse-ui --json
 ```
 
-Refresh the marketplace before installing an available update:
+Refresh the marketplace, then inspect the installed and available versions:
 
 ```powershell
 codex plugin marketplace upgrade fantasy-mouse-ui --json
-codex plugin add fantasy-mouse-ui@fantasy-mouse-ui --json
+codex plugin list --marketplace fantasy-mouse-ui --available --json
 ```
 
-Remove the installed plugin when it is no longer needed:
+The marketplace upgrade refreshes the snapshot; it does not by itself prove that the installed copy changed. If the JSON reports that the desired marketplace version is not installed, replace the installed copy, then run the list command again to verify the reported version:
 
 ```powershell
 codex plugin remove fantasy-mouse-ui@fantasy-mouse-ui --json
+codex plugin add fantasy-mouse-ui@fantasy-mouse-ui --json
 ```
 
-Start a fresh Codex task after installing or updating so plugin discovery happens in a new process. Installation success and fresh-task loading are separate checks.
+After installation or replacement, start a fresh Codex task. Plugin discovery is evaluated during fresh-task initialization; a task that was already running does not prove that the new installation loaded. Installation, reported version, and fresh-task loading are separate checks.
+
+To remove the plugin without reinstalling it, run only the `codex plugin remove` command above.
 
 ## Claude, Gemini, DeepSeek, and other Agents
 
@@ -61,9 +64,9 @@ Download and extract the complete release ZIP. Then point the host to the matchi
 
 | Host | Adapter |
 | --- | --- |
-| Claude | `adapters/claude/SKILL.md` |
-| Gemini | `adapters/gemini/SKILL.md` |
-| DeepSeek | `adapters/deepseek/SKILL.md` |
+| A Claude-capable coding host with project instructions and tools | `adapters/claude/SKILL.md` |
+| A Gemini-capable coding host with project instructions and tools | `adapters/gemini/SKILL.md` |
+| A DeepSeek-capable coding host with project instructions and tools | `adapters/deepseek/SKILL.md` |
 | Another tool-capable Agent | `adapters/generic/AGENT.md` |
 
 Each adapter routes the host to the same canonical Skill; it does not redefine the workflow. Use the host's supported project-instruction or Skill-loading mechanism to load that adapter. Host-specific menu names and installation locations can differ, so verify that the Agent can access the extracted directory before asking it to design.
@@ -73,11 +76,13 @@ Each adapter routes the host to the same canonical Skill; it does not redefine t
 1. Obtain and extract the complete plugin, or load the installed Codex plugin.
 2. Load the native Codex entrypoint or the matching host adapter.
 3. Run `node scripts/verify-bundle.mjs` from the plugin root and inspect the bundled character images.
-4. Resolve Fast, Standard, or Strict from the request, then state the selected mode and reason before editing.
-5. Inspect the target product, platform, brand, content, states, and constraints.
-6. Design and implement product-specific UI while preserving the character identity contract.
-7. Run or render the real target and exercise the required states.
-8. Inspect the result, record evidence, and report every acceptance gate that remains open.
+4. Inspect the request and known scope for an explicit mode and every matching trigger in `config/execution-modes.json`.
+5. From the plugin root, run `node scripts/resolve-mode.mjs [--requested fast|standard|strict] [--trigger <known-trigger> ...]`, then state the selected mode and reason before any design work.
+6. Inspect the target product, platform, brand, content, states, constraints, and real build or run path.
+7. If source inspection reveals a new Strict trigger, rerun the resolver and upgrade the mode before making edits. Never silently downgrade a result.
+8. Design and implement product-specific UI while preserving the character identity contract.
+9. Run or render the real target and exercise the required states.
+10. Inspect the result, record evidence, and report every acceptance gate that remains open.
 
 ## Choose Fast, Standard, or Strict
 
@@ -126,8 +131,16 @@ A mockup, a code snippet, or a passing unit test by itself is not proof that the
 
 ## Package identity
 
-The pinned download in this guide is the immutable `v0.2.0` release archive:
+The version-pinned download in this guide is the published `v0.2.0` release archive:
 
 `https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/download/v0.2.0/fantasy-mouse-ui.zip`
 
-Install the complete ZIP and keep its directory structure intact. This `docs/agent-usage.md` guide is post-release documentation maintained on the repository's `main` branch; it is not part of the immutable `v0.2.0` tag or its 24-file plugin ZIP. Updating this guide must not be presented as changing the released package.
+Verify the downloaded file before use:
+
+```text
+SHA-256  4AA588B0DA90A6E669B3EE833A1BC3F48DA10E6009654668016B75AA3837AEB3
+```
+
+Install the complete ZIP and keep its directory structure intact. This `docs/agent-usage.md` guide is post-release documentation maintained on the repository's `main` branch; it is not part of the `v0.2.0` tag or its 24-file plugin ZIP. This documentation update does not mutate that tag or asset.
+
+Marketplace installation can resolve to a different version after a later release because the Marketplace follows its refreshed repository snapshot. Use `codex plugin list --marketplace fantasy-mouse-ui --available --json` to verify the installed version; use the fixed URL and checksum above when an exact `v0.2.0` package is required.
