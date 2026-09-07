@@ -21,6 +21,12 @@ function expectOrdered(text: string, markers: string[]) {
   }
 }
 
+function textFences(markdown: string) {
+  return [...markdown.matchAll(/```text\r?\n([\s\S]*?)\r?\n```/gu)].map((match) =>
+    match[1].trim(),
+  );
+}
+
 describe("Fantasy Mouse Agent usage documentation", () => {
   it("keeps the v0.2.0 Release source copy-ready and post-release-link honest", async () => {
     const notes = await readFile("docs/release-notes-0.2.0.md", "utf8");
@@ -67,8 +73,9 @@ describe("Fantasy Mouse Agent usage documentation", () => {
     for (const document of documents) {
       expect(document).toContain(guardedInstall);
       expect(document).not.toContain("--json; codex plugin add");
-      expect(document.split(downloadPrompt)).toHaveLength(2);
-      expect(document.split(installedPrompt)).toHaveLength(2);
+      const prompts = textFences(document);
+      expect(prompts.filter((prompt) => prompt === downloadPrompt)).toHaveLength(1);
+      expect(prompts.filter((prompt) => prompt === installedPrompt)).toHaveLength(1);
     }
   });
 
