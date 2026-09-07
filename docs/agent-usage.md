@@ -147,3 +147,7 @@ SHA-256  4AA588B0DA90A6E669B3EE833A1BC3F48DA10E6009654668016B75AA3837AEB3
 Install the complete ZIP and keep its directory structure intact. This `docs/agent-usage.md` guide is post-release documentation maintained on the repository's `main` branch; it is not part of the `v0.2.0` tag or its 24-file plugin ZIP. This documentation update does not mutate that tag or asset.
 
 Marketplace installation can resolve to a different version after a later release because the Marketplace follows its refreshed repository snapshot. Use `codex plugin list --marketplace fantasy-mouse-ui --available --json` to verify the installed version; use the fixed URL and checksum above when an exact `v0.2.0` package is required.
+
+## Optional further reading
+
+See the [roadmap](roadmap.md) for planned and candidate improvements that are not shipped in v0.2.0.

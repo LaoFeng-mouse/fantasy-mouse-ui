@@ -16,6 +16,22 @@ function expectOrdered(text: string, markers: string[]) {
 }
 
 describe("Fantasy Mouse Agent usage documentation", () => {
+  it("labels future plugin improvements as planned rather than shipped", async () => {
+    const roadmap = await readFile("docs/roadmap.md", "utf8");
+    for (const marker of [
+      "## Planned for v0.2.1",
+      "doctor",
+      "shorter canonical Skill",
+      "host-capability contract",
+      "USE_WITH_AI.md",
+      "## Candidate scope for v0.3.0",
+      "owned or licensed original character assets",
+      "real-host conformance tests",
+      "benchmark regression",
+    ]) expect(roadmap, marker).toContain(marker);
+    expect(roadmap).toContain("None of the items below are shipped in v0.2.0");
+  });
+
   it("defines capability-bounded multi-host usage and honest failure behavior", async () => {
     const guide = await readFile("docs/agent-usage.md", "utf8");
     for (const marker of [
