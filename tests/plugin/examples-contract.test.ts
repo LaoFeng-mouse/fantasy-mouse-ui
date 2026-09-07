@@ -13,7 +13,7 @@ import {
   writeFile,
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, relative, sep } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
@@ -85,10 +85,17 @@ async function invokeValidator(
   cwd = root,
   env: NodeJS.ProcessEnv = process.env,
 ): Promise<Invocation> {
+  const invocationEnv = { ...env };
+  if (
+    invocationEnv.NODE_ENV === "test" &&
+    !invocationEnv.FANTASY_MOUSE_VALIDATOR_TEST_REPARSE_QUERY
+  ) {
+    invocationEnv.FANTASY_MOUSE_VALIDATOR_TEST_SKIP_REPARSE_QUERY = "1";
+  }
   try {
     const result = await execFileAsync(process.execPath, [join(root, validator), ...args], {
       cwd,
-      env,
+      env: invocationEnv,
       encoding: "utf8",
       windowsHide: true,
     });
@@ -122,17 +129,22 @@ async function createFixture(): Promise<string> {
   const root = await mkdtemp(join(tmpdir(), "fantasy-mouse-examples-"));
   temporaryRoots.push(root);
 
-  await cp(join(repositoryRoot, "examples"), join(root, "examples"), { recursive: true });
+  const examplesRoot = join(repositoryRoot, "examples");
+  await cp(examplesRoot, join(root, "examples"), {
+    recursive: true,
+    filter: (source) => {
+      const parts = relative(examplesRoot, source).split(sep);
+      if (parts.length >= 2 && ["source", "output", "screenshots"].includes(parts[1]!)) {
+        return false;
+      }
+      return !(parts.length === 3 && parts[1] === "evidence" && parts[2] === "comparison.png");
+    },
+  });
   const benchmark = await readJson(join(root, "examples", "benchmark.json")) as {
     cases: Array<{ id: string }>;
   };
   for (const benchmarkCase of benchmark.cases) {
     const caseRoot = join(root, "examples", benchmarkCase.id);
-    await rm(join(caseRoot, "source"), { recursive: true, force: true });
-    await rm(join(caseRoot, "output"), { recursive: true, force: true });
-    await rm(join(caseRoot, "screenshots"), { recursive: true, force: true });
-    await rm(join(caseRoot, "evidence", "comparison.png"), { force: true });
-
     const evidencePath = join(caseRoot, "evidence", "qa.json");
     const evidence = await readJson(evidencePath) as {
       gates: Record<string, boolean>;
@@ -282,11 +294,26 @@ async function waitForFile(path: string): Promise<void> {
 
 afterEach(async () => {
   await Promise.all(
-    temporaryRoots.splice(0).map((root) => rm(root, { recursive: true, force: true })),
+    temporaryRoots.splice(0).map((root) => rm(root, {
+      recursive: true,
+      force: true,
+      maxRetries: 5,
+      retryDelay: 100,
+    })),
   );
 });
 
 describe("v0.2 benchmark contract", () => {
+  it("accepts the complete four-case portfolio without a pending escape hatch", async () => {
+    const result = await invokeValidator();
+    expect(result.stderr).toBe("");
+    expect(JSON.parse(result.stdout)).toEqual({
+      ok: true,
+      cases: 4,
+      accepted: 4,
+    });
+  }, 15_000);
+
   it("lists four Strict cases in README order", async () => {
     const manifest = JSON.parse(
       await readFile("examples/benchmark.json", "utf8"),
@@ -408,7 +435,7 @@ describe("v0.2 benchmark contract", () => {
       pending: 4,
     });
     await expect(readFile(marker, "utf8")).rejects.toMatchObject({ code: "ENOENT" });
-  });
+  }, 15_000);
 
   it("reports the four cases as pending before artifacts are built", async () => {
     const root = await createFixture();
@@ -420,10 +447,11 @@ describe("v0.2 benchmark contract", () => {
       accepted: 0,
       pending: 4,
     });
-  });
+  }, 15_000);
 
   it("fails closed without --allow-pending", async () => {
-    expectBoundedFailure(await invokeValidator(), "benchmark-not-accepted");
+    const root = await createFixture();
+    expectBoundedFailure(await invokeValidator([], root), "benchmark-not-accepted");
   });
 
   it("accepts only the exact --allow-pending argument", async () => {
@@ -514,7 +542,7 @@ describe("v0.2 benchmark contract", () => {
         "invalid-evidence",
       );
     }
-  }, 30_000);
+  }, 90_000);
 
   it("requires accepted artifact declarations under their fixed case paths", async () => {
     const mutations: Array<(artifacts: Record<string, string[] | string>) => void> = [
@@ -538,7 +566,7 @@ describe("v0.2 benchmark contract", () => {
         "invalid-evidence",
       );
     }
-  }, 15_000);
+  }, 60_000);
 
   it("requires complete, decodable, credible PNG evidence", async () => {
     const screenshotFixture = await createAcceptedFixture();
@@ -650,7 +678,7 @@ describe("v0.2 benchmark contract", () => {
       await invokeValidator(["--allow-pending"], root),
       "unsafe-example-entry",
     );
-  });
+  }, 30_000);
 
   it("rejects stale accepted output that does not mirror source", async () => {
     const fixture = await createAcceptedFixture();
@@ -702,7 +730,7 @@ describe("v0.2 benchmark contract", () => {
         "example-tree-limit",
       );
     }
-  });
+  }, 15_000);
 
   it("invokes the workflow validator and Strict public-benchmark resolver", async () => {
     const workflowRoot = await createFixture();

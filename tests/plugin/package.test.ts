@@ -398,7 +398,7 @@ describe("public plugin package", () => {
   it("rejects a multi-link plugin source during collection without replacing the archive", async () => {
     const sourceUrl = new URL("../../plugins/fantasy-mouse-ui/.codex-plugin/plugin.json", import.meta.url);
     const sourcePath = fileURLToPath(sourceUrl);
-    const temporaryRoot = await mkdtemp(join(tmpdir(), "fantasy-mouse-package-link-"));
+    const temporaryRoot = await mkdtemp(join(repoRootPath, "work", "fantasy-mouse-package-link-"));
     const aliasPath = join(temporaryRoot, "alias.txt");
     let preloadPath: string | undefined;
     try {

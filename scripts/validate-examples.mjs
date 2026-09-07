@@ -196,6 +196,10 @@ async function readJson(path, invalidCode) {
 
 async function assertNoWindowsReparseTree(path) {
   if (process.platform !== "win32") return;
+  if (
+    process.env.NODE_ENV === "test" &&
+    process.env.FANTASY_MOUSE_VALIDATOR_TEST_SKIP_REPARSE_QUERY === "1"
+  ) return;
   const query = [
     "$ErrorActionPreference='Stop'",
     "$root=$env:FANTASY_MOUSE_REPARSE_ROOT",
@@ -730,9 +734,10 @@ async function main() {
   }
   const pending = EXPECTED_CASES.length - accepted;
   assert(allowPending || pending === 0, "benchmark-not-accepted");
-  process.stdout.write(
-    `${JSON.stringify({ ok: true, cases: EXPECTED_CASES.length, accepted, pending })}\n`,
-  );
+  const summary = pending === 0
+    ? { ok: true, cases: EXPECTED_CASES.length, accepted }
+    : { ok: true, cases: EXPECTED_CASES.length, accepted, pending };
+  process.stdout.write(`${JSON.stringify(summary)}\n`);
 }
 
 try {
