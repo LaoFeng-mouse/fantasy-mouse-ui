@@ -1,6 +1,9 @@
 import { access, readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 
+const fixedReleaseZip =
+  "https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/download/v0.2.0/fantasy-mouse-ui.zip";
+
 function expectOrdered(text: string, markers: string[]) {
   let previous = -1;
   for (const marker of markers) {
@@ -56,6 +59,24 @@ describe("README v0.2 showcase", () => {
       ) as { gates: { accepted: boolean } };
       expect(evidence.gates.accepted, caseId).toBe(true);
     }
+  });
+
+  it("offers copy-ready download and installed-plugin prompts before long examples", async () => {
+    const readme = await readFile("README.md", "utf8");
+    expectOrdered(readme, [
+      "## Quick Start",
+      "### Download, install, and use / 下载、安装并使用",
+      fixedReleaseZip,
+      "不要只复制 SKILL.md",
+      "### Use an existing installation / 已安装后直接使用",
+      "自动选择 Fast、Standard 或 Strict 模式",
+      "### Choose a mode / 选择模式",
+      "<details>",
+      "More examples / 更多示例",
+    ]);
+    expect(readme).toContain("docs/agent-usage.md");
+    expect(readme).toContain("具备文件读取、图片查看、代码执行和项目编辑能力");
+    expect(readme).not.toMatch(/(?:all|every) (?:AI|chatbot|agent)/iu);
   });
 
   it("provides three bilingual fenced prompts with explicit mode reasoning", async () => {

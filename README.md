@@ -19,13 +19,30 @@ codex plugin marketplace add https://github.com/LaoFeng-mouse/fantasy-mouse-ui -
 
 ## Quick Start
 
-Ask normally and name a mode. The Agent states the selected mode and reason first, verifies the bundled visual authorities, then produces editable output and checks it in the real target surface.
+### Download, install, and use / 下载、安装并使用
+
+```text
+请从 https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/download/v0.2.0/fantasy-mouse-ui.zip 下载并安装完整的 Fantasy Mouse UI 插件，然后使用它为【项目路径或链接】设计【需要设计的界面】；请让插件自动选择合适模式并先说明原因，查看随包角色素材，交付可编辑源码、真实运行或渲染结果和视觉验收证据，不要只复制 SKILL.md。
+```
+
+### Use an existing installation / 已安装后直接使用
+
+```text
+请使用 Fantasy Mouse UI 插件为【项目路径或链接】设计【需要设计的界面】；自动选择 Fast、Standard 或 Strict 模式并先说明原因，保留鼠鼠角色特征，但界面布局、配色、字体和组件必须根据当前产品重新设计，最后交付可编辑源码并真实运行或渲染检查。
+```
+
+兼容范围：适用于具备文件读取、图片查看、代码执行和项目编辑能力，并能加载完整插件目录的 Agent；具体宿主接入方式见 [Agent usage guide / Agent 使用指南](docs/agent-usage.md)。
+
+### Choose a mode / 选择模式
 
 | Mode | Best for | Required depth |
 | --- | --- | --- |
 | **Fast** | One bounded, low-risk screen or revision | Inspect source, ground the character, edit, render/open, and run focused visual/hand QA. |
 | **Standard** | Most product UI and multi-state feature work | Add a workflow brief, key states, direction confirmation when needed, behavior checks, and a concise handoff. This is the default. |
 | **Strict** | Public benchmarks, multi-page systems, permissions, finance/medical/destructive flows, and releases | Run the complete workflow, recovery/accessibility checks, same-context comparisons, provenance, and evidence gates. Strict triggers cannot be downgraded. |
+
+<details>
+<summary>More examples / 更多示例</summary>
 
 ### Fast example prompt / Fast 示例 Prompt
 
@@ -53,6 +70,8 @@ State the selected Mode and reason first. / 请先说明所选模式和原因。
 Build a SaaS incident dashboard with role permissions, assignment and resolution failures, safe retry, keyboard navigation, contrast checks, same-context character comparison, screenshots, and a complete acceptance record. Treat this as a public benchmark.
 构建一个 SaaS 事故响应看板，包含角色权限、分派与解决失败、安全重试、键盘导航、对比度检查、同场景角色对比、截图和完整验收记录。把它作为公开 benchmark 执行。
 ```
+
+</details>
 
 Explore the complete accepted cases:
 
