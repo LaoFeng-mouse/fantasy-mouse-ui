@@ -268,12 +268,12 @@ describe("Fantasy Mouse UI plugin manifest", () => {
     expect(installGuide).toContain("历史 v0.1.0 发布记录");
     expect(installGuide).toContain("mutable discovery endpoints");
     expect(installGuide).toContain("可变发现端点");
-    expect(installGuide).toContain("trusted release-published SHA-256 digest");
-    expect(installGuide).toContain("可信发布流程公布的 SHA-256 摘要");
+    expect(installGuide).toContain("verified v0.2.0 SHA-256");
+    expect(installGuide).toContain("已验证的 v0.2.0 SHA-256");
     expect(installGuide).toContain(
-      "byte-for-byte identical to a separately trusted locally built archive",
+      "byte-for-byte identical to that release asset",
     );
-    expect(installGuide).toContain("与另一个单独受信任的本地构建压缩包逐字节相同");
+    expect(installGuide).toContain("与该 Release 资产逐字节相同");
     expect(installGuide).toContain(
       "Inventory validation and `verify-bundle.mjs` authenticate only archive structure and the four pinned visual bytes; they do not authenticate every script, schema, or Skill file.",
     );
@@ -281,10 +281,13 @@ describe("Fantasy Mouse UI plugin manifest", () => {
       "清单验证和 `verify-bundle.mjs` 只认证压缩包结构与四个固定视觉文件的字节；它们不认证每个脚本、Schema 或 Skill 文件。",
     );
     expect(installGuide).toContain(
-      "Until the GitHub v0.2.0 Release and its digest are independently verified, the trusted release-candidate route is a local source build.",
+      "The fixed current release is `https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/tag/v0.2.0`.",
     );
     expect(installGuide).toContain(
-      "在 GitHub v0.2.0 Release 及其摘要完成独立验证前，受信任的发布候选路径是本地源码构建。",
+      "当前固定版本是上述 GitHub v0.2.0 Release",
+    );
+    expect(installGuide).toContain(
+      "4AA588B0DA90A6E669B3EE833A1BC3F48DA10E6009654668016B75AA3837AEB3",
     );
     expect(installGuide).not.toContain("its `latest` aliases are retained below as historical routes");
     expect(installGuide).not.toContain("latest asset remain historical discovery routes");

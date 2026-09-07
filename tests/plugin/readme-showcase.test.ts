@@ -15,6 +15,7 @@ describe("README v0.2 showcase", () => {
     const readme = await readFile("README.md", "utf8");
     expectOrdered(readme, [
       "# Fantasy Mouse UI",
+      "codex plugin marketplace add https://github.com/LaoFeng-mouse/fantasy-mouse-ui --json",
       "codex plugin add fantasy-mouse-ui@fantasy-mouse-ui --json",
       "## Real results",
       "Signal Harbor",

@@ -3,7 +3,7 @@
 Design product-specific SaaS, websites, presentations, and desktop software with one visually grounded mouse character — without forcing every product into one template.
 
 ```powershell
-codex plugin add fantasy-mouse-ui@fantasy-mouse-ui --json
+codex plugin marketplace add https://github.com/LaoFeng-mouse/fantasy-mouse-ui --json; codex plugin add fantasy-mouse-ui@fantasy-mouse-ui --json
 ```
 
 ## Real results

@@ -2,7 +2,7 @@
 
 ## Current branch state
 
-- The current delivered state is a complete local v0.2.0 release candidate in its feature worktree; remote publication, marketplace reinstall, and fresh-process loading are not yet claimed.
+- v0.2.0 is published and independently verified at https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/tag/v0.2.0.
 - Public repository: https://github.com/LaoFeng-mouse/fantasy-mouse-ui.
 - Repository marketplace metadata, bilingual [Install with AI](../INSTALL_WITH_AI.md), MIT code licenses, the exact 24-file plugin inventory, host adapters, and layered verification contract are present.
 - `package.json` remains `"private": true` only to block accidental npm publication; it does not alter MIT software-code rights.
@@ -21,15 +21,18 @@
 - Four accepted Strict benchmark cases under `examples/`, covering SaaS, website, presentation, and Windows desktop surfaces with editable source, real output, screenshots, comparisons, and QA records.
 - A result-led README, Quick Start, three bilingual prompts, and deterministic 22-second Archive Lantern GIF/MP4 workflow demonstration.
 
-## Current local v0.2.0 release candidate
+## Verified v0.2.0 release
 
-- The package is a local release candidate only; GitHub v0.2.0 publication, remote ZIP identity, and remote installation are not yet claimed.
+- Annotated tag `v0.2.0` resolves to release commit `fc1dd24d8bc45ef5a9050f748c74c22892dbe279`; the non-draft, non-prerelease GitHub Release was published on 2026-09-07.
 - Two post-versioning package builds were byte-for-byte identical at SHA-256 `4AA588B0DA90A6E669B3EE833A1BC3F48DA10E6009654668016B75AA3837AEB3`.
 - Package path: `dist/plugin/fantasy-mouse-ui.zip`; verified inventory: exactly 24 regular entries.
 - The complete local gate passed with `203` tests and `1` platform skip; TypeScript, benchmark, bundle, Skill, plugin, and package validation also passed.
 - `scripts/verify-bundle.mjs` must return `{"ok":true,"assets":4}` and `scripts/resolve-mode.mjs` must resolve Standard by default.
 - `scripts/validate-examples.mjs` must return `{"ok":true,"cases":4,"accepted":4}`.
 - Optional support QR is repository documentation only and must remain absent from the plugin ZIP.
+- The Release asset was independently downloaded: 7,416,625 bytes, exactly 24 entries, byte-for-byte identical to the local package, with the same SHA-256.
+- Marketplace installation resolved `fantasy-mouse-ui@fantasy-mouse-ui` as version `0.2.0`; the older `fantasy-mouse-ui@personal` installation was removed after the new installation succeeded.
+- A fresh ephemeral Codex process read version `0.2.0` from the installed cache, resolved the `public-benchmark` trigger to Strict, and identified visual grounding as the first visual action.
 
 ## Historical v0.1.0 baseline
 
@@ -51,8 +54,7 @@ The retained 乐不思鼠-derived rule is only the user-confirmed hand contract:
 
 ## Remaining boundaries
 
-- Task 5 must build the versioned package twice, verify deterministic identity, and record the local release ledger; it must not imply remote publication.
-- Task 6 must separately publish and verify the GitHub repository, tag, Release asset, remote/local ZIP identity, marketplace reinstall, and actual loading in a newly started task/session.
+- The repository, tag, Release asset, remote/local ZIP identity, marketplace installation, and fresh-process loading gates are complete for v0.2.0.
 - Future generated UI, website, deck, document, or workflow outputs require their own real run/render and visual acceptance; repository tests do not pre-accept them.
 - The rejected legacy branch/worktree `codex/fantasy-mouse` remains outside the release branch and is not product authority.
 
