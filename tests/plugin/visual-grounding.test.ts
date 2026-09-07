@@ -10,7 +10,7 @@ import {
   writeFile
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { basename, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { describe, expect, it } from "vitest";
@@ -104,7 +104,10 @@ async function withCopiedPlugin(
 ) {
   const temporaryRoot = await mkdtemp(join(tmpdir(), `fantasy-mouse-${label}-`));
   const copiedPlugin = join(temporaryRoot, "fantasy-mouse-ui");
-  await cp(pluginSource, copiedPlugin, { recursive: true });
+  await cp(pluginSource, copiedPlugin, {
+    recursive: true,
+    filter: (source) => basename(source) !== ".env"
+  });
   try {
     const execution = await mutate(copiedPlugin);
 
@@ -271,6 +274,32 @@ describe("Fantasy Mouse visual grounding bundle", () => {
 
     expect(stderr).toBe("");
     expect(JSON.parse(stdout)).toEqual({ ok: true, assets: 4 });
+  });
+
+  it("accepts the canonical provenance after a Windows CRLF checkout", async () => {
+    const temporaryRoot = await mkdtemp(join(tmpdir(), "fantasy-mouse-crlf-"));
+    const copiedPlugin = join(temporaryRoot, "fantasy-mouse-ui");
+    await cp(pluginSource, copiedPlugin, {
+      recursive: true,
+      filter: (source) => basename(source) !== ".env"
+    });
+    try {
+      const provenancePath = join(copiedPlugin, "ASSET_PROVENANCE.md");
+      const provenance = await readFile(provenancePath, "utf8");
+      await writeFile(
+        provenancePath,
+        provenance.replace(/\r?\n/gu, "\r\n"),
+        "utf8"
+      );
+      const { stdout, stderr } = await execFileAsync(process.execPath, [
+        join(copiedPlugin, "scripts", "verify-bundle.mjs")
+      ]);
+
+      expect(stderr).toBe("");
+      expect(JSON.parse(stdout)).toEqual({ ok: true, assets: 4 });
+    } finally {
+      await rm(temporaryRoot, { recursive: true, force: true });
+    }
   });
 
   it("rejects a manifest that changes authority-defining fields", async () => {

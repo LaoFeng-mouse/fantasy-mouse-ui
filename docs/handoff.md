@@ -24,9 +24,9 @@
 ## Current local v0.2.0 release candidate
 
 - The package is a local release candidate only; GitHub v0.2.0 publication, remote ZIP identity, and remote installation are not yet claimed.
-- Two post-versioning package builds were byte-for-byte identical at SHA-256 `8CD26D1D8BB6BB0C2B4988818F980A38EC7D20D20A7C542353A1ACB06D5E5FDC`.
+- Two post-versioning package builds were byte-for-byte identical at SHA-256 `4AA588B0DA90A6E669B3EE833A1BC3F48DA10E6009654668016B75AA3837AEB3`.
 - Package path: `dist/plugin/fantasy-mouse-ui.zip`; verified inventory: exactly 24 regular entries.
-- The complete local gate passed with `202` tests and `1` platform skip; TypeScript, benchmark, bundle, Skill, plugin, and package validation also passed.
+- The complete local gate passed with `203` tests and `1` platform skip; TypeScript, benchmark, bundle, Skill, plugin, and package validation also passed.
 - `scripts/verify-bundle.mjs` must return `{"ok":true,"assets":4}` and `scripts/resolve-mode.mjs` must resolve Standard by default.
 - `scripts/validate-examples.mjs` must return `{"ok":true,"cases":4,"accepted":4}`.
 - Optional support QR is repository documentation only and must remain absent from the plugin ZIP.

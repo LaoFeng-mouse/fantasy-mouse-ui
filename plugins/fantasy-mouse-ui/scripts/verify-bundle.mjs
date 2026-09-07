@@ -279,8 +279,12 @@ async function verify() {
     provenanceCandidate,
     checkedPathInfo
   );
+  const canonicalProvenanceBytes = Buffer.from(
+    provenanceBytes.toString("utf8").replace(/\r\n/gu, "\n"),
+    "utf8"
+  );
   const provenanceSha256 = createHash("sha256")
-    .update(provenanceBytes)
+    .update(canonicalProvenanceBytes)
     .digest("hex")
     .toUpperCase();
   if (provenanceSha256 !== EXPECTED_PROVENANCE_SHA256) {
