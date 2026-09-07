@@ -2,7 +2,7 @@
 
 ## Boundary
 
-The repository contains one reusable plugin and its verification/packaging harness. It does not contain a product Studio, surface renderer, or sample application. The plugin instructs the invoking Agent to work inside the user's real target project or to create surface-appropriate editable source when no project exists.
+The repository contains one reusable plugin, its verification/packaging harness, and the public examples/ benchmark portfolio of four accepted product-specific cases. It does not ship a general product Studio or reusable surface renderer. The benchmark cases and demo media are repository evidence outside the exact 24-file install ZIP; the plugin still instructs the invoking Agent to work inside the user's real target project or create surface-appropriate editable source when no project exists.
 
 ## Authority model
 
@@ -21,6 +21,7 @@ The verifier embeds the expected asset paths, hashes, dimensions, publication sc
 
 ```text
 verify bundle
+  → resolve Fast, Standard, or Strict
   → view four images in authority order
   → inspect target source
   → validate workflow brief
@@ -71,6 +72,8 @@ The local release archive build is `dist/plugin/fantasy-mouse-ui.zip`; repositor
 ## Acceptance model
 
 Repository gates prove the plugin contract and package. Each future invocation has separate generated, tested, run, rendered, visually checked, and accepted states. Only the evidence appropriate to the actual target surface can advance those gates.
+
+The root `examples/` validator applies that same acceptance model to Signal Harbor, Fieldnote Festival, Grid Forward 2030, and Archive Lantern. It verifies artifact containment, PNG credibility, source/output parity, Strict mode resolution, and complete evidence before reporting four accepted cases.
 
 Remote installation uses the repository marketplace or Release ZIP documented in [Install with AI](../INSTALL_WITH_AI.md). Source verification, installed-cache verification, and actual loading in a newly started task/session are separate layers; none can be inferred from another.
 

@@ -75,6 +75,8 @@ The hand contract is explicit. The chest V/U is one clasped resting pair. An act
 
 The canonical entrypoint is `plugins/fantasy-mouse-ui/skills/fantasy-mouse-ui/SKILL.md`. Codex loads it through the plugin manifest; thin adapters for generic Agents, Claude, Gemini, and DeepSeek map host capabilities to the same contract without redefining authority.
 
+Execution depth is defined by `config/execution-modes.json`, validated by `protocol/execution-modes.schema.json`, and resolved by `scripts/resolve-mode.mjs` inside the plugin package.
+
 ```text
 .agents/plugins/         repository marketplace metadata
 plugins/fantasy-mouse-ui/
@@ -92,7 +94,7 @@ tests/plugin/           contracts, security tests, and package checks
 docs/                   demo, integration, architecture, operations, and handoff
 ```
 
-Verify the repository and build the 24-entry plugin archive:
+Verify the repository and build the exact 24-file plugin inventory archive:
 
 ```powershell
 pnpm install

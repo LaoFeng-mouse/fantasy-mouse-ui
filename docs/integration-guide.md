@@ -2,6 +2,8 @@
 
 This guide is for an Agent or developer integrating the plugin into a new UI, website, presentation, document, or workflow task.
 
+Version 0.2.0 uses the exact 24-file plugin inventory and defaults to Standard mode. The public repository additionally provides four accepted examples for SaaS, website, presentation, and desktop surfaces; examples are evidence and learning material, not packaged templates.
+
 Public repository: https://github.com/LaoFeng-mouse/fantasy-mouse-ui
 
 ## Installation
@@ -51,7 +53,7 @@ Host adapters are compatibility layers, not alternate products. Validate the sou
    node scripts/resolve-mode.mjs
    ```
 
-   `config/execution-modes.json`, validated by `protocol/execution-modes.schema.json`, defaults to Standard. Explicit requests can select Fast or Strict; configured strict triggers upgrade the result to Strict.
+   `config/execution-modes.json`, validated by `protocol/execution-modes.schema.json`, defaults to Standard. Explicit requests can select Fast or Strict; configured strict triggers upgrade the result to Strict. Fast is appropriate only for bounded low-risk work. Standard retains workflow and key-state validation for ordinary product tasks. Strict is mandatory for public benchmarks, multi-page systems, permissions, financial or medical work, destructive actions, and formal releases.
 3. View, in manifest order:
    - `canonical-protagonist.png` for identity;
    - `processing-action-hands.png` for positive action anatomy;
@@ -132,4 +134,6 @@ If no allowed unrelated baseline exists, report `anti-template-baseline-unavaila
 ## Output contract
 
 Return editable source, the brief, recipe, rationale, both derivation tables, run/render evidence, screenshots, repairs, unresolved limits, and an exact handoff. Never promote generated or tested output to visually accepted without real target-tool evidence.
+
+Review the four accepted repository cases under `examples/` when you need concrete evidence formats. Copy their acceptance discipline, not their visual skeleton, palette, materials, components, or character placement.
 

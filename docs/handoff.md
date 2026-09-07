@@ -2,7 +2,7 @@
 
 ## Current branch state
 
-- The current delivered state is a local v0.2 core candidate in its feature worktree; it is not a final or remotely published v0.2 release.
+- The current delivered state is a complete local v0.2.0 release candidate in its feature worktree; remote publication, marketplace reinstall, and fresh-process loading are not yet claimed.
 - Public repository: https://github.com/LaoFeng-mouse/fantasy-mouse-ui.
 - Repository marketplace metadata, bilingual [Install with AI](../INSTALL_WITH_AI.md), MIT code licenses, the exact 24-file plugin inventory, host adapters, and layered verification contract are present.
 - `package.json` remains `"private": true` only to block accidental npm publication; it does not alter MIT software-code rights.
@@ -18,13 +18,17 @@
 - Product-style independence and anti-template gates.
 - Deterministic local packaging at `dist/plugin/fantasy-mouse-ui.zip` with an exact 24-file allowlist and TOCTOU protections.
 - Contract, security, validator, adapter, visual-authority, and package tests.
+- Four accepted Strict benchmark cases under `examples/`, covering SaaS, website, presentation, and Windows desktop surfaces with editable source, real output, screenshots, comparisons, and QA records.
+- A result-led README, Quick Start, three bilingual prompts, and deterministic 22-second Archive Lantern GIF/MP4 workflow demonstration.
 
-## Current local v0.2 core candidate
+## Current local v0.2.0 release candidate
 
-- The package is a pre-release/core candidate only; v0.2 remote publication and remote installation are not claimed.
-- Current local package SHA-256: `D7DF40D018FE10BA1B0B7223F939D3903EFF0F82856D403723F10C0A45CA5C3B`.
-- Package path: `dist/plugin/fantasy-mouse-ui.zip`; expected inventory: exactly 24 entries.
+- The package is a local release candidate only; GitHub v0.2.0 publication, remote ZIP identity, and remote installation are not yet claimed.
+- Two post-versioning package builds were byte-for-byte identical at SHA-256 `8CD26D1D8BB6BB0C2B4988818F980A38EC7D20D20A7C542353A1ACB06D5E5FDC`.
+- Package path: `dist/plugin/fantasy-mouse-ui.zip`; verified inventory: exactly 24 regular entries.
+- The complete local gate passed with `202` tests and `1` platform skip; TypeScript, benchmark, bundle, Skill, plugin, and package validation also passed.
 - `scripts/verify-bundle.mjs` must return `{"ok":true,"assets":4}` and `scripts/resolve-mode.mjs` must resolve Standard by default.
+- `scripts/validate-examples.mjs` must return `{"ok":true,"cases":4,"accepted":4}`.
 - Optional support QR is repository documentation only and must remain absent from the plugin ZIP.
 
 ## Historical v0.1.0 baseline
@@ -37,7 +41,7 @@
 ## Deliberately excluded
 
 - local Studio software;
-- renderer framework and fixed Web/desktop/PPT sample applications;
+- a reusable renderer framework, Studio product, or fixed visual template library;
 - photo-renamer or expense-approval example products;
 - frontend starter/templates;
 - fixed theme, palette, component, or layout presets;
@@ -47,8 +51,8 @@ The retained 乐不思鼠-derived rule is only the user-confirmed hand contract:
 
 ## Remaining boundaries
 
-- Task 5 may build, verify, commit, and update the supported local deployment, but actual loading in a newly started task/session remains separate evidence.
-- Publishing or updating the GitHub repository, tag, release, or downloadable asset is separate Task 6 and is not claimed here.
+- Task 5 must build the versioned package twice, verify deterministic identity, and record the local release ledger; it must not imply remote publication.
+- Task 6 must separately publish and verify the GitHub repository, tag, Release asset, remote/local ZIP identity, marketplace reinstall, and actual loading in a newly started task/session.
 - Future generated UI, website, deck, document, or workflow outputs require their own real run/render and visual acceptance; repository tests do not pre-accept them.
 - The rejected legacy branch/worktree `codex/fantasy-mouse` remains outside the release branch and is not product authority.
 

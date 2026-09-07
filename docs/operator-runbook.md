@@ -17,6 +17,7 @@ The workspace permits the `esbuild` post-install step through `pnpm-workspace.ya
 ## Required repository gates
 
 ```powershell
+pnpm examples:verify
 pnpm test
 pnpm typecheck
 pnpm plugin:verify
@@ -25,6 +26,8 @@ git diff --check
 ```
 
 Expected test scope is `tests/plugin/**/*.test.ts`. `.worktrees`, `node_modules`, and `dist` are excluded so stale linked worktrees cannot contaminate the main-branch result.
+
+`pnpm examples:verify` must report `{"ok":true,"cases":4,"accepted":4}` before a formal release. It validates the repository benchmark portfolio independently; examples remain outside the exact 24-file plugin inventory.
 
 The FIFO validation test is skipped on Windows because Windows has no POSIX FIFO. All other plugin tests must pass.
 
@@ -82,6 +85,7 @@ The hashes must match. A changed plugin source intentionally produces a new hash
 - all required gates pass;
 - two package hashes match;
 - ZIP contains exactly the expected 24 plugin files;
+- benchmark validator reports four accepted cases;
 - all four bundled assets retain their disclosed provenance metadata and pinned authority;
 - optional support QR remains under repository `docs/assets/` and is absent from the ZIP;
 - no sample software, frontend starter, tests, docs, `.env`, or repository debris is inside the ZIP.

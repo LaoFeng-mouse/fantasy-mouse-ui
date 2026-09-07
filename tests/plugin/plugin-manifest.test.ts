@@ -43,7 +43,7 @@ describe("Fantasy Mouse UI plugin manifest", () => {
   it("defines the exact installation boundary without apps or MCP servers", () => {
     const { version, ...manifestWithoutVersion } = manifest;
 
-    expect(version).toMatch(/^0\.1\.0(?:\+codex\.[a-z0-9-]+)?$/);
+    expect(version).toMatch(/^0\.2\.0(?:\+codex\.[a-z0-9-]+)?$/);
     expect(manifestWithoutVersion).toEqual({
       name: "fantasy-mouse-ui",
       description:
@@ -168,6 +168,43 @@ describe("Fantasy Mouse UI plugin manifest", () => {
     );
   });
 
+  it("declares the complete v0.2.0 release candidate and all seven outcomes", () => {
+    const packageJson = JSON.parse(
+      readFileSync(new URL("../../package.json", import.meta.url), "utf8"),
+    ) as { version: string };
+    expect(packageJson.version).toBe("0.2.0");
+    expect(manifest.version).toBe("0.2.0");
+
+    const releaseNotes = readFileSync(
+      new URL("../../docs/release-notes-0.2.0.md", import.meta.url),
+      "utf8",
+    );
+    for (const outcome of [
+      "four real results",
+      "22-second workflow demonstration",
+      "result-led README",
+      "Quick Start",
+      "Fast / Standard / Strict",
+      "four accepted benchmark cases",
+      "asset provenance",
+    ]) {
+      expect(releaseNotes, outcome).toContain(outcome);
+    }
+    expect(releaseNotes).toContain("24-file plugin inventory");
+    expect(releaseNotes).toContain("fresh-process loading");
+    expect(releaseNotes).toContain("unconfirmed underlying authorship/license");
+
+    const changelog = readFileSync(new URL("../../CHANGELOG.md", import.meta.url), "utf8");
+    expect(changelog).toContain("## [0.2.0]");
+
+    const architecture = readFileSync(
+      new URL("../../docs/architecture.md", import.meta.url),
+      "utf8",
+    );
+    expect(architecture).not.toContain("does not contain a product Studio, surface renderer, or sample application");
+    expect(architecture).toContain("examples/ benchmark portfolio");
+  });
+
   it("documents the current 24-file mode and asset-rights contract in every active guide", () => {
     const activeDocs = [
       { path: "../../AGENTS.md", provenance: "plugins/fantasy-mouse-ui/ASSET_PROVENANCE.md" },
@@ -244,9 +281,11 @@ describe("Fantasy Mouse UI plugin manifest", () => {
       "清单验证和 `verify-bundle.mjs` 只认证压缩包结构与四个固定视觉文件的字节；它们不认证每个脚本、Schema 或 Skill 文件。",
     );
     expect(installGuide).toContain(
-      "Before v0.2 publication, the current trusted route is a local source build.",
+      "Until the GitHub v0.2.0 Release and its digest are independently verified, the trusted release-candidate route is a local source build.",
     );
-    expect(installGuide).toContain("在 v0.2 发布前，当前受信任路径是本地源码构建。");
+    expect(installGuide).toContain(
+      "在 GitHub v0.2.0 Release 及其摘要完成独立验证前，受信任的发布候选路径是本地源码构建。",
+    );
     expect(installGuide).not.toContain("its `latest` aliases are retained below as historical routes");
     expect(installGuide).not.toContain("latest asset remain historical discovery routes");
     expect(installGuide).not.toContain("历史 v0.1.0 发布记录/别名");
