@@ -1,5 +1,7 @@
 # Fantasy Mouse UI open-source release design
 
+> **Historical record:** This v0.1.0 design was implemented, but its blanket visual-asset redistribution assumptions were superseded by the packaged [`ASSET_PROVENANCE.md`](../../../plugins/fantasy-mouse-ui/ASSET_PROVENANCE.md). Use current repository documentation for licensing and release guidance.
+
 ## Objective
 
 Publish Fantasy Mouse UI as a genuinely installable open-source plugin rather than merely uploading the current private-local archive. The public release must include the user-authorized four visual authority images, source code, model adapters, installation metadata, an AI-executable deployment prompt, and verifiable release artifacts.

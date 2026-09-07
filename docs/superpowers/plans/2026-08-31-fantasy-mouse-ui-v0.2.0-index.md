@@ -1,5 +1,7 @@
 # Fantasy Mouse UI v0.2.0 Implementation Plan Index
 
+> **Status:** Completed and released as v0.2.0. Checkboxes in this index and its child plans are retained as the original execution scripts, not as current pending work.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Coordinate the three independently testable implementation plans that produce and publicly verify Fantasy Mouse UI v0.2.0.

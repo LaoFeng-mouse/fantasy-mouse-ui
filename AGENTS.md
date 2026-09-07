@@ -21,12 +21,14 @@ Do not claim a host install or a future UI/deck/document output was loaded, run,
 | Need | Read |
 | --- | --- |
 | Install with Codex, a release ZIP, or an Agent | `INSTALL_WITH_AI.md` |
+| Copy a prompt into a tool-capable Agent | `docs/agent-usage.md` |
 | Integrate or invoke the plugin | `docs/integration-guide.md` |
 | Understand authority/protocol/security design | `docs/architecture.md` |
 | Verify, package, troubleshoot, or install | `docs/operator-runbook.md` |
 | Current delivered state and remaining boundaries | `docs/handoff.md` |
+| Distinguish shipped behavior from future ideas | `docs/roadmap.md` |
 
-`docs/handoff.md` describes the current local v0.2 core candidate and keeps v0.1.0 release evidence in a separately labeled historical section. Do not infer v0.2 remote publication or installation from the local package gates.
+`docs/handoff.md` describes the published v0.2.0 state and keeps v0.1.0 evidence in a separately labeled historical section. For later changes, continue to verify local package, remote asset, marketplace installation, and fresh-task loading as separate gates instead of inheriting the v0.2.0 result.
 
 ## Repository workflow
 

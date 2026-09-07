@@ -1,8 +1,8 @@
 # Fantasy Mouse UI Agent Usage Design
 
-**Date:** 2026-09-07  
-**Status:** User-confirmed design awaiting written-spec review  
-**Release context:** v0.2.0
+- **Date:** 2026-09-07
+- **Status:** Implemented on `main`; live v0.2.0 Release body updated
+- **Release context:** v0.2.0
 
 ## Goal
 
@@ -46,7 +46,7 @@ Add `docs/roadmap.md` to record confirmed improvement priorities without represe
 
 ### GitHub Release
 
-Append a concise “How to use” section to the existing v0.2.0 Release notes. Include the two copy-ready prompts, the native Codex command, the generic adapter rule, the capability limitation, and a link to `docs/agent-usage.md` on `main`. The guide is a post-release documentation addition and therefore must not be represented as part of the immutable v0.2.0 tag contents.
+Append a concise “How to use” section to the existing v0.2.0 Release notes. Include the two copy-ready prompts, the native Codex command, the generic adapter rule, the capability limitation, and a link to `docs/agent-usage.md` on `main`. The guide is a post-release documentation addition and therefore must not be represented as part of the version-pinned v0.2.0 tag contents.
 
 Editing Release notes must not move tag `v0.2.0`, replace `fantasy-mouse-ui.zip`, or change the published archive digest.
 

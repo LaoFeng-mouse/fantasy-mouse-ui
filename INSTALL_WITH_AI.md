@@ -1,5 +1,7 @@
 # Install Fantasy Mouse UI with AI / 使用 AI 安装 Fantasy Mouse UI
 
+For the shortest copy-paste path, use the [Agent usage guide](docs/agent-usage.md). This document is the detailed installation and verification runbook. / 最短复制使用方式见 [Agent 使用指南](docs/agent-usage.md)；本文保留详细安装与分层验证流程。
+
 ## What is installed and prerequisites / 安装内容与前置条件
 
 Fantasy Mouse UI must be installed as a complete plugin directory. The installing Agent must be able to read and write files and view images. Node.js 24 or newer is required to run the bundle verifier. Keep the plugin's `skills/`, `adapters/`, `assets/`, `protocol/`, `references/`, and `scripts/` paths together.
@@ -86,7 +88,7 @@ Inventory validation and `verify-bundle.mjs` authenticate only archive structure
 
 ### Manual English ZIP workflow
 
-Build the current `fantasy-mouse-ui.zip` locally as described above. The fixed GitHub [`v0.1.0` release](https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/tag/v0.1.0) is historical. The [latest release](https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/latest) page and direct latest download are mutable discovery endpoints and may resolve to different versions over time; any downloaded ZIP must satisfy the inventory, validator, and trusted whole-archive identity requirements above:
+Download the fixed v0.2.0 archive from `https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/download/v0.2.0/fantasy-mouse-ui.zip`, or build it locally from the version-pinned source. The fixed GitHub [`v0.1.0` release](https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/tag/v0.1.0) is historical. The [latest release](https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/latest) page and direct latest download are mutable discovery endpoints and may resolve to different versions over time; any downloaded ZIP must satisfy the inventory, validator, and trusted whole-archive identity requirements above:
 
 ```text
 https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/latest/download/fantasy-mouse-ui.zip
@@ -135,7 +137,7 @@ skills/fantasy-mouse-ui/SKILL.md
 
 ### 中文手动 ZIP 流程
 
-当前 `fantasy-mouse-ui.zip` 应按上文从源码本地构建。固定的 GitHub [`v0.1.0` Release](https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/tag/v0.1.0) 属于历史记录。[latest Release](https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/latest) 页面和以下 latest 下载直链属于可变发现端点，可能随时间指向不同版本；任何下载 ZIP 都必须满足上文的清单、验证器和可信完整压缩包身份要求：
+请从 `https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/download/v0.2.0/fantasy-mouse-ui.zip` 下载固定的 v0.2.0 压缩包，或从该版本固定源码本地构建。固定的 GitHub [`v0.1.0` Release](https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/tag/v0.1.0) 属于历史记录。[latest Release](https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/latest) 页面和以下 latest 下载直链属于可变发现端点，可能随时间指向不同版本；任何下载 ZIP 都必须满足上文的清单、验证器和可信完整压缩包身份要求：
 
 ```text
 https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/latest/download/fantasy-mouse-ui.zip

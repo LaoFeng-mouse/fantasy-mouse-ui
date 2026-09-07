@@ -1,5 +1,7 @@
 # Fantasy Mouse UI v0.2.0 design
 
+> **Status:** Implemented and released as v0.2.0. This dated specification is retained as design history; current usage and release state live in [`docs/agent-usage.md`](../../agent-usage.md) and [`docs/handoff.md`](../../handoff.md).
+
 ## Objective
 
 Release Fantasy Mouse UI v0.2.0 as an easier-to-understand, faster-to-try, evidence-backed model-neutral UI design plugin. The release must preserve the existing character-grounding and product-style-independence contracts while adding tiered execution modes, four real benchmark cases, a result-led README, a short demonstration GIF, a concise Quick Start, and truthful asset provenance.

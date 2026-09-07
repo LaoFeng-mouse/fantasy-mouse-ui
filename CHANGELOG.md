@@ -2,6 +2,17 @@
 
 All notable changes to Fantasy Mouse UI are documented here.
 
+## [Unreleased]
+
+### Added
+
+- A capability-bounded Agent usage guide with two copy-ready Chinese prompts for installing-and-using or invoking an existing Fantasy Mouse UI installation.
+- A roadmap that separates proposed v0.2.1 and v0.3.0 work from behavior shipped in v0.2.0.
+
+### Changed
+
+- The README Quick Start and live v0.2.0 Release body now link to the complete Agent guide without changing the version-pinned tag or release ZIP.
+
 ## [0.2.0] - 2026-09-07
 
 ### Added

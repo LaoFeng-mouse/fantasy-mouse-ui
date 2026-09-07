@@ -1,5 +1,7 @@
 # Fantasy Mouse UI v0.2.0 Benchmarks Implementation Plan
 
+> **Status:** Completed for v0.2.0. Unchecked boxes are retained as the original execution script, not as current pending work.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Produce four genuinely different Strict-mode benchmark cases with editable source, real outputs, working primary journeys, screenshots, derivation records, and visual QA evidence.

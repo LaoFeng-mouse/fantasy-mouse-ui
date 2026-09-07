@@ -1,5 +1,7 @@
 # Fantasy Mouse UI v0.2.0 Core Contracts Implementation Plan
 
+> **Status:** Completed for v0.2.0. Unchecked boxes are retained as the original execution script, not as current pending work.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Add machine-verifiable Fast, Standard, and Strict execution modes, truthful packaged provenance, and the expanded deterministic plugin contract.

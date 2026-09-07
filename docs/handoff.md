@@ -4,6 +4,7 @@
 
 - v0.2.0 is published and independently verified at https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/tag/v0.2.0.
 - Public repository: https://github.com/LaoFeng-mouse/fantasy-mouse-ui.
+- The repository `main` branch now includes the post-release [Agent usage guide](agent-usage.md), two copy-ready prompts in README, a future-only [roadmap](roadmap.md), and the source used to add `How to use` to the live Release body. These documentation updates did not move the v0.2.0 tag or replace its asset.
 - Repository marketplace metadata, bilingual [Install with AI](../INSTALL_WITH_AI.md), MIT code licenses, the exact 24-file plugin inventory, host adapters, and layered verification contract are present.
 - `package.json` remains `"private": true` only to block accidental npm publication; it does not alter MIT software-code rights.
 - Execution defaults to Standard. `config/execution-modes.json` is governed by `protocol/execution-modes.schema.json`, and `scripts/resolve-mode.mjs` performs default/requested/strict-trigger mode preflight.
@@ -19,14 +20,14 @@
 - Deterministic local packaging at `dist/plugin/fantasy-mouse-ui.zip` with an exact 24-file allowlist and TOCTOU protections.
 - Contract, security, validator, adapter, visual-authority, and package tests.
 - Four accepted Strict benchmark cases under `examples/`, covering SaaS, website, presentation, and Windows desktop surfaces with editable source, real output, screenshots, comparisons, and QA records.
-- A result-led README, Quick Start, three bilingual prompts, and deterministic 22-second Archive Lantern GIF/MP4 workflow demonstration.
+- A result-led README, two copy-ready Agent prompts, three mode-specific bilingual examples, and a deterministic 22-second Archive Lantern GIF/MP4 workflow demonstration.
 
 ## Verified v0.2.0 release
 
 - Annotated tag `v0.2.0` resolves to release commit `fc1dd24d8bc45ef5a9050f748c74c22892dbe279`; the non-draft, non-prerelease GitHub Release was published on 2026-09-07.
 - Two post-versioning package builds were byte-for-byte identical at SHA-256 `4AA588B0DA90A6E669B3EE833A1BC3F48DA10E6009654668016B75AA3837AEB3`.
 - Package path: `dist/plugin/fantasy-mouse-ui.zip`; verified inventory: exactly 24 regular entries.
-- The complete local gate passed with `203` tests and `1` platform skip; TypeScript, benchmark, bundle, Skill, plugin, and package validation also passed.
+- The complete post-documentation local gate passed with `208` tests and `1` platform skip; TypeScript, benchmark, bundle, Skill, plugin, and package validation also passed.
 - `scripts/verify-bundle.mjs` must return `{"ok":true,"assets":4}` and `scripts/resolve-mode.mjs` must resolve Standard by default.
 - `scripts/validate-examples.mjs` must return `{"ok":true,"cases":4,"accepted":4}`.
 - Optional support QR is repository documentation only and must remain absent from the plugin ZIP.
@@ -61,7 +62,8 @@ The retained 乐不思鼠-derived rule is only the user-confirmed hand contract:
 ## Start here
 
 1. Read `CONTEXT.md` and `docs/architecture.md`.
-2. Follow [Install with AI](../INSTALL_WITH_AI.md) for marketplace or release-ZIP installation.
-3. Follow `docs/integration-guide.md` for an invocation.
+2. Copy a ready-to-use prompt from [Agent usage](agent-usage.md), or follow [Install with AI](../INSTALL_WITH_AI.md) for detailed marketplace or release-ZIP installation.
+3. Follow `docs/integration-guide.md` for protocol-level integration.
 4. Use `docs/operator-runbook.md` before changing assets, packaging, or installation.
-5. Run every repository gate and validate each deployment layer before handing off a changed plugin.
+5. Check [Roadmap](roadmap.md) before describing an idea as shipped.
+6. Run every repository gate and validate each deployment layer before handing off a changed plugin.

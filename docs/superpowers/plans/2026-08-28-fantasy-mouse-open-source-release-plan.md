@@ -1,5 +1,7 @@
 # Fantasy Mouse UI Open-Source Release Implementation Plan
 
+> **Historical record:** This v0.1.0 plan was executed. Its unchecked boxes are retained as the original execution script, and its blanket visual-asset MIT assumptions were superseded by the packaged [`ASSET_PROVENANCE.md`](../../../plugins/fantasy-mouse-ui/ASSET_PROVENANCE.md).
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Convert the verified private-local Fantasy Mouse UI plugin into an MIT-licensed public GitHub marketplace plugin with a deterministic release ZIP and copy-paste AI deployment instructions.

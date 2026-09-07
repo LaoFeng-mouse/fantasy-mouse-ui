@@ -1,5 +1,7 @@
 # Fantasy Mouse UI Agent Usage Implementation Plan
 
+> **Status:** Completed on `main`, including the live v0.2.0 Release-body update. Unchecked boxes are retained as the original execution script, not as current pending work.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Add a copy-paste-first usage path for tool-capable AI Agents to README and the v0.2.0 Release, backed by one complete Agent guide and a clearly non-shipped roadmap.
@@ -295,7 +297,7 @@ Append `## How to use` to `docs/release-notes-0.2.0.md`. Include:
 - one sentence mapping named hosts to adapters and other hosts to the generic adapter;
 - the capability-bounded compatibility warning;
 - the full main-branch Agent guide URL;
-- an explicit note that the guide is post-release documentation and not part of immutable tag contents.
+- an explicit note that the guide is post-release documentation and not part of the version-pinned tag contents.
 
 - [ ] **Step 4: Run both focused documentation suites**
 
@@ -362,7 +364,7 @@ Expected: no whitespace errors and no uncommitted files.
 - Remote mutation: GitHub `main` and existing v0.2.0 Release body.
 - No tag or asset mutation.
 
-- [ ] **Step 1: Snapshot the immutable Release facts**
+- [ ] **Step 1: Snapshot the version-pinned Release facts**
 
 ```powershell
 gh release view v0.2.0 --json tagName,isDraft,isPrerelease,assets,targetCommitish,url
@@ -391,7 +393,7 @@ Expected: the command returns the unchanged v0.2.0 Release URL.
 
 Use `gh api` to read `README.md` at `main` and the v0.2.0 Release JSON. Decode README content and assert the fixed ZIP URL, both prompt markers, and `docs/agent-usage.md`. Assert the Release body contains `## How to use`, both prompt markers, and the main-branch guide link.
 
-- [ ] **Step 5: Recheck immutable facts**
+- [ ] **Step 5: Recheck version-pinned facts**
 
 Run the same Release snapshot commands from Step 1. Require the same tag commit, asset ID, size, and digest. Verify `git rev-list --left-right --count origin/main...main` returns `0 0` and `git status --short` is empty.
 
