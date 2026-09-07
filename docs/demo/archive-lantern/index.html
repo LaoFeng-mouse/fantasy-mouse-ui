@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Archive Lantern workflow demonstration</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="demo-shell" aria-label="Archive Lantern workflow demonstration">
+    <header class="demo-header">
+      <div class="brand-mark">鼠</div>
+      <div>
+        <strong>Fantasy Mouse UI</strong>
+        <span>Workflow demonstration</span>
+      </div>
+      <div class="truth-label">ACCEPTED STATES · NOT REAL-TIME GENERATION</div>
+      <div class="clock"><span id="clock">00:00</span> / 00:22</div>
+    </header>
+
+    <section class="workspace">
+      <article class="brief-panel">
+        <div class="panel-kicker">01 · REQUEST</div>
+        <div class="prompt-card">
+          <span class="prompt-author">YOU</span>
+          <p id="prompt-text"></p><span class="caret" aria-hidden="true"></span>
+        </div>
+
+        <div class="mode-card" id="mode-card">
+          <div>
+            <span class="mode-label">SELECTED MODE</span>
+            <strong>STRICT</strong>
+          </div>
+          <p>Reason: public benchmark + multi-state desktop workflow</p>
+          <span class="verified">✓ Visual authorities verified</span>
+        </div>
+
+        <div class="workflow-card" id="workflow-card">
+          <div class="panel-kicker">02 · WORKFLOW BRIEF</div>
+          <div class="flow" id="flow"></div>
+          <div class="requirements">
+            <span>LOCAL INDEX</span><span>KEYBOARD</span><span>SAFE RETRY</span><span>EDITABLE WPF</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="result-panel">
+        <div class="result-topline">
+          <div>
+            <span class="panel-kicker">03 · REAL OUTPUT</span>
+            <strong>Archive Lantern</strong>
+          </div>
+          <span class="state-pill" id="state-pill">STRUCTURE</span>
+        </div>
+
+        <div class="screen-frame" id="screen-frame">
+          <img data-state="empty-library" src="../../../examples/archive-lantern/screenshots/empty-library.png" alt="Archive Lantern empty library">
+          <img data-state="indexing" src="../../../examples/archive-lantern/screenshots/indexing.png" alt="Archive Lantern indexing state">
+          <img data-state="import-failed" src="../../../examples/archive-lantern/screenshots/import-failed.png" alt="Archive Lantern failed import recovery">
+          <img data-state="open-result" src="../../../examples/archive-lantern/screenshots/open-result.png" alt="Archive Lantern opened result">
+          <div class="scan-line" aria-hidden="true"></div>
+          <div class="annotation" id="annotation"></div>
+        </div>
+
+        <div class="evidence-row">
+          <div><span id="gate-structure">○</span> Product structure</div>
+          <div><span id="gate-character">○</span> Role-grounded mouse</div>
+          <div><span id="gate-recovery">○</span> Recovery states</div>
+          <div><span id="gate-accepted">○</span> Accepted result</div>
+        </div>
+      </article>
+    </section>
+  </main>
+  <script type="module" src="./demo.mjs"></script>
+</body>
+</html>
