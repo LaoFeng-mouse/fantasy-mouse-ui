@@ -6,7 +6,7 @@ None of the items below are shipped in v0.2.0. This roadmap separates intended i
 
 - **doctor** — Add a diagnostic entrypoint that checks the bundle, runtime, and host prerequisites so setup failures are easier to identify.
 - **shorter canonical Skill** — Reduce the always-loaded workflow while preserving its required gates so Agents spend less context on instructions without weakening acceptance.
-- **host-capability contract** — Define the capabilities and fallback behavior expected from each host so integrations make bounded, testable claims.
+- **host-capability contract** — Add a package-local, machine-readable contract for required capabilities, exact failure tokens, and fallback behavior so host integrations can validate bounded claims instead of relying only on prose.
 - **package-local `USE_WITH_AI.md`** — Put concise Agent installation and invocation guidance inside the package so users do not need repository-only documentation to get started.
 
 ## Candidate scope for v0.3.0

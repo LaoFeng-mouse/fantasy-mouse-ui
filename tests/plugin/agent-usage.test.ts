@@ -18,18 +18,54 @@ function expectOrdered(text: string, markers: string[]) {
 describe("Fantasy Mouse Agent usage documentation", () => {
   it("labels future plugin improvements as planned rather than shipped", async () => {
     const roadmap = await readFile("docs/roadmap.md", "utf8");
-    for (const marker of [
+    const plannedMarkers = [
       "## Planned for v0.2.1",
       "doctor",
       "shorter canonical Skill",
       "host-capability contract",
+      "machine-readable",
       "USE_WITH_AI.md",
+    ];
+    const candidateMarkers = [
       "## Candidate scope for v0.3.0",
       "owned or licensed original character assets",
       "real-host conformance tests",
       "benchmark regression",
-    ]) expect(roadmap, marker).toContain(marker);
+    ];
+    expectOrdered(roadmap, [
+      "None of the items below are shipped in v0.2.0",
+      ...plannedMarkers,
+      ...candidateMarkers,
+    ]);
+
+    const candidateStart = roadmap.indexOf(candidateMarkers[0]);
+    const plannedSection = roadmap.slice(
+      roadmap.indexOf(plannedMarkers[0]),
+      candidateStart,
+    );
+    const candidateSection = roadmap.slice(candidateStart);
+    for (const marker of plannedMarkers.slice(1)) {
+      expect(plannedSection, marker).toContain(marker);
+      expect(candidateSection, marker).not.toContain(marker);
+    }
+    for (const marker of candidateMarkers.slice(1)) {
+      expect(candidateSection, marker).toContain(marker);
+      expect(plannedSection, marker).not.toContain(marker);
+    }
     expect(roadmap).toContain("None of the items below are shipped in v0.2.0");
+    expect(roadmap).not.toMatch(/\b20\d{2}-\d{2}-\d{2}\b/u);
+    expect(roadmap).not.toMatch(/\b(?:already|currently|now) (?:shipped|released|complete|available)\b/iu);
+
+    const guide = await readFile("docs/agent-usage.md", "utf8");
+    expectOrdered(guide, [
+      "## Package identity",
+      "## Optional further reading",
+      "[roadmap](roadmap.md)",
+      "not shipped in v0.2.0",
+    ]);
+    expect(guide.slice(guide.indexOf("## Optional further reading"))).not.toContain(
+      "\n## ",
+    );
   });
 
   it("defines capability-bounded multi-host usage and honest failure behavior", async () => {
