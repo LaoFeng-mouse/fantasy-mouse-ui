@@ -18,14 +18,40 @@ function expectOrdered(text: string, markers: string[]) {
 describe("Fantasy Mouse Agent usage documentation", () => {
   it("keeps the v0.2.0 Release source copy-ready and post-release-link honest", async () => {
     const notes = await readFile("docs/release-notes-0.2.0.md", "utf8");
-    expect(notes).toContain("## How to use");
-    expect(notes).toContain(fixedReleaseZip);
-    expect(notes).toContain("不要只复制 SKILL.md");
-    expect(notes).toContain("自动选择 Fast、Standard 或 Strict 模式");
-    expect(notes).toContain(
+    const howToUse = notes.slice(notes.indexOf("## How to use"));
+    const boundedCompatibility = "does not mean every chatbot can complete the workflow";
+    const guardedInstall =
+      "codex plugin marketplace add https://github.com/LaoFeng-mouse/fantasy-mouse-ui --json; if ($LASTEXITCODE -eq 0) { codex plugin add fantasy-mouse-ui@fantasy-mouse-ui --json }";
+    expectOrdered(howToUse, [
+      "## How to use",
+      "Codex Marketplace plus install (PowerShell)",
+      guardedInstall,
+      "Download the published v0.2.0 plugin ZIP",
+      fixedReleaseZip,
+      "SHA-256:",
+      fixedReleaseHash,
+      "Download, install, and use",
+      "不要只复制 SKILL.md",
+      "Already installed",
+      "自动选择 Fast、Standard 或 Strict 模式",
+      "On hosts that meet the capabilities below",
+      "adapters/claude/SKILL.md",
+      "adapters/gemini/SKILL.md",
+      "adapters/deepseek/SKILL.md",
+      "adapters/generic/AGENT.md",
+      "Compatibility is capability-bounded",
+      boundedCompatibility,
       "https://github.com/LaoFeng-mouse/fantasy-mouse-ui/blob/main/docs/agent-usage.md",
-    );
-    expect(notes).toContain("post-release documentation");
+      "post-release documentation",
+      "not part of the v0.2.0 tag or ZIP contents",
+    ]);
+    expect(howToUse).not.toMatch(/\bimmutable\b/iu);
+    expect(howToUse).not.toContain("fixed v0.2.0 plugin ZIP");
+    const claimsWithoutDisclaimer = howToUse.split(boundedCompatibility).join("");
+    for (const universalClaim of [
+      /(?:all|every|any) (?:AI|chatbots?|agents?) (?:is|are|can|works?)/iu,
+      /works? with (?:all|every|any) (?:AI|chatbots?|agents?)/iu,
+    ]) expect(claimsWithoutDisclaimer).not.toMatch(universalClaim);
   });
 
   it("labels future plugin improvements as planned rather than shipped", async () => {
