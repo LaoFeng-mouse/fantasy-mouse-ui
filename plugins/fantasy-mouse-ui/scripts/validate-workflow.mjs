@@ -1,5 +1,5 @@
 import { constants } from "node:fs";
-import { lstat, open } from "node:fs/promises";
+import { lstat, open, readFile } from "node:fs/promises";
 
 const MAX_INPUT_BYTES = 1024 * 1024;
 const OPEN_FLAGS =
@@ -195,9 +195,105 @@ function validateBrief(brief) {
   return errors;
 }
 
-const inputPath = process.argv[2];
-if (!inputPath || process.argv.length !== 3) {
-  emitFailure("usage", ["provide exactly one workflow JSON path"]);
+// Evaluates only the JSON Schema keywords used by the bundled recipe schema.
+// This dependency-free CLI validates metadata, never rendered quality or file rights.
+function schemaErrors(value, schema, root, location = "recipe", depth = 0) {
+  const errors = [];
+  const add = (message) => recordError(errors, `${location} ${message}`);
+  if (depth > 40) return [`${location} exceeds nesting limit`];
+  if (schema === false) return [`${location} is not allowed`];
+  if (schema === true) return [];
+  if (schema.$ref) {
+    const target = schema.$ref.split("/").slice(1).reduce((node, key) => node?.[key], root);
+    if (!target) return [`${location} has an unresolved schema reference`];
+    return schemaErrors(value, target, root, location, depth + 1);
+  }
+  const validType = !schema.type || ({
+    object: isRecord(value), array: Array.isArray(value), string: typeof value === "string",
+    number: typeof value === "number" && Number.isFinite(value), integer: Number.isInteger(value),
+    boolean: typeof value === "boolean",
+  })[schema.type];
+  if (!validType) return [`${location} has an invalid type`];
+  if (Object.hasOwn(schema, "const") && value !== schema.const) add("has an invalid constant");
+  if (schema.enum && !schema.enum.includes(value)) add("has an invalid choice");
+  if (schema.anyOf && !schema.anyOf.some((branch) => schemaErrors(value, branch, root, location, depth + 1).length === 0)) add("matches no allowed variant");
+  if (schema.allOf) for (const branch of schema.allOf) errors.push(...schemaErrors(value, branch, root, location, depth + 1));
+  if (schema.if && schemaErrors(value, schema.if, root, location, depth + 1).length === 0 && schema.then) errors.push(...schemaErrors(value, schema.then, root, location, depth + 1));
+  if (typeof value === "string") {
+    const length = Array.from(value).length;
+    if (length < (schema.minLength ?? 0) || length > (schema.maxLength ?? Infinity)) add("has an invalid length");
+    if (schema.pattern && !new RegExp(schema.pattern, "u").test(value)) add("has an invalid format");
+  }
+  if (typeof value === "number" && (value < (schema.minimum ?? -Infinity) || value > (schema.maximum ?? Infinity))) add("is outside its allowed range");
+  if (Array.isArray(value)) {
+    if (value.length > MAX_ITEMS) return [`${location} exceeds collection limit`];
+    if (value.length < (schema.minItems ?? 0) || value.length > (schema.maxItems ?? Infinity)) add("has an invalid item count");
+    if (schema.uniqueItems && new Set(value.map((item) => JSON.stringify(item))).size !== value.length) add("contains duplicate values");
+    value.forEach((item, index) => {
+      const itemSchema = schema.prefixItems?.[index] ?? schema.items;
+      if (itemSchema !== undefined && errors.length < MAX_ERRORS) errors.push(...schemaErrors(item, itemSchema, root, `${location}[${index}]`, depth + 1));
+    });
+  }
+  if (isRecord(value)) {
+    const keys = Object.keys(value);
+    if (keys.length > MAX_ITEMS) return [`${location} exceeds collection limit`];
+    if (keys.length < (schema.minProperties ?? 0) || keys.length > (schema.maxProperties ?? Infinity)) add("has an invalid property count");
+    if (schema.required) requireKeys(value, schema.required, location, errors);
+    for (const key of keys) {
+      if (errors.length >= MAX_ERRORS) break;
+      if (schema.propertyNames) errors.push(...schemaErrors(key, schema.propertyNames, root, `${location} property name`, depth + 1));
+      const childSchema = Object.hasOwn(schema.properties ?? {}, key) ? schema.properties[key] : schema.additionalProperties;
+      // Do not echo untrusted keys or values in bounded CLI errors.
+      const childLocation = Object.hasOwn(schema.properties ?? {}, key) ? `${location}.${key}` : `${location} entry`;
+      if (childSchema !== undefined) errors.push(...schemaErrors(value[key], childSchema, root, childLocation, depth + 1));
+    }
+  }
+  return errors.slice(0, MAX_ERRORS);
+}
+
+function validateRecipe(recipe, schema) {
+  const errors = schemaErrors(recipe, schema, schema);
+  if (errors.length || recipe.protocolVersion !== 2) return errors;
+  const uniqueIds = (items, label) => {
+    const ids = new Set(items.map((item) => item.id));
+    if (ids.size !== items.length) recordError(errors, `${label} contains duplicate ids`);
+    return ids;
+  };
+  const faces = uniqueIds(recipe.character.faceAssets, "faceAssets");
+  const bodies = uniqueIds(recipe.character.bodyVariants, "bodyVariants");
+  const motions = uniqueIds(recipe.motion, "motion");
+  uniqueIds(recipe.components, "components");
+  const head = recipe.character.headReference;
+  const headCrop = head.crop ?? { x: 0, y: 0, width: head.sourceWidth, height: head.sourceHeight };
+  if (headCrop.x + headCrop.width > head.sourceWidth || headCrop.y + headCrop.height > head.sourceHeight) recordError(errors, "head reference crop exceeds source bounds");
+  if (recipe.rights.publicExport && head.useScope !== "redistributable") recordError(errors, "public export references a local-project head");
+  for (const face of recipe.character.faceAssets) {
+    const crop = face.crop ?? { x: 0, y: 0, width: face.sourceWidth, height: face.sourceHeight };
+    if (crop.x + crop.width > face.sourceWidth || crop.y + crop.height > face.sourceHeight) recordError(errors, "face crop exceeds source bounds");
+    if (face.quality === "production" && face.displayWidth > crop.width) recordError(errors, "production face exceeds source resolution");
+    if (recipe.rights.publicExport && face.useScope !== "redistributable") recordError(errors, "public export references a local-project face");
+  }
+  for (const body of recipe.character.bodyVariants) {
+    const { asset, faceFrame } = body;
+    const crop = asset.crop ?? { x: 0, y: 0, width: asset.sourceWidth, height: asset.sourceHeight };
+    if (crop.x + crop.width > asset.sourceWidth || crop.y + crop.height > asset.sourceHeight) recordError(errors, "body crop exceeds source bounds");
+    if (faceFrame.x + faceFrame.width > 1 || faceFrame.y + faceFrame.height > 1) recordError(errors, "face attachment frame exceeds artboard");
+    if (recipe.rights.publicExport && asset.useScope !== "redistributable") recordError(errors, "public export references a local-project body");
+  }
+  for (const state of Object.values(recipe.states)) {
+    if (!faces.has(state.faceAssetId)) recordError(errors, "state references a missing face asset");
+    if (!bodies.has(state.bodyVariantId)) recordError(errors, "state references a missing body variant");
+    const body = recipe.character.bodyVariants.find((item) => item.id === state.bodyVariantId);
+    if (body && body.handMode !== state.handMode) recordError(errors, "state and body hand modes disagree");
+    if (state.motionId && !motions.has(state.motionId)) recordError(errors, "state references a missing motion");
+  }
+  return errors;
+}
+
+const recipeMode = process.argv[2] === "--recipe";
+const inputPath = process.argv[recipeMode ? 3 : 2];
+if (!inputPath || process.argv.length !== (recipeMode ? 4 : 3)) {
+  emitFailure("usage", ["provide a workflow JSON path, or --recipe followed by a recipe JSON path"]);
 } else {
   let inputHandle;
   let inputFailure;
@@ -254,11 +350,24 @@ if (!inputPath || process.argv.length !== 3) {
     }
 
     if (brief !== undefined) {
-      const errors = validateBrief(brief);
+      let recipeSchema;
+      if (recipeMode) {
+        try {
+          recipeSchema = JSON.parse(await readFile(new URL("../protocol/mouse-ui-project.schema.json", import.meta.url), "utf8"));
+        } catch {
+          emitFailure("schema-unavailable");
+        }
+      }
+      const errors = recipeMode
+        ? (recipeSchema ? validateRecipe(brief, recipeSchema) : ["recipe schema unavailable"])
+        : validateBrief(brief);
       if (errors.length > 0) {
-        emitFailure("invalid-workflow", errors);
+        emitFailure(recipeMode ? "invalid-recipe" : "invalid-workflow", errors);
       } else {
-        const output = {
+        const output = recipeMode ? {
+          ok: true, id: brief.id, protocolVersion: brief.protocolVersion,
+          states: Object.keys(brief.states).length, validation: "metadata-only",
+        } : {
           ok: true,
           id: brief.id,
           screens: brief.screens.length,

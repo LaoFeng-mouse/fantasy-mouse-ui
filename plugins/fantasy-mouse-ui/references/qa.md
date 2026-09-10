@@ -31,7 +31,7 @@ Do not pass a static screenshot, disconnected buttons, visual-only form, or fabr
 
 Capture the intended viewport and meaningful states. Put the following in the same comparison input:
 
-1. canonical protagonist;
+1. canonical protagonist and the exact selected expression source when using a variant;
 2. approved action-hand image;
 3. the selected bubble or no-bubble composition reference;
 4. rendered output screenshot.
@@ -40,7 +40,7 @@ Judge the images together, not in separate tool calls or from memory. Repeat aft
 
 Check:
 
-- face, teeth, tiny ears, round grey head, white bean body, proportions, texture contrast, and temperament;
+- recognizable approved face family, exact selected eyes/mouth/teeth, intended build and proportions, texture contrast, and temperament; do not fail an approved variant merely for open eyes, a closed mouth, red coloration, or muscles;
 - default versus action hand mode, body-connected forearms, real contact point, occlusion, and exactly one coherent hand pair;
 - workflow-specific role, clothes, props, pose, expression, and optional bubble;
 - hierarchy, alignment, spacing, clipping, crop, overflow, typography, borders, shadows, contrast, focus, and state clarity;
@@ -49,6 +49,20 @@ Check:
 - absence of unrelated business terms, data, page structures, or reference-product semantics.
 
 Repair visible defects, rerun, recapture, and compare again. A screenshot by itself is evidence of rendering, not proof of correctness.
+
+## Inspect variants, components, and motion
+
+- Compare every selected expression directly with its own source: complete eyes, mouth, cheeks, forehead, ears, jaw, proportions and recognizable expression. Reject common head stencils, circle/avatar crops, cover-fit feature loss and stretched faces. Compare the body to its selected reference, including shoulders, chest/abs, limb lengths, clothing and gesture; simplifying linework must not erase approved anatomy or turn a muscular human pose into a bean body. A label such as "preview" does not waive source fidelity.
+- Inspect one complete composition at actual UI size and enlarged size before applying a new extraction method across the face library. A complete original character may be used directly, but does not establish split-layer quality or working face replacement. User rejection withdraws the affected visual acceptance even when interaction or metadata tests pass.
+- Show at least two distinct approved expressions on the same body and, when builds are in scope, the same face on two bodies. Check the exact face source, asset hash/crop, neck attachment, layer occlusion, image quality at display size, and no neighboring captions. Inspect both light and dark backgrounds when the asset is meant to support both.
+- Exercise hover, press, keyboard focus, pending, disabled, success, failure, retry, and cancellation as applicable. Compare text state, selected asset, and control availability to the actual operation.
+- Test rapid repeats and interrupted operations. Completion from an obsolete request must not overwrite a newer state. Verify reduced-motion and quiet presentation through actual controls or platform settings, not stylesheet text alone.
+- Test the narrow intended viewport, enlarged text, long localized labels, and pointer/keyboard use. Ensure the mascot neither obscures an action nor shifts its hit target.
+- Record actual contrast measurements for normal text, essential icons, and focus indicators against the declared target accessibility standard. Record observed timings and visible jank without claiming measured frame rate unless profiling was performed.
+
+For UI-only work, replace out-of-scope face/body variant checks with preservation checks: the existing character files, crop rectangles, attachment data and recognizable appearance must remain unchanged. Capture before/after at the same viewport and selected source. Exercise the actual hover/press, switching, overlay, playback and export paths that changed; a short real browser recording can show motion that still screenshots cannot.
+
+Check a visible intermediate animation frame and its final resting state. Interrupt it by stop, rapid replacement, page hiding and an active reduced-motion preference change. Verify that no old result or completion text reappears. Test image loading failure/retry, unavailable local storage, notification recovery, modal keyboard containment and focus return where those features exist. Record which browser and viewport were actually tested, and keep this separate from full accessibility certification or FPS measurements.
 
 ## Cross-output anti-template gate
 

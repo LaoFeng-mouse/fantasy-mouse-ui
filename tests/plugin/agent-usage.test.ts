@@ -116,7 +116,7 @@ describe("Fantasy Mouse Agent usage documentation", () => {
       expect(plannedSection, marker).not.toContain(marker);
     }
     expect(roadmap).toContain("None of the items below are shipped in v0.2.0");
-    expect(roadmap).not.toMatch(/\b20\d{2}-\d{2}-\d{2}\b/u);
+    expect(plannedSection).not.toMatch(/\b20\d{2}-\d{2}-\d{2}\b/u);
     expect(roadmap).not.toMatch(/\b(?:already|currently|now) (?:shipped|released|complete|available)\b/iu);
 
     const guide = await readFile("docs/agent-usage.md", "utf8");

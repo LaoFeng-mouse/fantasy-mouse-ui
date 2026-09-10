@@ -114,7 +114,7 @@ describe("Fantasy Mouse workflow protocol", () => {
     const source = await readFile(validator, "utf8");
     expect(source).not.toMatch(/await\s+readFile\s*\(\s*inputPath\s*\)/);
     expect(source).toContain('import { constants } from "node:fs"');
-    expect(source).toContain('import { lstat, open } from "node:fs/promises"');
+    expect(source).toMatch(/import \{[^}]*lstat[^}]*open[^}]*\} from "node:fs\/promises"/);
     expect(source).toMatch(
       /const OPEN_FLAGS =\s*constants\.O_RDONLY\s*\|\s*\(constants\.O_NONBLOCK \?\? 0\)\s*\|\s*\(constants\.O_NOFOLLOW \?\? 0\);/,
     );

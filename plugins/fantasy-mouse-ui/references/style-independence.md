@@ -17,6 +17,8 @@ Never use the character images or processing compositions as evidence for the se
 
 ## Three-direction gate
 
+Apply the gate only for a material unresolved visual direction; honor an existing selection and user-authorized improvements. Audit and plugin maintenance are not new product design choices.
+
 Each direction must vary both character participation and the complete product UI system. Recolors, costume swaps, or the same skeleton with different decoration are not separate directions.
 
 ## Anti-template comparison

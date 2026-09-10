@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased] — local character rules and UI/motion upgrade
+
+UI-only guidance now freezes character assets/metadata and improves state feedback, motion interruption, resource retry, dialog focus, storage/export recovery and reduced motion. A real local interactive preview exercises these rules. Face/body production is paused by the owner. Earlier rules for approved expression-face replacement, variable builds, per-body attachment frames and compatible recipe v2 metadata validation remain implemented locally. Each face retains its own silhouette and full features; simplicity must preserve selected muscle anatomy and gestures. The owner rejected earlier generated bodies and common-mask compositions; the replacement preview uses complete supplied reference characters and does not establish modular asset acceptance. See [upgrade evidence](docs/upgrade-2026-09-10.md) for current tests, local installation and remaining artwork/host acceptance boundaries. The published v0.2.0 archive is unchanged.
+
+
 All notable changes to Fantasy Mouse UI are documented here.
 
 ## [Unreleased]

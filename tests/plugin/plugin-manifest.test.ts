@@ -47,16 +47,16 @@ describe("Fantasy Mouse UI plugin manifest", () => {
     expect(manifestWithoutVersion).toEqual({
       name: "fantasy-mouse-ui",
       description:
-        "Reusable Skill for creating software UI, websites, presentations, and workflow designs with fixed Fantasy Mouse identity and independently product-derived styling.",
+        "Reusable Fantasy Mouse design Skill with approved expression faces, variable hand-drawn bodies, product-derived interfaces, and state-driven interaction and motion.",
       author: { name: "Fantasy Mouse UI project" },
       keywords: ["ui-design", "frontend", "workflow", "fantasy-mouse"],
       skills: "./skills/",
       interface: {
         displayName: "Fantasy Mouse UI",
         shortDescription:
-          "Fixed mouse identity, product-derived cross-surface UI",
+          "Expressive characters, thoughtful interfaces, connected motion",
         longDescription:
-          "Preserve the approved mouse identity while deriving each interface from the target product, users, platform, workflow, source brand, and accessibility needs across software, websites, presentations, and workflows.",
+          "Reuse approved expression faces, combine hand-drawn body builds, outfits and poses, and design coherent product-specific interfaces with functional controls, accessible feedback and state-driven motion.",
         developerName: "Fantasy Mouse UI project",
         category: "Design",
         capabilities: [
@@ -173,7 +173,7 @@ describe("Fantasy Mouse UI plugin manifest", () => {
       readFileSync(new URL("../../package.json", import.meta.url), "utf8"),
     ) as { version: string };
     expect(packageJson.version).toBe("0.2.0");
-    expect(manifest.version).toBe("0.2.0");
+    expect(manifest.version).toMatch(/^0\.2\.0(?:\+codex\.[a-z0-9-]+)?$/);
 
     const releaseNotes = readFileSync(
       new URL("../../docs/release-notes-0.2.0.md", import.meta.url),

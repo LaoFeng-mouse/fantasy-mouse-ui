@@ -40,7 +40,7 @@ verify bundle
 
 `workflow-brief.schema.json` describes product truth: users, entities, screens, actions, transitions, states, surfaces, constraints, and primary journey.
 
-`mouse-ui-project.schema.json` describes the selected design recipe. Identity anchors remain exact, while persona, theme, states, and surfaces are project-specific. Each state records role, expression, pose, hand mode, props, bubble policy, and copy.
+`mouse-ui-project.schema.json` describes the selected design recipe. Protocol v1 keeps the exact legacy default-pose anchors. Protocol v2 uses character-family anchors and adds face asset IDs, body variants, source/crop metadata, layer order, component states, product-style evidence, and interruptible motion contracts. Each state binds a real face/body choice alongside role, expression, pose, hand mode, props, bubble policy, and copy. Persona, theme, states, and surfaces remain project-specific. `validate-workflow.mjs --recipe` validates both recipe versions and v2 cross-references; this is metadata validation, not visual acceptance.
 
 Both protocols reject unknown structural fields while keeping domain state and surface identifiers open.
 

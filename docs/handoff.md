@@ -1,5 +1,7 @@
 # Fantasy Mouse UI handoff
 
+> Source update (2026-09-10): UI-only preservation rules, component feedback, interruptible motion, recovery guidance, and compatible v2 recipe metadata validation are implemented. Existing character assets remain unchanged; new face/body production is paused. The published v0.2.0 ZIP and its recorded checksums remain the historical release baseline; they do not include these changes. See [upgrade evidence](upgrade-2026-09-10.md).
+
 ## Current branch state
 
 - v0.2.0 is published and independently verified at https://github.com/LaoFeng-mouse/fantasy-mouse-ui/releases/tag/v0.2.0.

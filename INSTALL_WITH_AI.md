@@ -1,5 +1,7 @@
 # Install Fantasy Mouse UI with AI / 使用 AI 安装 Fantasy Mouse UI
 
+> Source update (2026-09-10): UI-only preservation rules, component feedback, interruptible motion, recovery guidance, and compatible v2 recipe metadata validation are implemented. Existing character assets remain unchanged; new face/body production is paused. The published v0.2.0 ZIP and its recorded checksums remain the historical release baseline; they do not include these changes. See [upgrade evidence](docs/upgrade-2026-09-10.md).
+
 For the shortest copy-paste path, use the [Agent usage guide](docs/agent-usage.md). This document is the detailed installation and verification runbook. / 最短复制使用方式见 [Agent 使用指南](docs/agent-usage.md)；本文保留详细安装与分层验证流程。
 
 ## What is installed and prerequisites / 安装内容与前置条件

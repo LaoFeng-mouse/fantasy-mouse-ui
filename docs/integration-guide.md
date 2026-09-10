@@ -1,5 +1,7 @@
 # Fantasy Mouse UI integration guide
 
+> Source update (2026-09-10): UI-only preservation rules, component feedback, interruptible motion, recovery guidance, and compatible v2 recipe metadata validation are implemented. Existing character assets remain unchanged; new face/body production is paused. The published v0.2.0 ZIP and its recorded checksums remain the historical release baseline; they do not include these changes. See [upgrade evidence](upgrade-2026-09-10.md).
+
 This guide is for an Agent or developer integrating the plugin into a new UI, website, presentation, document, or workflow task.
 
 Version 0.2.0 uses the exact 24-file plugin inventory and defaults to Standard mode. The public repository additionally provides four accepted examples for SaaS, website, presentation, and desktop surfaces; examples are evidence and learning material, not packaged templates.

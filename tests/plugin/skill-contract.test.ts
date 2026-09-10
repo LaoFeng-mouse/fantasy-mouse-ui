@@ -355,10 +355,9 @@ describe("Fantasy Mouse image-first Skill contract", () => {
     }
     for (const anchor of [
       "face",
-      "human-like teeth",
-      "tiny horizontal ears",
-      "round grey head",
-      "white bean body",
+      "approved character family",
+      "photographic face texture",
+      "hand-drawn body language",
       "earnest absurd fantasy temperament"
     ]) {
       expect(workflow).toContain(anchor);

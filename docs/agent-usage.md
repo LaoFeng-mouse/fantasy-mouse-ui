@@ -1,5 +1,7 @@
 # Use Fantasy Mouse UI with AI Agents
 
+> Source update (2026-09-10): UI-only preservation rules, component feedback, interruptible motion, recovery guidance, and compatible v2 recipe metadata validation are implemented. Existing character assets remain unchanged; new face/body production is paused. The published v0.2.0 ZIP and its recorded checksums remain the historical release baseline; they do not include these changes. See [upgrade evidence](upgrade-2026-09-10.md).
+
 Fantasy Mouse UI is a complete, visually grounded UI-design workflow for tool-capable Agents. The Agent needs the full plugin directory—not a copied `SKILL.md`—so it can read the canonical instructions, inspect the bundled character references, resolve the execution mode, edit the target, and verify the result.
 
 ## Copy this into an Agent
